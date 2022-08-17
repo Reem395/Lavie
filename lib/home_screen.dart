@@ -366,10 +366,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ]),
-          // SizedBox(
-          //   height:
-          //       (screenSize.height - MediaQuery.of(context).padding.top) * 0.05,
-          // ),
+              //reem
+          SizedBox(
+            height:
+                (screenSize.height - MediaQuery.of(context).padding.top) * 0.05,
+          ),
           Expanded(
             child: TabBarView(children: [
               selectedPage(allproducts),
