@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_hackathon/models/plants_model/plants.dart';
 import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
 import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/seeds_model/seeds.dart';
 import '../models/seeds_model/seeds_model.dart';
@@ -10,6 +11,7 @@ import '../models/tools_model/tool.dart';
 import '../models/user_model/user.dart';
 import '../models/user_model/user_model.dart';
 import '../services/app_shared_pref.dart';
+import '../widgets/shop_layout.dart';
 // import 'package:flutter_hackathon/models/user/user_model.dart';
 
 class MyProvider with ChangeNotifier {
@@ -19,6 +21,7 @@ class MyProvider with ChangeNotifier {
   List<dynamic> allproducts = [];
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
+
   Future getAllSeeds() async {
     try {
       allSeeds.clear();
@@ -36,11 +39,10 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-   Future getAllPlants() async {
+  Future getAllPlants() async {
     try {
       allPlants.clear();
-      var response = await Dio().get(
-          '${baseUrl}plants',
+      var response = await Dio().get('${baseUrl}plants',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -57,8 +59,7 @@ class MyProvider with ChangeNotifier {
   Future getAllTools() async {
     try {
       allTools.clear();
-      var response = await Dio().get(
-          '${baseUrl}tools',
+      var response = await Dio().get('${baseUrl}tools',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -72,14 +73,28 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  // void getAllProducts(){
-  //   allproducts.clear();
-  //   allproducts.addAll(allPlants);
-  //   allproducts.addAll(allSeeds);
-  //   allproducts.addAll(allTools);
-  //   notifyListeners();
-  // }
-  void signUp(User user) async {
+//   Future getAllProducts()async{
+//     // allproducts.clear();
+//     // allproducts.addAll(allPlants);
+//     // allproducts.addAll(allSeeds);
+//     // allproducts.addAll(allTools);
+// try {
+//       allTools.clear();
+//       var response = await Dio().get('${baseUrl}products',
+//           options: Options(
+//               headers: ({
+//             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+//           })));
+//       ToolsModel res = ToolsModel.fromJson(response.data);
+//       allTools = [...?res.data];
+//       allproducts.addAll(allTools);
+//       notifyListeners();
+//     } catch (e) {
+//       print("Error from get All Tools: $e");
+//     }
+//     notifyListeners();
+//   }
+  Future signUp(User user) async {
     try {
       Response response = await Dio().post(
           "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signup",
@@ -95,7 +110,7 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-   signIn({required email, required password}) async {
+   Future signIn({required email, required password, required context}) async {
     try {
       Response response = await Dio().post(
           "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signin",
@@ -108,9 +123,23 @@ class MyProvider with ChangeNotifier {
       AppSharedPref.setToken(accessToken);
       AppSharedPref.setUserMail(email);
       print("token => ${AppSharedPref.getToken()}");
+      if (accessToken != null) {
+        getAllTools();
+        getAllPlants();
+        getAllSeeds();
       notifyListeners();
+
+        print("User token is not null: $accessToken");
+        // Fluttertoast.showToast(
+        //     msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShopLayout()));
+      } 
+
     } catch (e) {
       print('Error Login user: $e');
+      Fluttertoast.showToast(
+            msg: "Wrong email or password", toastLength: Toast.LENGTH_SHORT);
     }
   }
 }

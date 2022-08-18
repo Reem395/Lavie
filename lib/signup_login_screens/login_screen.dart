@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../provider/my_provider.dart';
 import '../constants.dart';
 import '../services/app_shared_pref.dart';
-import '../shop_layout.dart';
+import '../widgets/shop_layout.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -86,30 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     Provider.of<MyProvider>(context, listen: false).signIn(
                         email: emailController.text,
-                        password: passwordController.text);
-
-                    // String? userToken = AppSharedPref.getToken();
-                    print("userToken: $userToken");
-                    if (userToken == null) {
-                      Fluttertoast.showToast(
-                          msg: "Wrong email or password",
-                          toastLength: Toast.LENGTH_SHORT);
-                    } else {
-                      var myprovider =
-                          Provider.of<MyProvider>(context, listen: false);
-
-                      myprovider.getAllTools();
-                      myprovider.getAllPlants();
-                      myprovider.getAllSeeds();
-
-                      Fluttertoast.showToast(
-                          msg: "Login Successfully",
-                          toastLength: Toast.LENGTH_SHORT);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ShopLayout()));
-                    }
+                        password: passwordController.text,context: context);
                   }
                 } catch (e) {
                   print("error: $e");
