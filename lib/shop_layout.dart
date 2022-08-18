@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/constants.dart';
 import 'package:flutter_hackathon/home_screen.dart';
-import 'package:flutter_hackathon/provider/my_provider.dart';
-import 'package:provider/provider.dart';
 
 class ShopLayout extends StatefulWidget {
   ShopLayout({Key? key}) : super(key: key);

@@ -9,7 +9,7 @@ import '../models/seeds_model/seeds_model.dart';
 import '../models/tools_model/tool.dart';
 import '../models/user_model/user.dart';
 import '../models/user_model/user_model.dart';
-import '../services/AppSharedPref.dart';
+import '../services/app_shared_pref.dart';
 // import 'package:flutter_hackathon/models/user/user_model.dart';
 
 class MyProvider with ChangeNotifier {
@@ -17,8 +17,9 @@ class MyProvider with ChangeNotifier {
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   List<dynamic> allproducts = [];
+  String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
-  void getAllSeeds() async {
+  Future getAllSeeds() async {
     try {
       allSeeds.clear();
       var response = await Dio().get('${baseUrl}seeds',
@@ -28,10 +29,6 @@ class MyProvider with ChangeNotifier {
           })));
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
-      // for (var item in allSeeds) {
-      //   print("Images: ${item.imageUrl}");
-      //   print("name: ${item.name}");
-      // }
       allproducts.addAll(allSeeds);
       notifyListeners();
     } catch (e) {
@@ -39,7 +36,7 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  void getAllPlants() async {
+   Future getAllPlants() async {
     try {
       allPlants.clear();
       var response = await Dio().get(
@@ -57,7 +54,7 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  void getAllTools() async {
+  Future getAllTools() async {
     try {
       allTools.clear();
       var response = await Dio().get(
@@ -98,7 +95,7 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  void signIn({required email, required password}) async {
+   signIn({required email, required password}) async {
     try {
       Response response = await Dio().post(
           "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signin",
@@ -107,8 +104,8 @@ class MyProvider with ChangeNotifier {
       print('User Login : ${response.data}');
 
       UserModel retrievedUser = UserModel.fromJson(response.data);
-      // accessToken =retrievedUser.data!.accessToken;
-      // AppSharedPref.setToken(retrievedUser.data!.accessToken);
+      accessToken = retrievedUser.data!.accessToken;
+      AppSharedPref.setToken(accessToken);
       AppSharedPref.setUserMail(email);
       print("token => ${AppSharedPref.getToken()}");
       notifyListeners();

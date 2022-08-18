@@ -5,9 +5,8 @@ import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'home_screen.dart';
 import 'provider/my_provider.dart';
-import 'services/AppSharedPref.dart';
+import 'services/app_shared_pref.dart';
 import 'shop_layout.dart';
 
 class SpalshScreen extends StatefulWidget {
@@ -18,16 +17,17 @@ class SpalshScreen extends StatefulWidget {
 }
 
 class _SpalshScreenState extends State<SpalshScreen> {
-//Reem
   @override
   void initState() {
     super.initState();
+
     String? userToken = AppSharedPref.getToken();
+    print("userToken from splash: $userToken");
     var myprovider = Provider.of<MyProvider>(context, listen: false);
 
-    myprovider.getAllTools();
-    myprovider.getAllPlants();
-    myprovider.getAllSeeds();
+    // myprovider.getAllTools().then((value) => print("All Tools length ${myprovider.allTools.length}"));
+    // myprovider.getAllPlants().then((value) => print("All plants length ${myprovider.allPlants.length}"));
+    // myprovider.getAllSeeds().then((value) => print("All seeds length ${myprovider.allSeeds.length}"));
     // myprovider.getAllProducts();
     print("All product length ${myprovider.allproducts.length}");
 
@@ -35,13 +35,15 @@ class _SpalshScreenState extends State<SpalshScreen> {
     if (userToken == null) {
       nexWidget = SignupLogin();
     } else {
-      nexWidget = ShopLayout();
+      myprovider.getAllTools();
+    myprovider.getAllPlants();
+    myprovider.getAllSeeds(); 
+    nexWidget = ShopLayout();
     }
     Timer(
         const Duration(seconds: 3),
         () => Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => nexWidget)));
-    // MaterialPageRoute(builder: (context) => ShopLayout())));
   }
 
   @override
