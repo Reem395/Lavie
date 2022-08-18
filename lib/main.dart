@@ -4,7 +4,7 @@ import 'package:flutter_hackathon/services/app_shared_pref.dart';
 import 'package:provider/provider.dart';
 
 import 'signup_login_screens/signup_login_screen.dart';
-import 'splash_screen.dart';
+import 'widgets/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

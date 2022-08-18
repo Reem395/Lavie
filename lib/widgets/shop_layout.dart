@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/constants.dart';
-import 'package:flutter_hackathon/home_screen.dart';
+import 'package:flutter_hackathon/widgets/home_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/my_provider.dart';
 
 class ShopLayout extends StatefulWidget {
   ShopLayout({Key? key}) : super(key: key);
@@ -11,6 +14,15 @@ class ShopLayout extends StatefulWidget {
 }
 
 class _ShopLayoutState extends State<ShopLayout> {
+  //  @override
+  // void initState() {
+  //   super.initState();
+  //   var myprovider = Provider.of<MyProvider>(context, listen: false);
+
+  //   myprovider.getAllTools();
+  //       myprovider.getAllPlants();
+  //       myprovider.getAllSeeds();
+  //   }
   List<Widget> navPages = [
     HomeScreen(),
     Text("Page2"),

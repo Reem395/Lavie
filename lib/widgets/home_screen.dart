@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter_hackathon/provider/my_provider.dart';
 
-import 'models/plants_model/plants.dart';
-import 'models/seeds_model/seeds.dart';
-import 'models/tools_model/tool.dart';
+import '../models/plants_model/plants.dart';
+import '../models/seeds_model/seeds.dart';
+import '../models/tools_model/tool.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -22,15 +22,20 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   var screenSize;
+  
   @override
   void initState() {
     super.initState();
-    allproducts = Provider.of<MyProvider>(context, listen: false).allproducts;
-    allTools = Provider.of<MyProvider>(context, listen: false).allTools;
-    allSeeds = Provider.of<MyProvider>(context, listen: false).allSeeds;
-    allPlants = Provider.of<MyProvider>(context, listen: false).allPlants;
+    // allTools=List.from(Provider.of<MyProvider>(context, listen: false).allTools);
+    // allSeeds = List.from(Provider.of<MyProvider>(context, listen: false).allSeeds);
+    // allPlants = List.from(Provider.of<MyProvider>(context, listen: false).allPlants);
+    // allproducts = List.from(Provider.of<MyProvider>(context, listen: false).allproducts);
+   
     print(
-        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
+        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}"); print(
+        "All allPlants length from provider ${Provider.of<MyProvider>(context, listen: false).allPlants.length}"); print(
+        "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}"); print(
+        "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
   }
 
  
@@ -44,63 +49,73 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     screenSize = MediaQuery.of(context).size;
 
-    return DefaultTabController(
-      length: 4,
-      child: Column(
-        children: [
-           TabBar(
-              indicatorWeight: 3,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelColor: Colors.green,
-              unselectedLabelColor: Colors.grey,
-              tabs:const [
-                Tab(
-                  child: Text(
-                    "All",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 15),
+    return Consumer<MyProvider>(
+      builder: (context, myProvider, child) {
+        return DefaultTabController(
+        length: 4,
+        child: Column(
+          children: [
+             TabBar(
+                indicatorWeight: 3,
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Colors.green,
+                unselectedLabelColor: Colors.grey,
+                tabs:const [
+                  Tab(
+                    child: Text(
+                      "All",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
                   ),
-                ),
-                Tab(
-                    child: Text("Plants",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15))),
-                Tab(
-                  child: Text(
-                    "Seeds",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  Tab(
+                      child: Text("Plants",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15))),
+                  Tab(
+                    child: Text(
+                      "Seeds",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Text(
-                    "Tools",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  Tab(
+                    child: Text(
+                      "Tools",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
                   ),
+                ],
+                indicator: ContainerTabIndicator(
+                  radius: const BorderRadius.all(Radius.circular(12.0)),
+                  color: Color.fromARGB(255, 239, 238, 238),
+                  width: screenSize.width*0.18,
+                  height: screenSize.height*0.065 ,
+                      borderWidth: 2.0,
+                      borderColor: defaultColor,
                 ),
-              ],
-              indicator: ContainerTabIndicator(
-                radius: const BorderRadius.all(Radius.circular(12.0)),
-                color: Color.fromARGB(255, 239, 238, 238),
-                width: screenSize.width*0.18,
-                height: screenSize.height*0.065 ,
-                    borderWidth: 2.0,
-                    borderColor: defaultColor,
+                ),
+             SizedBox(
+                height: (screenSize.height - MediaQuery.of(context).padding.top) *
+                    0.04,
               ),
-              ),
-           SizedBox(
-              height: (screenSize.height - MediaQuery.of(context).padding.top) *
-                  0.04,
+            Expanded(
+              child: TabBarView(children: [
+                // selectedPage(allproducts),
+                // selectedPage(allPlants),
+                // selectedPage(allSeeds),
+                // selectedPage(allTools),
+                selectedPage(myProvider.allproducts),
+                selectedPage(myProvider.allPlants),
+                selectedPage(myProvider.allSeeds),
+                selectedPage(myProvider.allTools),
+              ]),
             ),
-          Expanded(
-            child: TabBarView(children: [
-              selectedPage(allproducts),
-              selectedPage(allPlants),
-              selectedPage(allSeeds),
-              selectedPage(allTools),
-            ]),
-          ),
-        ],
-      ),
+          ],
+        ),
+      );
+    
+      },
+      
     );
 
   }

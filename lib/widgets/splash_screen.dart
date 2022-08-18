@@ -5,8 +5,8 @@ import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'provider/my_provider.dart';
-import 'services/app_shared_pref.dart';
+import '../provider/my_provider.dart';
+import '../services/app_shared_pref.dart';
 import 'shop_layout.dart';
 
 class SpalshScreen extends StatefulWidget {
