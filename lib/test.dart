@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/components.dart';
-import 'package:flutter_hackathon/constants.dart';
-
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
