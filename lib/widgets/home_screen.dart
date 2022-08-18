@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter_hackathon/provider/my_provider.dart';
 
+import '../components.dart';
 import '../models/plants_model/plants.dart';
 import '../models/seeds_model/seeds.dart';
 import '../models/tools_model/tool.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   var screenSize;
-  
+
   @override
   void initState() {
     super.initState();
@@ -30,20 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
     // allSeeds = List.from(Provider.of<MyProvider>(context, listen: false).allSeeds);
     // allPlants = List.from(Provider.of<MyProvider>(context, listen: false).allPlants);
     // allproducts = List.from(Provider.of<MyProvider>(context, listen: false).allproducts);
-   
+
     print(
-        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}"); print(
-        "All allPlants length from provider ${Provider.of<MyProvider>(context, listen: false).allPlants.length}"); print(
-        "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}"); print(
+        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
+    print(
+        "All allPlants length from provider ${Provider.of<MyProvider>(context, listen: false).allPlants.length}");
+    print(
+        "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}");
+    print(
         "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
   }
-
- 
 
   int noProducts = 1;
   String productName = "";
   var productPrice = 70;
   String baseURL = "https://lavie.orangedigitalcenteregypt.com";
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,72 +55,133 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<MyProvider>(
       builder: (context, myProvider, child) {
         return DefaultTabController(
-        length: 4,
-        child: Column(
-          children: [
-             TabBar(
-                indicatorWeight: 3,
-                indicatorSize: TabBarIndicatorSize.label,
-                labelColor: Colors.green,
-                unselectedLabelColor: Colors.grey,
-                tabs:const [
-                  Tab(
-                    child: Text(
-                      "All",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15),
+            length: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    laVieLogo(),
+                    SizedBox(
+                      height:
+                          (screenSize.height - MediaQuery.of(context).padding.top) *
+                              0.04,
                     ),
-                  ),
-                  Tab(
-                      child: Text("Plants",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15))),
-                  Tab(
-                    child: Text(
-                      "Seeds",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: TextFormField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: lightGrey,
+                              contentPadding: const EdgeInsets.all(3),
+                              hintText: 'Search',
+                              prefixIcon: const Icon(Icons.search),
+                              border: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      const BorderRadius.all(Radius.circular(10)),
+                                  borderSide: BorderSide(color: lightGrey)),
+                    
+                              // iconColor: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width * 0.04,
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: defaultColor,
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Icon(
+                                Icons.shopping_cart_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "Tools",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    SizedBox(
+                      height:
+                          (screenSize.height - MediaQuery.of(context).padding.top) *
+                              0.04,
                     ),
-                  ),
-                ],
-                indicator: ContainerTabIndicator(
-                  radius: const BorderRadius.all(Radius.circular(12.0)),
-                  color: Color.fromARGB(255, 239, 238, 238),
-                  width: screenSize.width*0.18,
-                  height: screenSize.height*0.065 ,
-                      borderWidth: 2.0,
-                      borderColor: defaultColor,
-                ),
-                ),
-             SizedBox(
-                height: (screenSize.height - MediaQuery.of(context).padding.top) *
-                    0.04,
-              ),
-            Expanded(
-              child: TabBarView(children: [
-                // selectedPage(allproducts),
-                // selectedPage(allPlants),
-                // selectedPage(allSeeds),
-                // selectedPage(allTools),
-                selectedPage(myProvider.allproducts),
-                selectedPage(myProvider.allPlants),
-                selectedPage(myProvider.allSeeds),
-                selectedPage(myProvider.allTools),
-              ]),
+                    TabBar(
+                      indicatorWeight: 3,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      labelColor: Colors.green,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: const [
+                        Tab(
+                          child: Text(
+                            "All",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ),
+                        Tab(
+                            child: Text("Plants",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15))),
+                        Tab(
+                          child: Text(
+                            "Seeds",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            "Tools",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ),
+                      ],
+                      indicator: ContainerTabIndicator(
+                        radius: const BorderRadius.all(Radius.circular(12.0)),
+                        color: Color.fromARGB(255, 239, 238, 238),
+                        width: screenSize.width * 0.18,
+                        height: screenSize.height * 0.065,
+                        borderWidth: 2.0,
+                        borderColor: defaultColor,
+                      ),
+                    ),
+                    SizedBox(
+                      height: (screenSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.04,
+                    ),
+                    Expanded(
+                      child: TabBarView(children: [
+                        // selectedPage(allproducts),
+                        // selectedPage(allPlants),
+                        // selectedPage(allSeeds),
+                        // selectedPage(allTools),
+                        selectedPage(myProvider.allproducts),
+                        selectedPage(myProvider.allPlants),
+                        selectedPage(myProvider.allSeeds),
+                        selectedPage(myProvider.allTools),
+                      ]),
+                    ),
+                  ]),
             ),
-          ],
-        ),
-      );
-    
+          );
+        
       },
-      
     );
-
   }
 
   Widget selectedPage(List category) {
