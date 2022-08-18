@@ -40,6 +40,7 @@ dependencies:
   fluttertoast: ^8.0.9
   shared_preferences: ^2.0.15
   container_tab_indicator: ^0.3.0
+  curved_navigation_bar: ^1.0.3
   
 
 dev_dependencies:

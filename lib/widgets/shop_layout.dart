@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/constants.dart';
 import 'package:flutter_hackathon/widgets/home_screen.dart';
+import 'package:flutter_hackathon/widgets/notification_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import '../provider/my_provider.dart';
 
@@ -14,23 +16,15 @@ class ShopLayout extends StatefulWidget {
 }
 
 class _ShopLayoutState extends State<ShopLayout> {
-  //  @override
-  // void initState() {
-  //   super.initState();
-  //   var myprovider = Provider.of<MyProvider>(context, listen: false);
-
-  //   myprovider.getAllTools();
-  //       myprovider.getAllPlants();
-  //       myprovider.getAllSeeds();
-  //   }
   List<Widget> navPages = [
-    HomeScreen(),
-    Text("Page2"),
-    Text("Page3"),
+    Text("Page 1"),
     Text("Page4"),
+    HomeScreen(),
+    NotificationScreen(),
+    Text("Page5"),
   ];
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -40,109 +34,46 @@ class _ShopLayoutState extends State<ShopLayout> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController searchController = TextEditingController();
     var screenSize = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.eco_outlined,
-                ),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.qr_code_scanner_outlined,
-                ),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.notifications_none,
-                ),
-                label: ""),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.person_outline,
-                ),
-                label: ""),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: defaultColor,
-          unselectedItemColor: Colors.black,
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: _onItemTapped,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            laVieLogo(),
-            SizedBox(
-              height: (screenSize.height - MediaQuery.of(context).padding.top) *
-                  0.04,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: TextFormField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: lightGrey,
-                      contentPadding: const EdgeInsets.all(3),
-                      hintText: 'Search',
-                      prefixIcon: const Icon(Icons.search),
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: lightGrey)),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      bottomNavigationBar: CurvedNavigationBar(
+        animationCurve: Curves.decelerate,
+        onTap: _onItemTapped,
+        backgroundColor: Color.fromARGB(12, 236, 233, 233),
+        index: _selectedIndex,
+        buttonBackgroundColor: const Color.fromARGB(255, 35, 212, 41),
+        items: [
+           Icon(
+                Icons.eco_outlined,size: 25,color: _selectedIndex==0?Colors.white:Colors.black,
+              ),
+               Icon(
+                Icons.qr_code_scanner_outlined,size: 25,color: _selectedIndex==1?Colors.white:Colors.black,
+              ),
+              Icon(
+                Icons.home_outlined,size: 25,color: _selectedIndex==2?Colors.white:Colors.black,
+              ),
+              
+               Icon(
+                Icons.notifications_none,size: 25,color: _selectedIndex==3?Colors.white:Colors.black,
+              ),
+                Icon(
+                Icons.person_outline,size: 25,color: _selectedIndex==4?Colors.white:Colors.black,
+              ),
 
-                      // iconColor: Colors.grey,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: screenSize.width * 0.04,
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: defaultColor,
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: (screenSize.height - MediaQuery.of(context).padding.top) *
-                  0.04,
-            ),
-            Expanded(child: navPages[_selectedIndex]),
-          ]),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: defaultColor,
-          child: const Icon(Icons.home_outlined),
-          onPressed: () {},
-        ),
+      ]),
+      body: SafeArea(
+        child: navPages[_selectedIndex],
+        
+        
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: defaultColor,
+      //   child: const Icon(Icons.home_outlined),
+      //   onPressed: () {},
+      // ),
     );
   }
 }

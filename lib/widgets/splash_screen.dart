@@ -24,11 +24,6 @@ class _SpalshScreenState extends State<SpalshScreen> {
     String? userToken = AppSharedPref.getToken();
     print("userToken from splash: $userToken");
     var myprovider = Provider.of<MyProvider>(context, listen: false);
-
-    // myprovider.getAllTools().then((value) => print("All Tools length ${myprovider.allTools.length}"));
-    // myprovider.getAllPlants().then((value) => print("All plants length ${myprovider.allPlants.length}"));
-    // myprovider.getAllSeeds().then((value) => print("All seeds length ${myprovider.allSeeds.length}"));
-    // myprovider.getAllProducts();
     print("All product length ${myprovider.allproducts.length}");
 
     Widget nexWidget;

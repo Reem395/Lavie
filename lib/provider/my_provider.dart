@@ -19,6 +19,7 @@ class MyProvider with ChangeNotifier {
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   List<dynamic> allproducts = [];
+  Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
 
@@ -33,8 +34,11 @@ class MyProvider with ChangeNotifier {
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
       allproducts.addAll(allSeeds);
+      // for (dynamic item in allproducts) {
+      //   cartProdCount.addAll({item.})
+      // }
       notifyListeners();
-    } catch (e) {
+    }on DioError catch (e) {
       print("Error from get All seeds: $e");
     }
   }
@@ -51,7 +55,7 @@ class MyProvider with ChangeNotifier {
       allPlants = [...?res.data];
       allproducts.addAll(allPlants);
       notifyListeners();
-    } catch (e) {
+    }on DioError catch (e) {
       print("Error from get All plants: $e");
     }
   }
@@ -68,7 +72,7 @@ class MyProvider with ChangeNotifier {
       allTools = [...?res.data];
       allproducts.addAll(allTools);
       notifyListeners();
-    } catch (e) {
+    }on DioError catch (e) {
       print("Error from get All Tools: $e");
     }
   }
@@ -105,7 +109,7 @@ class MyProvider with ChangeNotifier {
       var retrievedUser = User.fromJson(response.data);
       print("retrievedUser fromJson => $retrievedUser");
       notifyListeners();
-    } catch (e) {
+    }on DioError catch (e) {
       print('Error creating user: $e');
     }
   }
@@ -130,13 +134,13 @@ class MyProvider with ChangeNotifier {
       notifyListeners();
 
         print("User token is not null: $accessToken");
-        // Fluttertoast.showToast(
-        //     msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
+        Fluttertoast.showToast(
+            msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShopLayout()));
       } 
 
-    } catch (e) {
+    }on DioError catch (e) {
       print('Error Login user: $e');
       Fluttertoast.showToast(
             msg: "Wrong email or password", toastLength: Toast.LENGTH_SHORT);
