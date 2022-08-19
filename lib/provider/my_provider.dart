@@ -15,6 +15,7 @@ import '../widgets/shop_layout.dart';
 // import 'package:flutter_hackathon/models/user/user_model.dart';
 
 class MyProvider with ChangeNotifier {
+  int questionNo=1;
   List<Seeds> allSeeds = [];
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
@@ -22,6 +23,19 @@ class MyProvider with ChangeNotifier {
   Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
+
+  void nextQuestion(){
+    if (questionNo<=10){
+      questionNo++;
+      notifyListeners();
+    }
+  }
+    void previousQuestion(){
+    if (questionNo>1){
+      questionNo--;
+      notifyListeners();
+    }
+  }
 
   Future getAllSeeds() async {
     try {
@@ -33,12 +47,12 @@ class MyProvider with ChangeNotifier {
           })));
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
-      allproducts.addAll(allSeeds);
+      // allproducts.addAll(allSeeds);
       // for (dynamic item in allproducts) {
       //   cartProdCount.addAll({item.})
       // }
       notifyListeners();
-    }on DioError catch (e) {
+    } on DioError catch (e) {
       print("Error from get All seeds: $e");
     }
   }
@@ -53,9 +67,9 @@ class MyProvider with ChangeNotifier {
           })));
       PlantsModel res = PlantsModel.fromJson(response.data);
       allPlants = [...?res.data];
-      allproducts.addAll(allPlants);
+      // allproducts.addAll(allPlants);
       notifyListeners();
-    }on DioError catch (e) {
+    } on DioError catch (e) {
       print("Error from get All plants: $e");
     }
   }
@@ -70,34 +84,31 @@ class MyProvider with ChangeNotifier {
           })));
       ToolsModel res = ToolsModel.fromJson(response.data);
       allTools = [...?res.data];
-      allproducts.addAll(allTools);
+      // allproducts.addAll(allTools);
       notifyListeners();
-    }on DioError catch (e) {
+    } on DioError catch (e) {
       print("Error from get All Tools: $e");
     }
   }
 
-//   Future getAllProducts()async{
-//     // allproducts.clear();
-//     // allproducts.addAll(allPlants);
-//     // allproducts.addAll(allSeeds);
-//     // allproducts.addAll(allTools);
-// try {
-//       allTools.clear();
-//       var response = await Dio().get('${baseUrl}products',
-//           options: Options(
-//               headers: ({
-//             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
-//           })));
-//       ToolsModel res = ToolsModel.fromJson(response.data);
-//       allTools = [...?res.data];
-//       allproducts.addAll(allTools);
-//       notifyListeners();
-//     } catch (e) {
-//       print("Error from get All Tools: $e");
-//     }
-//     notifyListeners();
-//   }
+  Future getAllProducts() async {
+    try {
+      allproducts.clear();
+      var response = await Dio().get('${baseUrl}products',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      ToolsModel res = ToolsModel.fromJson(response.data);
+      allproducts = [...?res.data];
+      // allproducts.addAll(allTools);
+      notifyListeners();
+    } catch (e) {
+      print("Error from get All products: $e");
+    }
+    notifyListeners();
+  }
+
   Future signUp(User user) async {
     try {
       Response response = await Dio().post(
@@ -109,12 +120,12 @@ class MyProvider with ChangeNotifier {
       var retrievedUser = User.fromJson(response.data);
       print("retrievedUser fromJson => $retrievedUser");
       notifyListeners();
-    }on DioError catch (e) {
+    } on DioError catch (e) {
       print('Error creating user: $e');
     }
   }
 
-   Future signIn({required email, required password, required context}) async {
+  Future signIn({required email, required password, required context}) async {
     try {
       Response response = await Dio().post(
           "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signin",
@@ -131,19 +142,19 @@ class MyProvider with ChangeNotifier {
         getAllTools();
         getAllPlants();
         getAllSeeds();
-      notifyListeners();
+        getAllProducts();
+        notifyListeners();
 
         print("User token is not null: $accessToken");
         Fluttertoast.showToast(
             msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShopLayout()));
-      } 
-
-    }on DioError catch (e) {
+      }
+    } on DioError catch (e) {
       print('Error Login user: $e');
       Fluttertoast.showToast(
-            msg: "Wrong email or password", toastLength: Toast.LENGTH_SHORT);
+          msg: "Wrong email or password", toastLength: Toast.LENGTH_SHORT);
     }
   }
 }

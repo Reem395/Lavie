@@ -33,6 +33,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
       myprovider.getAllTools();
     myprovider.getAllPlants();
     myprovider.getAllSeeds(); 
+    myprovider.getAllProducts(); 
     nexWidget = ShopLayout();
     }
     Timer(

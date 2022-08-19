@@ -9,6 +9,7 @@ import '../components.dart';
 import '../models/plants_model/plants.dart';
 import '../models/seeds_model/seeds.dart';
 import '../models/tools_model/tool.dart';
+import 'quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Seeds> allSeeds = [];
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
-  var screenSize;
+  // var screenSize;
 
   @override
   void initState() {
@@ -47,14 +48,33 @@ class _HomeScreenState extends State<HomeScreen> {
   var productPrice = 70;
   String baseURL = "https://lavie.orangedigitalcenteregypt.com";
   TextEditingController searchController = TextEditingController();
+  bool isExamAvailable = true;
 
   @override
   Widget build(BuildContext context) {
-    screenSize = MediaQuery.of(context).size;
+    // screenSize = MediaQuery.of(context).size;
 
-    return Consumer<MyProvider>(
-      builder: (context, myProvider, child) {
-        return DefaultTabController(
+    return Scaffold(
+      appBar: isExamAvailable
+          ? AppBar(
+              backgroundColor: defaultColor,
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => const QuizScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.question_mark))
+              ],
+            )
+          : null,
+      body: Consumer<MyProvider>(
+        builder: (context, myProvider, child) {
+          return DefaultTabController(
             length: 4,
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -63,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     laVieLogo(),
                     SizedBox(
-                      height:
-                          (screenSize.height - MediaQuery.of(context).padding.top) *
-                              0.04,
+                      height: (screenHeigth(context:context) -
+                              MediaQuery.of(context).padding.top) *
+                          0.04,
                     ),
                     Row(
                       children: [
@@ -86,13 +106,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius:
                                       const BorderRadius.all(Radius.circular(10)),
                                   borderSide: BorderSide(color: lightGrey)),
-                    
+    
                               // iconColor: Colors.grey,
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: screenSize.width * 0.04,
+                          width: screenWidth(context: context) * 0.04,
                         ),
                         InkWell(
                           onTap: () {},
@@ -113,9 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     SizedBox(
-                      height:
-                          (screenSize.height - MediaQuery.of(context).padding.top) *
-                              0.04,
+                      height: (screenHeigth(context: context) -
+                              MediaQuery.of(context).padding.top) *
+                          0.04,
                     ),
                     TabBar(
                       indicatorWeight: 3,
@@ -133,8 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Tab(
                             child: Text("Plants",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15))),
+                                    fontWeight: FontWeight.bold, fontSize: 15))),
                         Tab(
                           child: Text(
                             "Seeds",
@@ -153,14 +172,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       indicator: ContainerTabIndicator(
                         radius: const BorderRadius.all(Radius.circular(12.0)),
                         color: Color.fromARGB(255, 239, 238, 238),
-                        width: screenSize.width * 0.18,
-                        height: screenSize.height * 0.065,
+                        width: screenWidth(context: context) * 0.18,
+                        height: screenHeigth(context: context)* 0.065,
                         borderWidth: 2.0,
                         borderColor: defaultColor,
                       ),
                     ),
+                    
                     SizedBox(
-                      height: (screenSize.height -
+                      height: (screenHeigth(context: context) -
                               MediaQuery.of(context).padding.top) *
                           0.04,
                     ),
@@ -179,8 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ]),
             ),
           );
-        
-      },
+        },
+      ),
     );
   }
 
@@ -190,7 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSpacing: 80,
       crossAxisSpacing: 20,
       childAspectRatio: 0.9,
-      padding: const EdgeInsets.only(top: 80),
+      // padding: const EdgeInsets.only(top: 80),
+      padding: EdgeInsets.only(top: screenHeigth(context: context) * 0.09),
       children: List.generate(category.length, (index) {
         return Center(
           child: Stack(
@@ -255,11 +276,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: screenSize.width * 0.02,
+                        width: screenWidth(context: context) * 0.02,
                       ),
                       Text("$noProducts"),
                       SizedBox(
-                        width: screenSize.width * 0.02,
+                        width: screenWidth(context: context)* 0.02,
                       ),
                       InkWell(
                         onTap: () {},
@@ -293,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      height: screenSize.height * 0.005,
+                      height: screenHeigth(context: context) * 0.005,
                     ),
                     Text(
                       "$productPrice EGP",
