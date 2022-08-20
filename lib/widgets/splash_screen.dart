@@ -25,7 +25,6 @@ class _SpalshScreenState extends State<SpalshScreen> {
     print("userToken from splash: $userToken");
     var myprovider = Provider.of<MyProvider>(context, listen: false);
     print("All product length ${myprovider.allproducts.length}");
-
     Widget nexWidget;
     if (userToken == null) {
       nexWidget = SignupLogin();

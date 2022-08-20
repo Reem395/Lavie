@@ -15,7 +15,11 @@ import '../widgets/shop_layout.dart';
 // import 'package:flutter_hackathon/models/user/user_model.dart';
 
 class MyProvider with ChangeNotifier {
-  int questionNo=1;
+  int questionNo = 1;
+  DateTime? currentExamDate;
+  DateTime? nextExamDate;
+  bool isExamAvailable= false;
+
   List<Seeds> allSeeds = [];
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
@@ -24,14 +28,39 @@ class MyProvider with ChangeNotifier {
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
 
-  void nextQuestion(){
-    if (questionNo<=10){
+  void currentExamAccessDate() {
+    DateTime now = DateTime.now();
+    currentExamDate =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+    nextExamDate =
+        // DateTime(now.year, now.month, now.day, (now.hour)+10, now.minute);
+        DateTime(now.year, now.month, now.day, (now.hour)+1, now.minute);
+        // DateTime(now.year, now.month, now.day, now.hour, (now.minute)+2);
+    AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
+    isExamAvailable=false;
+    notifyListeners();
+  }
+
+  void examAvailable() {
+    DateTime now = DateTime.now();
+    DateTime currentDate =  DateTime(now.year, now.month, now.day, now.hour, now.minute);
+      print("Next exam date ${AppSharedPref.getNextExamDate()}");
+      DateTime nextDate = DateTime.parse(AppSharedPref.getNextExamDate()!) ;
+    // if (AppSharedPref.getNextExamDate() == current.toString()) {
+    if (currentDate.compareTo(nextDate)>=0) {
+      isExamAvailable=true;
+    } 
+  }
+
+  void nextQuestion() {
+    if (questionNo <= 10) {
       questionNo++;
       notifyListeners();
     }
   }
-    void previousQuestion(){
-    if (questionNo>1){
+
+  void previousQuestion() {
+    if (questionNo > 1) {
       questionNo--;
       notifyListeners();
     }

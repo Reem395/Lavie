@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import '../components.dart';
 import '../provider/my_provider.dart';
 import '../constants.dart';
 import '../services/app_shared_pref.dart';
@@ -43,11 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration:textFieldBorderStyle() ,
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -65,11 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
