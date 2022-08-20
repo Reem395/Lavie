@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../components.dart';
 import '../constants.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -41,11 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: firstNameController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -62,11 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: lastNameController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -83,11 +76,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -104,11 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -125,11 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: confirmPasswordController,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(3),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-              ),
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *

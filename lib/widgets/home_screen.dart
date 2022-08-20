@@ -41,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
         "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}");
     print(
         "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
+    // Provider.of<MyProvider>(context,listen: false).examAvailable();
+  
   }
 
   int noProducts = 1;
@@ -48,19 +50,26 @@ class _HomeScreenState extends State<HomeScreen> {
   var productPrice = 70;
   String baseURL = "https://lavie.orangedigitalcenteregypt.com";
   TextEditingController searchController = TextEditingController();
-  bool isExamAvailable = true;
+  // bool isExamAvailable = true;
 
   @override
   Widget build(BuildContext context) {
-    // screenSize = MediaQuery.of(context).size;
+    Provider.of<MyProvider>(context).examAvailable();
 
     return Scaffold(
-      appBar: isExamAvailable
-          ? AppBar(
-              backgroundColor: defaultColor,
+      appBar: AppBar(
+            backgroundColor: const Color.fromARGB(6, 255, 255, 255),
+        elevation: 0,
+              
               actions: [
+                Provider.of<MyProvider>(context).isExamAvailable?
                 IconButton(
                     onPressed: () {
+                     DateTime now =  DateTime.now();
+                    DateTime date =  DateTime(now.year, now.month, now.day,now.hour,(now.minute)+8);
+                    print("now: ${now.minute}");
+                    print("date: ${date}");
+                    print("date min: ${date.minute}");
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
@@ -68,10 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.question_mark))
+                    icon: CircleAvatar(
+                      backgroundColor: defaultColor,
+                      child: const Icon(Icons.question_mark,color: Colors.white,)))
+              :const SizedBox(),
               ],
-            )
-          : null,
+            ),
       body: Consumer<MyProvider>(
         builder: (context, myProvider, child) {
           return DefaultTabController(
@@ -91,25 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           flex: 4,
-                          child: TextFormField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: lightGrey,
-                              contentPadding: const EdgeInsets.all(3),
-                              hintText: 'Search',
-                              prefixIcon: const Icon(Icons.search),
-                              border: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      const BorderRadius.all(Radius.circular(10)),
-                                  borderSide: BorderSide(color: lightGrey)),
-    
-                              // iconColor: Colors.grey,
-                            ),
-                          ),
+                          child: searchBar(searchController: searchController),
                         ),
                         SizedBox(
                           width: screenWidth(context: context) * 0.04,
@@ -182,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       height: (screenHeigth(context: context) -
                               MediaQuery.of(context).padding.top) *
-                          0.04,
+                          0.02,
                     ),
                     Expanded(
                       child: TabBarView(children: [

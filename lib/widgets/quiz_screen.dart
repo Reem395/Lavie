@@ -18,8 +18,7 @@ String choice1 = "The user experience is how the developer feels about a user";
 String choice2 =
     "The user experience is how the user feels about interacting with or experiencing a product";
 String choice3 = "The user experience is the UX designer has about a product";
-enum BestTutorSite { javatpoint, w3schools, tutorialandexample }
-BestTutorSite _site = BestTutorSite.javatpoint;
+
 
 class _QuizScreenState extends State<QuizScreen> {
   @override
@@ -229,6 +228,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               (Route<dynamic> route) => false,
                             );
                             myProvider.questionNo=1;
+                            myProvider.currentExamAccessDate();
                           }
                         },
                         child: Text(
