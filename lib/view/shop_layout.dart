@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/constants.dart';
+import 'package:flutter_hackathon/models/blogs_model/blogs.dart';
 import 'package:flutter_hackathon/view/home_screen.dart';
 import 'package:flutter_hackathon/view/notification_screen.dart';
 import 'package:flutter_hackathon/view/profile.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_hackathon/view/quiz_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import 'blog_screens/blog_screen.dart';
 import 'forums_screens/forums_screen.dart';
 
 class ShopLayout extends StatefulWidget {
@@ -20,7 +22,7 @@ class ShopLayout extends StatefulWidget {
 class _ShopLayoutState extends State<ShopLayout> {
   List<Widget> navPages = [
     Forums(),
-    Text("Page4"),
+    BlogScreen(),
     HomeScreen(),
     NotificationScreen(),
     Profile(),

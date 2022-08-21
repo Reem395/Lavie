@@ -23,8 +23,10 @@ class Forums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Forum>allPosts=Provider.of<MyProvider>(context,listen: false).allPosts;
-    List<Forum>myPosts=Provider.of<MyProvider>(context,listen: false).myPosts;
+    List<Forum> allPosts =
+        Provider.of<MyProvider>(context, listen: false).allPosts;
+    List<Forum> myPosts =
+        Provider.of<MyProvider>(context, listen: false).myPosts;
     print("allposts len: ${allPosts.length}");
     print("myPosts len: ${myPosts.length}");
     return Scaffold(
@@ -122,13 +124,13 @@ class Forums extends StatelessWidget {
     );
   }
 
-
-  Widget forums(
-      {required context,
-      required List<Forum> posts,
-      required String forumUserImage,
-      forumUserName,
-      forumDate,}) {
+  Widget forums({
+    required context,
+    required List<Forum> posts,
+    required String forumUserImage,
+    forumUserName,
+    forumDate,
+  }) {
     return GridView.count(
         crossAxisCount: 1,
         mainAxisSpacing: 10,
@@ -193,7 +195,7 @@ class Forums extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          posts[index].description??forumBody,
+                          posts[index].description ?? forumBody,
                           style: const TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.w600,
@@ -204,11 +206,17 @@ class Forums extends StatelessWidget {
                         height: screenHeigth(context: context) * 0.02,
                       ),
                       Expanded(
-                          child: (posts[index].imageUrl==null||posts[index].imageUrl=="")?Image.asset(
+                        child: (posts[index].imageUrl == null ||
+                                posts[index].imageUrl == "")
+                            ? Image.asset(
                                 "assets/images/plantForum.png",
                                 fit: BoxFit.fitHeight,
-                              ): Image.network("$baseURL${posts[index].imageUrl}",width:double.infinity,fit: BoxFit.fitWidth,),
-                      
+                              )
+                            : Image.network(
+                                "$baseURL${posts[index].imageUrl}",
+                                width: double.infinity,
+                                fit: BoxFit.fitWidth,
+                              ),
                       ),
                     ],
                   ),

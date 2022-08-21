@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_hackathon/models/blogs_model/blogs.dart';
+import 'package:flutter_hackathon/models/blogs_model/blogs_model.dart';
 import 'package:flutter_hackathon/models/plants_model/plants.dart';
 import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
 import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
@@ -15,49 +17,47 @@ import '../../models/user_model/user_model.dart';
 import '../../view/shop_layout.dart';
 import '../services/app_shared_pref.dart';
 
-
-
 class MyProvider with ChangeNotifier {
   int questionNo = 1;
   DateTime? currentExamDate;
   DateTime? nextExamDate;
-  bool isExamAvailable= false;
+  bool isExamAvailable = false;
 
   List<Seeds> allSeeds = [];
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   List<dynamic> allproducts = [];
-  List<Forum> allPosts =[];
-  List<Forum> myPosts =[];
+  List<Forum> allPosts = [];
+  List<Forum> myPosts = [];
+  List<Blogs> AllBlogs = [];
   Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
-
 
   void currentExamAccessDate() {
     DateTime now = DateTime.now();
     currentExamDate =
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     nextExamDate =
-        DateTime(now.year, now.month, (now.day)+1, now.hour, now.minute);
+        DateTime(now.year, now.month, (now.day) + 1, now.hour, now.minute);
     AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
-    isExamAvailable=false;
+    isExamAvailable = false;
     notifyListeners();
   }
 
-  void examAvailable(){
+  void examAvailable() {
     DateTime now = DateTime.now();
-    DateTime currentDate =  DateTime(now.year, now.month, now.day, now.hour, now.minute);
-      print("Next exam date ${AppSharedPref.getNextExamDate()}");
-      if(AppSharedPref.getNextExamDate()!=null){
-      DateTime nextDate = DateTime.parse(AppSharedPref.getNextExamDate()!) ;
-      if (currentDate.compareTo(nextDate)>=0) {
-        isExamAvailable=true;
-      } 
-      }else{
-        isExamAvailable=true;
+    DateTime currentDate =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+    print("Next exam date ${AppSharedPref.getNextExamDate()}");
+    if (AppSharedPref.getNextExamDate() != null) {
+      DateTime nextDate = DateTime.parse(AppSharedPref.getNextExamDate()!);
+      if (currentDate.compareTo(nextDate) >= 0) {
+        isExamAvailable = true;
       }
-      
+    } else {
+      isExamAvailable = true;
+    }
   }
 
   void nextQuestion() {
@@ -142,8 +142,8 @@ class MyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getAllForums()async{
-     try {
+  Future getAllForums() async {
+    try {
       allPosts.clear();
       var response = await Dio().get('${baseUrl}forums',
           options: Options(
@@ -156,10 +156,10 @@ class MyProvider with ChangeNotifier {
     } on DioError catch (e) {
       print("Error from get All forums: $e");
     }
-  } 
-  
-  Future getMyForums()async{
-     try {
+  }
+
+  Future getMyForums() async {
+    try {
       myPosts.clear();
       var response = await Dio().get('${baseUrl}forums/me',
           options: Options(
@@ -168,6 +168,23 @@ class MyProvider with ChangeNotifier {
           })));
       ForumModel res = ForumModel.fromJson(response.data);
       myPosts = [...?res.data];
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from get my forums: $e");
+    }
+  }
+
+Future getBlogs() async {
+    try {
+      AllBlogs.clear();
+      var response = await Dio().get('${baseUrl}products/blogs',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      BlogsModel res = BlogsModel.fromJson(response.data);
+      print(res.data);
+      // AllBlogs = [...?res.data];
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get my forums: $e");
