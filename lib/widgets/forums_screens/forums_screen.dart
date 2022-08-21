@@ -1,8 +1,11 @@
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
+import 'package:flutter_hackathon/models/forum_model/forum.dart';
+import 'package:flutter_hackathon/provider/my_provider.dart';
 import 'package:flutter_hackathon/widgets/forums_screens/add_forum.dart';
 import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 
@@ -14,10 +17,16 @@ class Forums extends StatelessWidget {
   String forumTitle = "How To treat plants";
   String forumBody =
       "It is a long established fact that a reader will be distracted";
-  int noOfReplies=2;
-  String forumImage="assets/images/A1.png";
+  int noOfReplies = 2;
+  String forumUserImage = "assets/images/A1.png";
+  String baseURL = "https://lavie.orangedigitalcenteregypt.com";
+
   @override
   Widget build(BuildContext context) {
+    List<Forum>allPosts=Provider.of<MyProvider>(context,listen: false).allPosts;
+    List<Forum>myPosts=Provider.of<MyProvider>(context,listen: false).myPosts;
+    print("allposts len: ${allPosts.length}");
+    print("myPosts len: ${myPosts.length}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -39,7 +48,7 @@ class Forums extends StatelessWidget {
                 children: [
                   searchBar(searchController: searchController),
                   Padding(
-                    padding: const EdgeInsets.only(top: 10,left: 10 ),
+                    padding: const EdgeInsets.only(top: 10, left: 10),
                     child: TabBar(
                         padding: const EdgeInsets.only(top: 8),
                         indicatorWeight: 3,
@@ -48,7 +57,8 @@ class Forums extends StatelessWidget {
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.grey,
                         indicator: ContainerTabIndicator(
-                            radius: const BorderRadius.all(Radius.circular(5.0)),
+                            radius:
+                                const BorderRadius.all(Radius.circular(5.0)),
                             color: defaultColor,
                             width: screenWidth(context: context) * 0.3,
                             height: screenHeigth(context: context) * 0.04,
@@ -79,43 +89,50 @@ class Forums extends StatelessWidget {
                   ),
                   Expanded(
                     child: TabBarView(children: [
-                      forums(context: context,
-                       forumUserName: "Khalid Mohamed",
-                       forumDate: forumDate,
-                       forumTitle: forumTitle,
-                       forumBody: forumBody,
-                       forumImage:forumImage),
-                      forums(context: context,
-                       forumUserName: forumUserName,
-                        forumDate: forumDate,
-                         forumTitle: forumTitle,
-                          forumBody: forumBody,forumImage:"assets/images/A2.png"),
+                      forums(
+                          context: context,
+                          forumUserName: "Khalid Mohamed",
+                          posts: allPosts,
+                          forumDate: forumDate,
+                          forumUserImage: forumUserImage),
+                      forums(
+                          context: context,
+                          forumUserName: forumUserName,
+                          posts: myPosts,
+                          forumDate: forumDate,
+                          forumUserImage: "assets/images/A5.png"),
                     ]),
                   ),
                 ],
               )),
         ),
       ),
-      floatingActionButton: FloatingActionButton.small(onPressed: (){
-        Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) => const AddForum(),
-    ),);
-      },
-      child: const Icon(Icons.add),
-      backgroundColor: defaultColor,),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => const AddForum(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: defaultColor,
+      ),
     );
   }
-  Widget forums({
-    required context,
-    required forumUserName,
-    required forumDate,
-    required forumTitle,
-    required forumBody,
-    required forumImage}){
+
+
+  Widget forums(
+      {required context,
+      required List<Forum> posts,
+      required String forumUserImage,
+      forumUserName,
+      forumDate,}) {
     return GridView.count(
         crossAxisCount: 1,
         mainAxisSpacing: 10,
-        children: List.generate(5, (index) {
+        children: List.generate(posts.length, (index) {
           return Column(
             children: [
               Expanded(
@@ -133,7 +150,7 @@ class Forums extends StatelessWidget {
                             CircleAvatar(
                               radius: 30,
                               child: Image.asset(
-                                forumImage,
+                                forumUserImage,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -163,7 +180,7 @@ class Forums extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          forumTitle,
+                          posts[index].title!,
                           style: TextStyle(
                               color: defaultColor,
                               fontWeight: FontWeight.bold,
@@ -176,7 +193,7 @@ class Forums extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          forumBody,
+                          posts[index].description??forumBody,
                           style: const TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.w600,
@@ -187,10 +204,12 @@ class Forums extends StatelessWidget {
                         height: screenHeigth(context: context) * 0.02,
                       ),
                       Expanded(
-                          child: Image.asset(
-                        "assets/images/plantForum.png",
-                        fit: BoxFit.fitHeight,
-                      )),
+                          child: (posts[index].imageUrl==null||posts[index].imageUrl=="")?Image.asset(
+                                "assets/images/plantForum.png",
+                                fit: BoxFit.fitHeight,
+                              ): Image.network("$baseURL${posts[index].imageUrl}",width:double.infinity,fit: BoxFit.fitWidth,),
+                      
+                      ),
                     ],
                   ),
                 ),
@@ -207,19 +226,26 @@ class Forums extends StatelessWidget {
                       }),
                       likeCount: 0,
                       countBuilder: (count, isLiked, text) {
-                        var color =Colors.grey;
-                        String text = count==0?"Likes":"Like";
-                        return Text("$count $text",
-                         style: TextStyle(color: color,fontWeight: FontWeight.bold),
+                        var color = Colors.grey;
+                        String text = count == 0 ? "Likes" : "Like";
+                        return Text(
+                          "$count $text",
+                          style: TextStyle(
+                              color: color, fontWeight: FontWeight.bold),
                         );
                       }),
-                      SizedBox(width: screenWidth(context: context)*0.05,),
-                      Text("$noOfReplies Replies", style: const TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),)
+                  SizedBox(
+                    width: screenWidth(context: context) * 0.05,
+                  ),
+                  Text(
+                    "$noOfReplies Replies",
+                    style: const TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
             ],
           );
         }));
-
   }
 }

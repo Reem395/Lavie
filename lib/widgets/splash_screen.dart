@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
-import 'package:flutter_hackathon/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/my_provider.dart';
 import '../services/app_shared_pref.dart';
 import 'shop_layout.dart';
+import 'signup_login_screens/signup_login_screen.dart';
 
 class SpalshScreen extends StatefulWidget {
   const SpalshScreen({Key? key}) : super(key: key);
@@ -30,10 +30,12 @@ class _SpalshScreenState extends State<SpalshScreen> {
       nexWidget = SignupLogin();
     } else {
       myprovider.getAllTools();
-    myprovider.getAllPlants();
-    myprovider.getAllSeeds(); 
-    myprovider.getAllProducts(); 
-    nexWidget = ShopLayout();
+      myprovider.getAllPlants();
+      myprovider.getAllSeeds();
+      myprovider.getAllProducts();
+      myprovider.getAllForums();
+      myprovider.getMyForums();
+      nexWidget = ShopLayout();
     }
     Timer(
         const Duration(seconds: 3),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/constants.dart';
-import 'package:flutter_hackathon/widgets/forums_screens/forums.dart';
+import 'package:flutter_hackathon/widgets/forums_screens/forums_screen.dart';
 import 'package:flutter_hackathon/widgets/home_screen.dart';
 import 'package:flutter_hackathon/widgets/notification_screen.dart';
+import 'package:flutter_hackathon/widgets/profile.dart';
 import 'package:flutter_hackathon/widgets/quiz_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -23,7 +24,7 @@ class _ShopLayoutState extends State<ShopLayout> {
     Text("Page4"),
     HomeScreen(),
     NotificationScreen(),
-    Text("Page5"),
+    Profile(),
   ];
 
   int _selectedIndex = 2;
@@ -34,12 +35,11 @@ class _ShopLayoutState extends State<ShopLayout> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      
+
       bottomNavigationBar: CurvedNavigationBar(
           animationCurve: Curves.decelerate,
           onTap: _onItemTapped,

@@ -19,7 +19,6 @@ String choice2 =
     "The user experience is how the user feels about interacting with or experiencing a product";
 String choice3 = "The user experience is the UX designer has about a product";
 
-
 class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
@@ -213,8 +212,8 @@ class _QuizScreenState extends State<QuizScreen> {
                     SizedBox(
                       width: screenWidth(context: context) * 0.05,
                     ),
-                    if(myProvider.questionNo==1)
-                    SizedBox(width:screenWidth(context: context) * 0.4488),
+                    if (myProvider.questionNo == 1)
+                      SizedBox(width: screenWidth(context: context) * 0.4488),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -223,11 +222,10 @@ class _QuizScreenState extends State<QuizScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      ShopLayout()), 
+                                  builder: (context) => ShopLayout()),
                               (Route<dynamic> route) => false,
                             );
-                            myProvider.questionNo=1;
+                            myProvider.questionNo = 1;
                             myProvider.currentExamAccessDate();
                           }
                         },

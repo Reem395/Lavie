@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // allSeeds = List.from(Provider.of<MyProvider>(context, listen: false).allSeeds);
     // allPlants = List.from(Provider.of<MyProvider>(context, listen: false).allPlants);
     // allproducts = List.from(Provider.of<MyProvider>(context, listen: false).allproducts);
-
     print(
         "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
     print(
@@ -42,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
     print(
         "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
     // Provider.of<MyProvider>(context,listen: false).examAvailable();
-  
   }
 
   int noProducts = 1;
@@ -58,31 +56,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-            backgroundColor: const Color.fromARGB(6, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(6, 255, 255, 255),
         elevation: 0,
-              
-              actions: [
-                Provider.of<MyProvider>(context).isExamAvailable?
-                IconButton(
-                    onPressed: () {
-                     DateTime now =  DateTime.now();
-                    DateTime date =  DateTime(now.year, now.month, now.day,now.hour,(now.minute)+8);
+        actions: [
+          Provider.of<MyProvider>(context).isExamAvailable
+              ? IconButton(
+                  onPressed: () {
+                    DateTime now = DateTime.now();
+                    DateTime date = DateTime(now.year, now.month, now.day,
+                        now.hour, (now.minute) + 8);
                     print("now: ${now.minute}");
                     print("date: ${date}");
                     print("date min: ${date.minute}");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) => const QuizScreen(),
-                        ),
-                      );
-                    },
-                    icon: CircleAvatar(
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => const QuizScreen(),
+                      ),
+                    );
+                  },
+                  icon: CircleAvatar(
                       backgroundColor: defaultColor,
-                      child: const Icon(Icons.question_mark,color: Colors.white,)))
-              :const SizedBox(),
-              ],
-            ),
+                      child: const Icon(
+                        Icons.question_mark,
+                        color: Colors.white,
+                      )))
+              : const SizedBox(),
+        ],
+      ),
       body: Consumer<MyProvider>(
         builder: (context, myProvider, child) {
           return DefaultTabController(
@@ -94,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     laVieLogo(),
                     SizedBox(
-                      height: (screenHeigth(context:context) -
+                      height: (screenHeigth(context: context) -
                               MediaQuery.of(context).padding.top) *
                           0.04,
                     ),
@@ -146,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Tab(
                             child: Text("Plants",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15))),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15))),
                         Tab(
                           child: Text(
                             "Seeds",
@@ -166,12 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         radius: const BorderRadius.all(Radius.circular(12.0)),
                         color: Color.fromARGB(255, 239, 238, 238),
                         width: screenWidth(context: context) * 0.18,
-                        height: screenHeigth(context: context)* 0.065,
+                        height: screenHeigth(context: context) * 0.065,
                         borderWidth: 2.0,
                         borderColor: defaultColor,
                       ),
                     ),
-                    
                     SizedBox(
                       height: (screenHeigth(context: context) -
                               MediaQuery.of(context).padding.top) *
@@ -273,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Text("$noProducts"),
                       SizedBox(
-                        width: screenWidth(context: context)* 0.02,
+                        width: screenWidth(context: context) * 0.02,
                       ),
                       InkWell(
                         onTap: () {},

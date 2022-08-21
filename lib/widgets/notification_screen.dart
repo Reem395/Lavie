@@ -46,7 +46,7 @@ class NotificationScreen extends StatelessWidget {
                     children: [
                       Text(
                         notificationTitle,
-                        style:const TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: (screenHeigth(context: context) -
@@ -65,22 +65,28 @@ class NotificationScreen extends StatelessWidget {
                                   color: Colors.grey,
                                 ),
                                 SizedBox(
-                                  width: screenWidth(context: context)* 0.02,
+                                  width: screenWidth(context: context) * 0.02,
                                 ),
-                                Expanded(child: Text('" $notificationBody" ',
-                        style:const TextStyle(fontWeight: FontWeight.bold),maxLines: 3,overflow: TextOverflow.ellipsis,)),
+                                Expanded(
+                                    child: Text(
+                                  '" $notificationBody" ',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
                               ],
                             ),
                             SizedBox(
-                                  height: (screenHeigth(context: context) -
-                                          MediaQuery.of(context).padding.top) *
-                                      0.02,
-                                ),
+                              height: (screenHeigth(context: context) -
+                                      MediaQuery.of(context).padding.top) *
+                                  0.02,
+                            ),
                           ],
                         ),
                       Text(
                         notificationDate,
-                        style:const TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),

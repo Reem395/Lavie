@@ -58,20 +58,28 @@ class _AddForumState extends State<AddForum> {
                         IconButton(
                           icon: Icon(Icons.add),
                           color: defaultColor,
-
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Image',style: TextStyle(color: defaultColor),),
+                                  title: Text(
+                                    'Image',
+                                    style: TextStyle(color: defaultColor),
+                                  ),
                                   content: SizedBox(
-                                    height: screenHeigth(context: context)*0.2,
+                                    height:
+                                        screenHeigth(context: context) * 0.2,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text("Add Image URL"),
-                                        SizedBox(height: screenHeigth(context: context)*0.01,),
+                                        SizedBox(
+                                          height:
+                                              screenHeigth(context: context) *
+                                                  0.01,
+                                        ),
                                         TextField(
                                           controller: imageURL,
                                         ),
@@ -79,27 +87,24 @@ class _AddForumState extends State<AddForum> {
                                     ),
                                   ),
                                   actions: [
-                                     TextButton(
+                                    TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
                                       child: Text('Back'),
                                     ),
-                                  
                                     TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
                                       child: Text('Save'),
                                     ),
-                                   
                                   ],
                                 );
                               },
                             );
                           },
                         ),
-                   
                         Text(
                           "Add Photo",
                           style: TextStyle(
