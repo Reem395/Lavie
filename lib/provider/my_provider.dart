@@ -5,6 +5,8 @@ import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
 import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../models/forum_model/forum.dart';
+import '../models/forum_model/forum_model.dart';
 import '../models/seeds_model/seeds.dart';
 import '../models/seeds_model/seeds_model.dart';
 import '../models/tools_model/tool.dart';
@@ -12,7 +14,6 @@ import '../models/user_model/user.dart';
 import '../models/user_model/user_model.dart';
 import '../services/app_shared_pref.dart';
 import '../widgets/shop_layout.dart';
-// import 'package:flutter_hackathon/models/user/user_model.dart';
 
 class MyProvider with ChangeNotifier {
   int questionNo = 1;
@@ -24,6 +25,8 @@ class MyProvider with ChangeNotifier {
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   List<dynamic> allproducts = [];
+  List<Forum> allPosts =[];
+  List<Forum> myPosts =[];
   Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
@@ -33,23 +36,25 @@ class MyProvider with ChangeNotifier {
     currentExamDate =
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     nextExamDate =
-        // DateTime(now.year, now.month, now.day, (now.hour)+10, now.minute);
-        DateTime(now.year, now.month, now.day, (now.hour)+1, now.minute);
-        // DateTime(now.year, now.month, now.day, now.hour, (now.minute)+2);
+        DateTime(now.year, now.month, (now.day)+1, now.hour, now.minute);
     AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
     isExamAvailable=false;
     notifyListeners();
   }
 
-  void examAvailable() {
+  void examAvailable(){
     DateTime now = DateTime.now();
     DateTime currentDate =  DateTime(now.year, now.month, now.day, now.hour, now.minute);
       print("Next exam date ${AppSharedPref.getNextExamDate()}");
+      if(AppSharedPref.getNextExamDate()!=null){
       DateTime nextDate = DateTime.parse(AppSharedPref.getNextExamDate()!) ;
-    // if (AppSharedPref.getNextExamDate() == current.toString()) {
-    if (currentDate.compareTo(nextDate)>=0) {
-      isExamAvailable=true;
-    } 
+      if (currentDate.compareTo(nextDate)>=0) {
+        isExamAvailable=true;
+      } 
+      }else{
+        isExamAvailable=true;
+      }
+      
   }
 
   void nextQuestion() {
@@ -138,6 +143,38 @@ class MyProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future getAllForums()async{
+     try {
+      allPosts.clear();
+      var response = await Dio().get('${baseUrl}forums',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      ForumModel res = ForumModel.fromJson(response.data);
+      allPosts = [...?res.data];
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from get All forums: $e");
+    }
+  } 
+  
+  Future getMyForums()async{
+     try {
+      myPosts.clear();
+      var response = await Dio().get('${baseUrl}forums/me',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      ForumModel res = ForumModel.fromJson(response.data);
+      myPosts = [...?res.data];
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from get my forums: $e");
+    }
+  }
+
   Future signUp(User user) async {
     try {
       Response response = await Dio().post(
@@ -172,6 +209,8 @@ class MyProvider with ChangeNotifier {
         getAllPlants();
         getAllSeeds();
         getAllProducts();
+        getAllForums();
+        getMyForums();
         notifyListeners();
 
         print("User token is not null: $accessToken");

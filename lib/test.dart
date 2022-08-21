@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
@@ -77,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 
 //My Provider
 // import 'package:flutter/material.dart';
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //         //     msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
 //         Navigator.push(
 //             context, MaterialPageRoute(builder: (context) => ShopLayout()));
-//       } 
+//       }
 //     } catch (e) {
 //       print('Error Login user: $e');
 //       Fluttertoast.showToast(

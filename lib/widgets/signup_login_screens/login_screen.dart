@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import '../components.dart';
-import '../provider/my_provider.dart';
-import '../constants.dart';
-import '../services/app_shared_pref.dart';
-import '../widgets/shop_layout.dart';
+import '../../components.dart';
+import '../../constants.dart';
+import '../../provider/my_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -44,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration:textFieldBorderStyle() ,
+              decoration: textFieldBorderStyle(),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -79,7 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     Provider.of<MyProvider>(context, listen: false).signIn(
                         email: emailController.text,
-                        password: passwordController.text,context: context);
+                        password: passwordController.text,
+                        context: context);
                   }
                 } catch (e) {
                   print("error: $e");

@@ -42,12 +42,14 @@ Widget searchBar(
   );
 }
 
-InputDecoration textFieldBorderStyle({EdgeInsetsGeometry? contetPadding, double? borderRaduis,Color? borderColor}) {
+InputDecoration textFieldBorderStyle(
+    {EdgeInsetsGeometry? contetPadding,
+    double? borderRaduis,
+    Color? borderColor}) {
   return InputDecoration(
-    contentPadding: contetPadding??EdgeInsets.all(3),
-    border:
-        OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          borderSide: BorderSide(color: borderColor??Colors.grey)),
+    contentPadding: contetPadding ?? EdgeInsets.all(3),
+    border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(color: borderColor ?? Colors.grey)),
   );
 }
