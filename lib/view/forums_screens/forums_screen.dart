@@ -2,12 +2,12 @@ import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:flutter_hackathon/models/forum_model/forum.dart';
-import 'package:flutter_hackathon/provider/my_provider.dart';
-import 'package:flutter_hackathon/widgets/forums_screens/add_forum.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../controller/provider/my_provider.dart';
+import 'add_forum.dart';
 
 class Forums extends StatelessWidget {
   Forums({Key? key}) : super(key: key);

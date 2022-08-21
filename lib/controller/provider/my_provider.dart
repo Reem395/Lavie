@@ -5,15 +5,17 @@ import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
 import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../models/forum_model/forum.dart';
-import '../models/forum_model/forum_model.dart';
-import '../models/seeds_model/seeds.dart';
-import '../models/seeds_model/seeds_model.dart';
-import '../models/tools_model/tool.dart';
-import '../models/user_model/user.dart';
-import '../models/user_model/user_model.dart';
+import '../../models/forum_model/forum.dart';
+import '../../models/forum_model/forum_model.dart';
+import '../../models/seeds_model/seeds.dart';
+import '../../models/seeds_model/seeds_model.dart';
+import '../../models/tools_model/tool.dart';
+import '../../models/user_model/user.dart';
+import '../../models/user_model/user_model.dart';
+import '../../view/shop_layout.dart';
 import '../services/app_shared_pref.dart';
-import '../widgets/shop_layout.dart';
+
+
 
 class MyProvider with ChangeNotifier {
   int questionNo = 1;
@@ -30,6 +32,7 @@ class MyProvider with ChangeNotifier {
   Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
   String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
+
 
   void currentExamAccessDate() {
     DateTime now = DateTime.now();
@@ -81,10 +84,6 @@ class MyProvider with ChangeNotifier {
           })));
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
-      // allproducts.addAll(allSeeds);
-      // for (dynamic item in allproducts) {
-      //   cartProdCount.addAll({item.})
-      // }
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get All seeds: $e");

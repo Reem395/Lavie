@@ -3,9 +3,9 @@ import 'package:flutter_hackathon/constants.dart';
 
 import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
-import 'package:flutter_hackathon/provider/my_provider.dart';
 
 import '../components.dart';
+import '../controller/provider/my_provider.dart';
 import '../models/plants_model/plants.dart';
 import '../models/seeds_model/seeds.dart';
 import '../models/tools_model/tool.dart';

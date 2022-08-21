@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../components.dart';
 import '../../constants.dart';
-import '../../provider/my_provider.dart';
+import '../../controller/provider/my_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);

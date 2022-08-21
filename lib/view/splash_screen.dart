@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/components.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/my_provider.dart';
-import '../services/app_shared_pref.dart';
+import '../controller/provider/my_provider.dart';
+import '../controller/services/app_shared_pref.dart';
 import 'shop_layout.dart';
 import 'signup_login_screens/signup_login_screen.dart';
 
