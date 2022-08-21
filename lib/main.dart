@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/provider/my_provider.dart';
-import 'package:flutter_hackathon/services/app_shared_pref.dart';
 import 'package:provider/provider.dart';
 
-import 'widgets/splash_screen.dart';
+import 'controller/provider/my_provider.dart';
+import 'controller/services/app_shared_pref.dart';
+import 'view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
