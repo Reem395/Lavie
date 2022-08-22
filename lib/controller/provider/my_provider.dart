@@ -14,7 +14,7 @@ import '../../models/seeds_model/seeds_model.dart';
 import '../../models/tools_model/tool.dart';
 import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
-import '../../view/shop_layout.dart';
+import '../../view/shop_layout/shop_layout.dart';
 import '../services/app_shared_pref.dart';
 
 class MyProvider with ChangeNotifier {
@@ -39,7 +39,7 @@ class MyProvider with ChangeNotifier {
     currentExamDate =
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     nextExamDate =
-        DateTime(now.year, now.month, (now.day) + 1, now.hour, now.minute);
+        DateTime(now.year, now.month, (now.day) + 10, now.hour, now.minute);
     AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
     isExamAvailable = false;
     notifyListeners();
@@ -174,7 +174,33 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-Future getBlogs() async {
+  Future addForum(
+      {required String title,
+      required String description,
+      required String image}) async {
+    try {
+      Response response = await Dio().post("${baseUrl}forums", data: {
+        "title": title,
+        "description": description,
+        "imageBase64": image
+      },options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })) );
+
+      print('Forum Added successfully: ${response.data}');
+
+      var retrievedPost = Forum.fromJson(response.data);
+      print("retrievedForum fromJson => $retrievedPost");
+      getAllForums();
+      getMyForums();
+      notifyListeners();
+    } on DioError catch (e) {
+      print('Error Adding forum: ${e.message}');
+    }
+  }
+
+  Future getBlogs() async {
     try {
       AllBlogs.clear();
       var response = await Dio().get('${baseUrl}products/blogs',
@@ -193,9 +219,7 @@ Future getBlogs() async {
 
   Future signUp(User user) async {
     try {
-      Response response = await Dio().post(
-          "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signup",
-          data: user);
+      Response response = await Dio().post("${baseUrl}auth/signup", data: user);
 
       print('User created: ${response.data}');
 
@@ -209,8 +233,7 @@ Future getBlogs() async {
 
   Future signIn({required email, required password, required context}) async {
     try {
-      Response response = await Dio().post(
-          "https://lavie.orangedigitalcenteregypt.com/api/v1/auth/signin",
+      Response response = await Dio().post("${baseUrl}auth/signin",
           data: {"email": email, "password": password});
 
       print('User Login : ${response.data}');
