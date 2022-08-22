@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
+import '../utils/constants.dart';
 
 Widget laVieLogo({Size? screenSize, double? textSize}) {
   return Stack(

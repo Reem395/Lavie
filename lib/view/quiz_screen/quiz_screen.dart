@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/constants.dart';
-import 'package:flutter_hackathon/view/shop_layout.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
+import 'package:flutter_hackathon/view/shop_layout/shop_layout.dart';
 import 'package:provider/provider.dart';
 
-import '../controller/provider/my_provider.dart';
+import '../../controller/provider/my_provider.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);

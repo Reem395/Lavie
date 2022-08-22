@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/constants.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
 
 import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 
 import '../components.dart';
-import '../controller/provider/my_provider.dart';
-import '../models/plants_model/plants.dart';
-import '../models/seeds_model/seeds.dart';
-import '../models/tools_model/tool.dart';
-import 'quiz_screen.dart';
+import '../../controller/provider/my_provider.dart';
+import '../../models/plants_model/plants.dart';
+import '../../models/seeds_model/seeds.dart';
+import '../../models/tools_model/tool.dart';
+import '../quiz_screen/quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
