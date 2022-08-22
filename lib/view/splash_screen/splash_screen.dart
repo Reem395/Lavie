@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/components.dart';
+import 'package:flutter_hackathon/view/components.dart';
 import 'package:provider/provider.dart';
 
-import '../controller/provider/my_provider.dart';
-import '../controller/services/app_shared_pref.dart';
-import 'shop_layout.dart';
-import 'signup_login_screens/signup_login_screen.dart';
+import '../../controller/provider/my_provider.dart';
+import '../../controller/services/app_shared_pref.dart';
+import '../shop_layout/shop_layout.dart';
+import '../signup_login_screens/signup_login_screen.dart';
 
 class SpalshScreen extends StatefulWidget {
   const SpalshScreen({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class SpalshScreen extends StatefulWidget {
 
 class _SpalshScreenState extends State<SpalshScreen> {
   @override
-  void initState() {
+  void initState()  {
     super.initState();
 
     String? userToken = AppSharedPref.getToken();
@@ -29,12 +29,12 @@ class _SpalshScreenState extends State<SpalshScreen> {
     if (userToken == null) {
       nexWidget = SignupLogin();
     } else {
-      myprovider.getAllTools();
-      myprovider.getAllPlants();
-      myprovider.getAllSeeds();
-      myprovider.getAllProducts();
-      myprovider.getAllForums();
-      myprovider.getMyForums();
+     myprovider.getAllTools();
+       myprovider.getAllPlants();
+       myprovider.getAllSeeds();
+       myprovider.getAllProducts();
+       myprovider.getAllForums();
+       myprovider.getMyForums();
       nexWidget = ShopLayout();
     }
     Timer(

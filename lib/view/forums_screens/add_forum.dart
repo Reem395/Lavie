@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/constants.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
-import '../../components.dart';
+import '../components.dart';
+import '../../controller/provider/my_provider.dart';
 
 class AddForum extends StatefulWidget {
   const AddForum({Key? key}) : super(key: key);
@@ -13,7 +16,8 @@ class AddForum extends StatefulWidget {
 class _AddForumState extends State<AddForum> {
   TextEditingController postTitle = TextEditingController();
   TextEditingController postDescription = TextEditingController();
-  TextEditingController imageURL = TextEditingController();
+  TextEditingController postImageURL = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +85,7 @@ class _AddForumState extends State<AddForum> {
                                                   0.01,
                                         ),
                                         TextField(
-                                          controller: imageURL,
+                                          controller: postImageURL,
                                         ),
                                       ],
                                     ),
@@ -91,13 +95,13 @@ class _AddForumState extends State<AddForum> {
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text('Back'),
+                                      child: const Text('Back'),
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                       Navigator.pop(context);
                                       },
-                                      child: Text('Save'),
+                                      child: const Text('Save'),
                                     ),
                                   ],
                                 );
@@ -153,7 +157,22 @@ class _AddForumState extends State<AddForum> {
                   width: double.infinity,
                   child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        print("image: ${postImageURL.text.length}");
+                         if (!(postTitle.text == "" ||
+                                            postDescription.text == "" ||
+                                            postImageURL.text == "")) {
+                                          myProvider(context: context).addForum(
+                                              title: postTitle.text,
+                                              description: postDescription.text,
+                                              image: postImageURL.text);
+                                              
+                                          Navigator.pop(context);
+                                        }
+                                        else{
+                                          Fluttertoast.showToast(
+                                            msg: "Please enter all fields",
+                                            toastLength:Toast.LENGTH_SHORT);
+                                        }
                       },
                       child: const Text("post"),
                       style: ButtonStyle(

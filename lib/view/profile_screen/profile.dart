@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/constants.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
 
 class Profile extends StatelessWidget {
   Profile({Key? key}) : super(key: key);

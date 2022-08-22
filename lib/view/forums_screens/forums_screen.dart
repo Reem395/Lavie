@@ -1,11 +1,11 @@
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/components.dart';
+import 'package:flutter_hackathon/view/components.dart';
 import 'package:flutter_hackathon/models/forum_model/forum.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../constants.dart';
+import '../../utils/constants.dart';
 import '../../controller/provider/my_provider.dart';
 import 'add_forum.dart';
 
@@ -213,9 +213,14 @@ class Forums extends StatelessWidget {
                                 fit: BoxFit.fitHeight,
                               )
                             : Image.network(
-                                "$baseURL${posts[index].imageUrl}",
+                              posts[index].imageUrl!.startsWith('/')?
+                                "$baseURL${posts[index].imageUrl}":"${posts[index].imageUrl}",
                                 width: double.infinity,
-                                fit: BoxFit.fitWidth,
+                                fit: BoxFit.fitWidth,errorBuilder: (context,error,stackTrace){
+                                  return const Text("Image Not Found",style: TextStyle(
+                                    fontSize: 18,fontWeight: FontWeight.bold
+                                  ),);
+                                },
                               ),
                       ),
                     ],
@@ -245,11 +250,16 @@ class Forums extends StatelessWidget {
                   SizedBox(
                     width: screenWidth(context: context) * 0.05,
                   ),
-                  Text(
-                    "$noOfReplies Replies",
-                    style: const TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  )
+                  InkWell(
+                    onTap: (){
+                      
+                    },
+                    child: Text(
+                          "$noOfReplies Replies",
+                          style: const TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold),
+                        ),
+                  ),
                 ],
               ),
             ],

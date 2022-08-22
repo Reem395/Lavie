@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/components.dart';
+import 'package:flutter_hackathon/view/components.dart';
 
 import 'login_screen.dart';
 import 'signup_screen.dart';

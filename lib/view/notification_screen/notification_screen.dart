@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/constants.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
 
 class NotificationScreen extends StatelessWidget {
   NotificationScreen({Key? key}) : super(key: key);

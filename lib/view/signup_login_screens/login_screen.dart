@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../components.dart';
-import '../../constants.dart';
+import '../components.dart';
+import '../../utils/constants.dart';
 import '../../controller/provider/my_provider.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'controller/provider/my_provider.dart';
 import 'controller/services/app_shared_pref.dart';
-import 'view/splash_screen.dart';
+import 'view/splash_screen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
