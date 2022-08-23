@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../components.dart';
 import '../../utils/constants.dart';
@@ -94,6 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
             TextField(
               controller: passwordController,
               decoration: textFieldBorderStyle(),
+              obscureText: true,
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -111,13 +113,34 @@ class _SignupScreenState extends State<SignupScreen> {
             TextField(
               controller: confirmPasswordController,
               decoration: textFieldBorderStyle(),
+              obscureText: true,
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                try {
+                  if ( firstNameController.text==""||
+                      lastNameController.text==""||
+                      emailController.text == "" ||
+                      passwordController.text == ""||
+                      confirmPasswordController.text=="") {
+                    Fluttertoast.showToast(
+                        msg: "Please enter all fields",
+                        toastLength: Toast.LENGTH_SHORT);
+                  } else {
+                    myProvider(context: context).signUp(
+                      firstName: firstNameController.text,
+                       lastName: lastNameController.text,
+                        email: emailController.text,
+                         password: passwordController.text, context: context);
+                  }
+                } catch (e) {
+                  print("error: $e");
+                }
+              },
               child: const Text("Sign up"),
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(defaultColor),

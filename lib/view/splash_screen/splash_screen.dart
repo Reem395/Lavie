@@ -18,7 +18,7 @@ class SpalshScreen extends StatefulWidget {
 
 class _SpalshScreenState extends State<SpalshScreen> {
   @override
-  void initState()  {
+  void initState() {
     super.initState();
 
     String? userToken = AppSharedPref.getToken();
@@ -29,12 +29,13 @@ class _SpalshScreenState extends State<SpalshScreen> {
     if (userToken == null) {
       nexWidget = SignupLogin();
     } else {
-     myprovider.getAllTools();
-       myprovider.getAllPlants();
-       myprovider.getAllSeeds();
-       myprovider.getAllProducts();
-       myprovider.getAllForums();
-       myprovider.getMyForums();
+      myprovider.getAllTools();
+      myprovider.getAllPlants();
+      myprovider.getAllSeeds();
+      myprovider.getAllProducts();
+      myprovider.getAllForums();
+      myprovider.getMyForums();
+      myprovider.getBlogs();
       nexWidget = ShopLayout();
     }
     Timer(

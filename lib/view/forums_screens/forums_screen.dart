@@ -213,13 +213,13 @@ class Forums extends StatelessWidget {
                                 fit: BoxFit.fitHeight,
                               )
                             : Image.network(
-                              posts[index].imageUrl!.startsWith('/')?
-                                "$baseURL${posts[index].imageUrl}":"${posts[index].imageUrl}",
+                                posts[index].imageUrl!.startsWith('/')
+                                    ? "$baseURL${posts[index].imageUrl}"
+                                    : "${posts[index].imageUrl}",
                                 width: double.infinity,
-                                fit: BoxFit.fitWidth,errorBuilder: (context,error,stackTrace){
-                                  return const Text("Image Not Found",style: TextStyle(
-                                    fontSize: 18,fontWeight: FontWeight.bold
-                                  ),);
+                                fit: BoxFit.fitWidth,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return textForImageError();
                                 },
                               ),
                       ),
@@ -251,14 +251,12 @@ class Forums extends StatelessWidget {
                     width: screenWidth(context: context) * 0.05,
                   ),
                   InkWell(
-                    onTap: (){
-                      
-                    },
+                    onTap: () {},
                     child: Text(
-                          "$noOfReplies Replies",
-                          style: const TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold),
-                        ),
+                      "$noOfReplies Replies",
+                      style: const TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),

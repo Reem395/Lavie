@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_hackathon/models/blogs_model/blogs.dart';
 import 'package:flutter_hackathon/models/blogs_model/blogs_model.dart';
 import 'package:flutter_hackathon/models/plants_model/plants.dart';
 import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
@@ -9,11 +8,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../models/forum_model/forum.dart';
 import '../../models/forum_model/forum_model.dart';
+import '../../models/products_model/products.dart';
+import '../../models/products_model/products_model.dart';
 import '../../models/seeds_model/seeds.dart';
 import '../../models/seeds_model/seeds_model.dart';
 import '../../models/tools_model/tool.dart';
 import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
+import '../../utils/constants.dart';
 import '../../view/shop_layout/shop_layout.dart';
 import '../services/app_shared_pref.dart';
 
@@ -29,10 +31,9 @@ class MyProvider with ChangeNotifier {
   List<dynamic> allproducts = [];
   List<Forum> allPosts = [];
   List<Forum> myPosts = [];
-  List<Blogs> AllBlogs = [];
+  List<dynamic> allBlogs = [];
   Map<int, int> cartProdCount = {};
   String? accessToken = AppSharedPref.getToken();
-  String baseUrl = "https://lavie.orangedigitalcenteregypt.com/api/v1/";
 
   void currentExamAccessDate() {
     DateTime now = DateTime.now();
@@ -40,6 +41,7 @@ class MyProvider with ChangeNotifier {
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     nextExamDate =
         DateTime(now.year, now.month, (now.day) + 10, now.hour, now.minute);
+    // DateTime(now.year, now.month, now.day, now.hour, (now.minute)+30);
     AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
     isExamAvailable = false;
     notifyListeners();
@@ -77,7 +79,7 @@ class MyProvider with ChangeNotifier {
   Future getAllSeeds() async {
     try {
       allSeeds.clear();
-      var response = await Dio().get('${baseUrl}seeds',
+      var response = await Dio().get('$baseURL/api/v1/seeds',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -93,7 +95,7 @@ class MyProvider with ChangeNotifier {
   Future getAllPlants() async {
     try {
       allPlants.clear();
-      var response = await Dio().get('${baseUrl}plants',
+      var response = await Dio().get('$baseURL/api/v1/plants',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -110,7 +112,7 @@ class MyProvider with ChangeNotifier {
   Future getAllTools() async {
     try {
       allTools.clear();
-      var response = await Dio().get('${baseUrl}tools',
+      var response = await Dio().get('$baseURL/api/v1/tools',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -127,14 +129,16 @@ class MyProvider with ChangeNotifier {
   Future getAllProducts() async {
     try {
       allproducts.clear();
-      var response = await Dio().get('${baseUrl}products',
+      var response = await Dio().get('$baseURL/api/v1/products',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
-      ToolsModel res = ToolsModel.fromJson(response.data);
+      ProductsModel res = ProductsModel.fromJson(response.data);
+      // print("from get Prod ${response.data['data'].runtimeType}");
+
       allproducts = [...?res.data];
-      // allproducts.addAll(allTools);
+      // print("products ${res.data![0].name}");
       notifyListeners();
     } catch (e) {
       print("Error from get All products: $e");
@@ -142,10 +146,25 @@ class MyProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future getProductById({required String productId}) async {
+    try {
+      var response = await Dio().get('$baseURL/api/v1/products/$productId',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      ProductsModel res = ProductsModel.fromJson(response.data);
+      // print("from get Prod by ID ${response.data['data'].runtimeType}");
+      return res.data;
+    }on DioError catch (e) {
+      print("Error from get All products: ${e.response!.data['message']}");
+    }
+  }
+
   Future getAllForums() async {
     try {
       allPosts.clear();
-      var response = await Dio().get('${baseUrl}forums',
+      var response = await Dio().get('$baseURL/api/v1/forums',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -161,7 +180,7 @@ class MyProvider with ChangeNotifier {
   Future getMyForums() async {
     try {
       myPosts.clear();
-      var response = await Dio().get('${baseUrl}forums/me',
+      var response = await Dio().get('$baseURL/api/v1/forums/me',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
@@ -179,14 +198,16 @@ class MyProvider with ChangeNotifier {
       required String description,
       required String image}) async {
     try {
-      Response response = await Dio().post("${baseUrl}forums", data: {
-        "title": title,
-        "description": description,
-        "imageBase64": image
-      },options: Options(
+      Response response = await Dio().post("$baseURL/api/v1/forums",
+          data: {
+            "title": title,
+            "description": description,
+            "imageBase64": image
+          },
+          options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
-          })) );
+          })));
 
       print('Forum Added successfully: ${response.data}');
 
@@ -202,38 +223,63 @@ class MyProvider with ChangeNotifier {
 
   Future getBlogs() async {
     try {
-      AllBlogs.clear();
-      var response = await Dio().get('${baseUrl}products/blogs',
+      allBlogs.clear();
+      var response = await Dio().get('$baseURL/api/v1/products/blogs',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       BlogsModel res = BlogsModel.fromJson(response.data);
-      print(res.data);
-      // AllBlogs = [...?res.data];
+      allBlogs = [
+        ...?res.data!.plants,
+        ...?res.data!.seeds,
+        ...?res.data!.tools
+      ];
+      print("All Blogs length ${allBlogs.length}");
+      // print("${AllBlogs[0].name}");
+      // print(AllBlogs[0]is Plants);
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get my forums: $e");
     }
   }
 
-  Future signUp(User user) async {
+  Future signUp(
+      {required String firstName,
+      required String lastName,
+      required String email,
+      required String password,
+      required context}) async {
     try {
-      Response response = await Dio().post("${baseUrl}auth/signup", data: user);
+      Response response =
+          await Dio().post("$baseURL/api/v1/auth/signup", data: {
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "password": password
+      });
 
       print('User created: ${response.data}');
-
-      var retrievedUser = User.fromJson(response.data);
+      UserModel retrievedUser = UserModel.fromJson(response.data);
       print("retrievedUser fromJson => $retrievedUser");
+      AppSharedPref.setToken(accessToken);
+      print("token => ${AppSharedPref.getToken()}");
+
       notifyListeners();
+      Fluttertoast.showToast(
+            msg: "Signup Successfully", toastLength: Toast.LENGTH_SHORT);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShopLayout()));
+      
     } on DioError catch (e) {
-      print('Error creating user: $e');
+      Fluttertoast.showToast(
+          msg: "${e.response!.data['message']}", toastLength: Toast.LENGTH_SHORT);
     }
   }
 
   Future signIn({required email, required password, required context}) async {
     try {
-      Response response = await Dio().post("${baseUrl}auth/signin",
+      Response response = await Dio().post("$baseURL/api/v1/auth/signin",
           data: {"email": email, "password": password});
 
       print('User Login : ${response.data}');
@@ -250,6 +296,7 @@ class MyProvider with ChangeNotifier {
         getAllProducts();
         getAllForums();
         getMyForums();
+        getBlogs();
         notifyListeners();
 
         print("User token is not null: $accessToken");
@@ -261,7 +308,7 @@ class MyProvider with ChangeNotifier {
     } on DioError catch (e) {
       print('Error Login user: $e');
       Fluttertoast.showToast(
-          msg: "Wrong email or password", toastLength: Toast.LENGTH_SHORT);
+          msg: "${e.response!.data['message']}", toastLength: Toast.LENGTH_SHORT);
     }
   }
 }
