@@ -4,6 +4,7 @@ import 'package:flutter_hackathon/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 
+import '../../models/products_model/products.dart';
 import '../components.dart';
 import '../../controller/provider/my_provider.dart';
 import '../../models/plants_model/plants.dart';
@@ -46,16 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
   int noProducts = 1;
   String productName = "";
   var productPrice = 70;
-  String baseURL = "https://lavie.orangedigitalcenteregypt.com";
+
   TextEditingController searchController = TextEditingController();
-  // bool isExamAvailable = true;
 
   @override
   Widget build(BuildContext context) {
     Provider.of<MyProvider>(context).examAvailable();
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: myProvider(context: context).isExamAvailable? 
+      AppBar(
         backgroundColor: const Color.fromARGB(6, 255, 255, 255),
         elevation: 0,
         actions: [
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       )))
               : const SizedBox(),
         ],
-      ),
+      ):null,
       body: Consumer<MyProvider>(
         builder: (context, myProvider, child) {
           return DefaultTabController(
@@ -109,7 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: screenWidth(context: context) * 0.04,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            // myProvider.getBlogs();
+                            // myProvider.getAllProducts();
+                            myProvider.getProductById(productId: "f985a224-ee41-411e-9327-dfb9822544ab");
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
@@ -180,10 +185,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Expanded(
                       child: TabBarView(children: [
-                        // selectedPage(allproducts),
-                        // selectedPage(allPlants),
-                        // selectedPage(allSeeds),
-                        // selectedPage(allTools),
                         selectedPage(myProvider.allproducts),
                         selectedPage(myProvider.allPlants),
                         selectedPage(myProvider.allSeeds),
@@ -204,7 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSpacing: 80,
       crossAxisSpacing: 20,
       childAspectRatio: 0.9,
-      // padding: const EdgeInsets.only(top: 80),
       padding: EdgeInsets.only(top: screenHeigth(context: context) * 0.09),
       children: List.generate(category.length, (index) {
         return Center(
@@ -239,6 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "$baseURL${category[index].imageUrl}",
                         width: 82,
                         height: 164,
+                        fit: BoxFit.cover,
                       ),
                     ),
               Align(
@@ -251,21 +252,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {},
                         child: Container(
-                          height: 28,
-                          width: 25,
                           decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(5),
                               )),
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "-",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 27, fontWeight: FontWeight.bold),
-                            ),
+                          
+                          child:const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3,horizontal: 8),
+                            child: Text("-",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
                           ),
                         ),
                       ),
@@ -279,17 +274,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {},
                         child: Container(
-                          height: 28,
-                          width: 25,
                           decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(5),
                               )),
-                          child: const Text(
-                            "+",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 27),
+                          
+                          child:const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3,horizontal: 8),
+                            child: Text("+",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18),),
                           ),
                         ),
                       ),
@@ -311,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: screenHeigth(context: context) * 0.005,
                     ),
                     Text(
-                      "$productPrice EGP",
+                      "${category[index] is Products?category[index].price:70 } EGP",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(

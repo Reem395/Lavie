@@ -53,3 +53,42 @@ InputDecoration textFieldBorderStyle(
         borderSide: BorderSide(color: borderColor ?? Colors.grey)),
   );
 }
+
+Widget textForImageError() {
+  return const Text("Image Not Found",
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+}
+
+Decoration roundedContainer({double? raduis, Color? color}) {
+  return BoxDecoration(
+    color: color ?? Colors.white,
+    borderRadius: BorderRadius.all(Radius.circular(raduis ?? 10)),
+  );
+}
+
+Decoration roundedContainerWithShadowBox(
+    {double? raduis,
+    Color? color,
+    double? spreadRadius,
+    double? blurRadius,
+    Offset? offset}) {
+  return BoxDecoration(
+    color: color ?? Colors.white,
+    borderRadius: BorderRadius.all(Radius.circular(raduis ?? 10)),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.5),
+        spreadRadius: spreadRadius ?? 5,
+        blurRadius: blurRadius ?? 7,
+        offset: offset ?? const Offset(0, 3), // changes position of shadow
+      ),
+    ],
+  );
+}
+
+Widget roundedImage({required Image image, double? raduis}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(raduis ?? 13),
+    child: image,
+  );
+}

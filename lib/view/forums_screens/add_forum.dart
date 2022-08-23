@@ -99,7 +99,7 @@ class _AddForumState extends State<AddForum> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                       Navigator.pop(context);
+                                        Navigator.pop(context);
                                       },
                                       child: const Text('Save'),
                                     ),
@@ -158,21 +158,20 @@ class _AddForumState extends State<AddForum> {
                   child: ElevatedButton(
                       onPressed: () {
                         print("image: ${postImageURL.text.length}");
-                         if (!(postTitle.text == "" ||
-                                            postDescription.text == "" ||
-                                            postImageURL.text == "")) {
-                                          myProvider(context: context).addForum(
-                                              title: postTitle.text,
-                                              description: postDescription.text,
-                                              image: postImageURL.text);
-                                              
-                                          Navigator.pop(context);
-                                        }
-                                        else{
-                                          Fluttertoast.showToast(
-                                            msg: "Please enter all fields",
-                                            toastLength:Toast.LENGTH_SHORT);
-                                        }
+                        if (!(postTitle.text == "" ||
+                            postDescription.text == "" ||
+                            postImageURL.text == "")) {
+                          myProvider(context: context).addForum(
+                              title: postTitle.text,
+                              description: postDescription.text,
+                              image: postImageURL.text);
+
+                          Navigator.pop(context);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Please enter all fields",
+                              toastLength: Toast.LENGTH_SHORT);
+                        }
                       },
                       child: const Text("post"),
                       style: ButtonStyle(
