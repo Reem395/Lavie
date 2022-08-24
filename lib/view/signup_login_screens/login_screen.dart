@@ -21,8 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    String? userToken =
-        Provider.of<MyProvider>(context, listen: true).accessToken;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: SingleChildScrollView(
@@ -42,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -60,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -75,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         msg: "Please enter all fields",
                         toastLength: Toast.LENGTH_SHORT);
                   } else {
-                    Provider.of<MyProvider>(context, listen: false).signIn(
+                    myProvider(context: context).signIn(
                         email: emailController.text,
                         password: passwordController.text,
                         context: context);

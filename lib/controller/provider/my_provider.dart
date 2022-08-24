@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_hackathon/models/blogs_model/blogs_model.dart';
+import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:flutter_hackathon/models/plants_model/plants.dart';
 import 'package:flutter_hackathon/models/plants_model/plants_model.dart';
+import 'package:flutter_hackathon/models/products_model/product_single_model/product_single_model.dart';
 import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
+import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../models/forum_model/forum.dart';
+import '../../models/forum_model/Forum.dart';
 import '../../models/forum_model/forum_model.dart';
 import '../../models/products_model/products.dart';
 import '../../models/products_model/products_model.dart';
 import '../../models/seeds_model/seeds.dart';
 import '../../models/seeds_model/seeds_model.dart';
 import '../../models/tools_model/tool.dart';
-import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
 import '../../utils/constants.dart';
 import '../../view/shop_layout/shop_layout.dart';
@@ -21,6 +23,7 @@ import '../services/app_shared_pref.dart';
 
 class MyProvider with ChangeNotifier {
   int questionNo = 1;
+  double totalCartPrice = 180;
   DateTime? currentExamDate;
   DateTime? nextExamDate;
   bool isExamAvailable = false;
@@ -32,8 +35,12 @@ class MyProvider with ChangeNotifier {
   List<Forum> allPosts = [];
   List<Forum> myPosts = [];
   List<dynamic> allBlogs = [];
-  Map<int, int> cartProdCount = {};
-  String? accessToken = AppSharedPref.getToken();
+  List userCart =[];
+  List<Map<String, int>> cartProdCount = [];
+  List<Map<String, int>> cartPlantCount = [];
+  List<Map<String, int>> cartSeedsCount = [];
+  List<Map<String, int>> cartToolsCount = [];
+  // String? accessToken = AppSharedPref.getToken();
 
   void currentExamAccessDate() {
     DateTime now = DateTime.now();
@@ -79,6 +86,7 @@ class MyProvider with ChangeNotifier {
   Future getAllSeeds() async {
     try {
       allSeeds.clear();
+      cartSeedsCount.clear();
       var response = await Dio().get('$baseURL/api/v1/seeds',
           options: Options(
               headers: ({
@@ -86,15 +94,30 @@ class MyProvider with ChangeNotifier {
           })));
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
+      for (var item in allSeeds) {
+        cartSeedsCount.add({"${item.seedId}":0});
+      }
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get All seeds: $e");
     }
   }
 
+  Future claimFreeSeed({required String address}) async {
+    try {
+      Response response = await Dio().post(
+          "$baseURL/api/v1/user/me/claimFreeSeeds",
+          data: {"address": address});
+      print('Seed Claimed! : ${response.data}');
+    } on DioError catch (e) {
+      print('Error Login user: ${e.response!.data['message']}');
+    }
+  }
+
   Future getAllPlants() async {
     try {
       allPlants.clear();
+      cartPlantCount.clear();
       var response = await Dio().get('$baseURL/api/v1/plants',
           options: Options(
               headers: ({
@@ -102,7 +125,9 @@ class MyProvider with ChangeNotifier {
           })));
       PlantsModel res = PlantsModel.fromJson(response.data);
       allPlants = [...?res.data];
-      // allproducts.addAll(allPlants);
+      for (var item in allPlants) {
+        cartPlantCount.add({"${item.plantId}":0});
+      }
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get All plants: $e");
@@ -112,6 +137,7 @@ class MyProvider with ChangeNotifier {
   Future getAllTools() async {
     try {
       allTools.clear();
+      cartToolsCount.clear();
       var response = await Dio().get('$baseURL/api/v1/tools',
           options: Options(
               headers: ({
@@ -119,7 +145,9 @@ class MyProvider with ChangeNotifier {
           })));
       ToolsModel res = ToolsModel.fromJson(response.data);
       allTools = [...?res.data];
-      // allproducts.addAll(allTools);
+      for (var item in allTools) {
+        cartToolsCount.add({"${item.toolId}":0});
+      }
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get All Tools: $e");
@@ -129,16 +157,18 @@ class MyProvider with ChangeNotifier {
   Future getAllProducts() async {
     try {
       allproducts.clear();
+      cartProdCount.clear();
       var response = await Dio().get('$baseURL/api/v1/products',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       ProductsModel res = ProductsModel.fromJson(response.data);
-      // print("from get Prod ${response.data['data'].runtimeType}");
 
       allproducts = [...?res.data];
-      // print("products ${res.data![0].name}");
+      for (var item in allproducts) {
+        cartProdCount.add({"${item.productId}":0});
+      }
       notifyListeners();
     } catch (e) {
       print("Error from get All products: $e");
@@ -153,11 +183,16 @@ class MyProvider with ChangeNotifier {
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
-      ProductsModel res = ProductsModel.fromJson(response.data);
-      // print("from get Prod by ID ${response.data['data'].runtimeType}");
+      ProductSingleModel res = ProductSingleModel.fromJson(response.data);
+      if(res.data!=null){
+
+      print("single prod: ${res.data!.name}");
+      }else{
+        print("single product ${res.data}");
+      }
       return res.data;
-    }on DioError catch (e) {
-      print("Error from get All products: ${e.response!.data['message']}");
+    } on DioError catch (e) {
+      print("Error from product by ID: ${e.response!.data['message']}");
     }
   }
 
@@ -236,8 +271,6 @@ class MyProvider with ChangeNotifier {
         ...?res.data!.tools
       ];
       print("All Blogs length ${allBlogs.length}");
-      // print("${AllBlogs[0].name}");
-      // print(AllBlogs[0]is Plants);
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get my forums: $e");
@@ -262,18 +295,32 @@ class MyProvider with ChangeNotifier {
       print('User created: ${response.data}');
       UserModel retrievedUser = UserModel.fromJson(response.data);
       print("retrievedUser fromJson => $retrievedUser");
-      AppSharedPref.setToken(accessToken);
+      userToken = retrievedUser.data!.accessToken;
+      AppSharedPref.setToken(userToken);
+      userId = retrievedUser.data!.user!.userId;
+      AppSharedPref.setUserId(userId);
       print("token => ${AppSharedPref.getToken()}");
 
-      notifyListeners();
-      Fluttertoast.showToast(
+      if (userToken != null) {
+        getAllTools();
+        getAllPlants();
+        getAllSeeds();
+        getAllProducts();
+        getAllForums();
+        getMyForums();
+        getBlogs();
+        notifyListeners();
+
+        print("User token is not null: $userToken");
+        Fluttertoast.showToast(
             msg: "Signup Successfully", toastLength: Toast.LENGTH_SHORT);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ShopLayout()));
-      
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ClaimFreeSeed()));
+      }
     } on DioError catch (e) {
       Fluttertoast.showToast(
-          msg: "${e.response!.data['message']}", toastLength: Toast.LENGTH_SHORT);
+          msg: "${e.response!.data['message']}",
+          toastLength: Toast.LENGTH_SHORT);
     }
   }
 
@@ -285,11 +332,14 @@ class MyProvider with ChangeNotifier {
       print('User Login : ${response.data}');
 
       UserModel retrievedUser = UserModel.fromJson(response.data);
-      accessToken = retrievedUser.data!.accessToken;
-      AppSharedPref.setToken(accessToken);
+      userToken = retrievedUser.data!.accessToken;
+      AppSharedPref.setToken(userToken);
+      userId = retrievedUser.data!.user!.userId;
+      AppSharedPref.setUserId(userId);
+      print("userID: $userId");
       AppSharedPref.setUserMail(email);
       print("token => ${AppSharedPref.getToken()}");
-      if (accessToken != null) {
+      if (userToken != null) {
         getAllTools();
         getAllPlants();
         getAllSeeds();
@@ -299,7 +349,7 @@ class MyProvider with ChangeNotifier {
         getBlogs();
         notifyListeners();
 
-        print("User token is not null: $accessToken");
+        print("User token is not null: $userToken");
         Fluttertoast.showToast(
             msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
         Navigator.push(
@@ -308,7 +358,69 @@ class MyProvider with ChangeNotifier {
     } on DioError catch (e) {
       print('Error Login user: $e');
       Fluttertoast.showToast(
-          msg: "${e.response!.data['message']}", toastLength: Toast.LENGTH_SHORT);
+          msg: "${e.response!.data['message']}",
+          toastLength: Toast.LENGTH_SHORT);
     }
   }
+
+incrementCartItem({required List productMap, required dynamic productInstance}){
+
+  String prodId;
+      if (productInstance is Plants) {
+        prodId = productInstance.plantId!;
+      } else if (productInstance is Tool) {
+        prodId = productInstance.toolId!;
+      } else if (productInstance is Products) {
+        prodId = productInstance.productId!;
+      } else {
+        prodId = productInstance.seedId;
+      }
+    for (Map item in productMap) {
+      if (item.containsKey(prodId)) {
+        item[prodId]= (item.values.first)+1;
+        notifyListeners();
+      }
+    }
+}
+decrementCartItem({required List productMap, required dynamic productInstance}){
+
+  String prodId;
+      if (productInstance is Plants) {
+        prodId = productInstance.plantId!;
+      } else if (productInstance is Tool) {
+        prodId = productInstance.toolId!;
+      } else if (productInstance is Products) {
+        prodId = productInstance.productId!;
+      } else {
+        prodId = productInstance.seedId;
+      }
+    for (Map item in productMap) {
+      if (item.containsKey(prodId)) {
+        if(item.values.first>=1){
+        item[prodId]= (item.values.first)-1;
+        }
+        notifyListeners();
+      }
+    }
+}
+
+// addToCart({required List productMap, required dynamic productInstance,required Cart myCart}){
+
+// }
+ List oldCart=[];
+addToCart({required Cart myCart}){
+  oldCart.clear();
+   oldCart = [...userCart];
+  if(oldCart.isNotEmpty){
+  for (Cart item in oldCart) {
+    if(item.productId!=myCart.productId){
+        userCart.add(myCart);
+     }}
+
+  }else{
+        userCart.add(myCart);
+  }
+  notifyListeners();
+}
+removeFromCart(){}
 }

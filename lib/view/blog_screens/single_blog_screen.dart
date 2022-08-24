@@ -3,7 +3,8 @@ import 'package:flutter_hackathon/models/products_model/products.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
 class SingleBlogScreen extends StatelessWidget {
-  const SingleBlogScreen({Key? key, required this.blogId, required this.productType})
+  const SingleBlogScreen(
+      {Key? key, required this.blogId, required this.productType})
       : super(key: key);
   final String blogId;
   final String productType;

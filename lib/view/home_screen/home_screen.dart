@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
+import 'package:flutter_hackathon/view/cart_screens/cart_screen.dart';
 
 import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
@@ -42,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(
         "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
     // Provider.of<MyProvider>(context,listen: false).examAvailable();
+    checkToken(context);
   }
 
   int noProducts = 1;
@@ -52,39 +55,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<MyProvider>(context).examAvailable();
+    myProvider(context: context).examAvailable();
 
     return Scaffold(
-      appBar: myProvider(context: context).isExamAvailable? 
-      AppBar(
-        backgroundColor: const Color.fromARGB(6, 255, 255, 255),
-        elevation: 0,
-        actions: [
-          Provider.of<MyProvider>(context).isExamAvailable
-              ? IconButton(
-                  onPressed: () {
-                    DateTime now = DateTime.now();
-                    DateTime date = DateTime(now.year, now.month, now.day,
-                        now.hour, (now.minute) + 8);
-                    print("now: ${now.minute}");
-                    print("date: ${date}");
-                    print("date min: ${date.minute}");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => const QuizScreen(),
-                      ),
-                    );
-                  },
-                  icon: CircleAvatar(
-                      backgroundColor: defaultColor,
-                      child: const Icon(
-                        Icons.question_mark,
-                        color: Colors.white,
-                      )))
-              : const SizedBox(),
-        ],
-      ):null,
+      appBar: myProvider(context: context).isExamAvailable
+          ? AppBar(
+              backgroundColor: const Color.fromARGB(6, 255, 255, 255),
+              elevation: 0,
+              actions: [
+                myProvider(context: context).isExamAvailable
+                    ? IconButton(
+                        onPressed: () {
+                          DateTime now = DateTime.now();
+                          DateTime date = DateTime(now.year, now.month, now.day,
+                              now.hour, (now.minute) + 8);
+                          print("now: ${now.minute}");
+                          print("date: ${date}");
+                          print("date min: ${date.minute}");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) =>
+                                  const QuizScreen(),
+                            ),
+                          );
+                        },
+                        icon: CircleAvatar(
+                            backgroundColor: defaultColor,
+                            child: const Icon(
+                              Icons.question_mark,
+                              color: Colors.white,
+                            )))
+                    : const SizedBox(),
+              ],
+            )
+          : null,
       body: Consumer<MyProvider>(
         builder: (context, myProvider, child) {
           return DefaultTabController(
@@ -111,9 +116,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         InkWell(
                           onTap: () {
-                            // myProvider.getBlogs();
-                            // myProvider.getAllProducts();
-                            myProvider.getProductById(productId: "f985a224-ee41-411e-9327-dfb9822544ab");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    const CartScreen(),
+                              ),
+                            );
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -171,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                       indicator: ContainerTabIndicator(
                         radius: const BorderRadius.all(Radius.circular(12.0)),
-                        color: Color.fromARGB(255, 239, 238, 238),
+                        color: const Color.fromARGB(255, 239, 238, 238),
                         width: screenWidth(context: context) * 0.18,
                         height: screenHeigth(context: context) * 0.065,
                         borderWidth: 2.0,
@@ -185,10 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Expanded(
                       child: TabBarView(children: [
-                        selectedPage(myProvider.allproducts),
-                        selectedPage(myProvider.allPlants),
-                        selectedPage(myProvider.allSeeds),
-                        selectedPage(myProvider.allTools),
+                        selectedPage(myProvider.allproducts,
+                            myProvider.cartProdCount, "productId"),
+                        selectedPage(myProvider.allPlants,
+                            myProvider.cartPlantCount, "plantId"),
+                        selectedPage(myProvider.allSeeds,
+                            myProvider.cartSeedsCount, "toolId"),
+                        selectedPage(myProvider.allTools,
+                            myProvider.cartToolsCount, "seedId"),
                       ]),
                     ),
                   ]),
@@ -199,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget selectedPage(List category) {
+  Widget selectedPage(List category, List productCount, String productIdType) {
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 80,
@@ -245,44 +258,59 @@ class _HomeScreenState extends State<HomeScreen> {
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 25, right: 15),
+                  padding: const EdgeInsets.only(top: 25, right: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          myProvider(context: context).decrementCartItem(productMap: productCount, productInstance: category[index]);
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(5),
                               )),
-                          
-                          child:const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 3,horizontal: 8),
-                            child: Text("-",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 8),
+                            child: Text(
+                              "-",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
                           ),
                         ),
                       ),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
-                      Text("$noProducts"),
+                      Text(prodCount(
+                              productCount: productCount,
+                              productIdType: productIdType,
+                              productInstance: category[index]).toString()),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          myProvider(context: context).incrementCartItem(productMap: productCount, productInstance: category[index]);
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(5),
                               )),
-                          
-                          child:const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 3,horizontal: 8),
-                            child: Text("+",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 18),),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 8),
+                            child: Text(
+                              "+",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 18),
+                            ),
                           ),
                         ),
                       ),
@@ -298,28 +326,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       "${category[index].name}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: screenHeigth(context: context) * 0.005,
                     ),
                     Text(
-                      "${category[index] is Products?category[index].price:70 } EGP",
+                      "${category[index] is Products ? category[index].price : 70} EGP",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        String productId;
+                        String productType;
+                        if (category[index] is Plants) {
+                          productId = category[index].plantId;
+                          productType = "Plants";
+                        } else if (category[index] is Tool) {
+                          productId = category[index].toolId;
+                          productType = "Tool";
+                        } else if (category[index] is Products) {
+                          productId = category[index].productId;
+                          productType = "Products";
+                        } else {
+                          productId = category[index].seedId;
+                          productType = "Seeds";
+                        }
+                        // Cart itemToCart = Cart(
+                        //     productId: productId,
+                        //     noProductsInCart: noProducts,
+                        //     userId: userId!);
+                        // myProvider(context: context).myCart.add(itemToCart);
+                        // for (var item in myProvider(context: context).myCart) {
+                        //   print("Item: ${item.noProductsInCart}");
+                        // }
+
+                      var noItems= prodCount(
+                              productCount: productCount,
+                              productIdType: productIdType,
+                              productInstance: category[index]);
+
+                        Cart toCart = Cart(userId: userId!,
+                         productId: productId, noProductsInCart: noItems , productType: productType);
+                         myProvider(context: context).addToCart(myCart: toCart);
+                      },
                       child: const Text("Add To Cart"),
-                      style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          )),
-                          backgroundColor:
-                              MaterialStateProperty.all(defaultColor),
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsetsDirectional.all(10))),
+                      style: roundedButtonStyle(
+                          borderRaduis: 10,
+                          padding: const EdgeInsetsDirectional.all(10)),
                     ),
                   ],
                 ),
@@ -329,5 +385,28 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }),
     );
+  }
+
+  prodCount(
+      {required List productCount,
+       String? productIdType,
+      required dynamic productInstance}) {
+
+      String prodId;
+      if (productInstance is Plants) {
+        prodId = productInstance.plantId!;
+      } else if (productInstance is Tool) {
+        prodId = productInstance.toolId!;
+      } else if (productInstance is Products) {
+        prodId = productInstance.productId!;
+      } else {
+        prodId = productInstance.seedId;
+      }
+    for (Map item in productCount) {
+      if (item.containsKey(prodId)) {
+        print("value is: ${item.values}");
+        return item.values.first;
+      }
+    }
   }
 }

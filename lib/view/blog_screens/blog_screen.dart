@@ -16,7 +16,8 @@ class BlogScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text(
             "Blogs",
-            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold ,fontSize: 20),
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
           ),
           centerTitle: true,
           backgroundColor: const Color.fromARGB(6, 255, 255, 255),
@@ -34,23 +35,23 @@ class BlogScreen extends StatelessWidget {
                       onTap: (() {
                         String blogId;
                         String productType;
-                        if(allBlogs[index] is Plants){
-                            blogId =allBlogs[index].plantId; 
-                            productType="Plants";
-                        }
-                       else if(allBlogs[index] is Tool){
-                            blogId =allBlogs[index].toolId; 
-                            productType="Tool";
-                        }
-                        else{
-                            blogId =allBlogs[index].seedId; 
-                            productType="Seeds";
+                        if (allBlogs[index] is Plants) {
+                          blogId = allBlogs[index].plantId;
+                          productType = "Plants";
+                        } else if (allBlogs[index] is Tool) {
+                          blogId = allBlogs[index].toolId;
+                          productType = "Tool";
+                        } else {
+                          blogId = allBlogs[index].seedId;
+                          productType = "Seeds";
                         }
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                 SingleBlogScreen(blogId: blogId,productType: productType,),
+                            builder: (BuildContext context) => SingleBlogScreen(
+                              blogId: blogId,
+                              productType: productType,
+                            ),
                           ),
                         );
                       }),
