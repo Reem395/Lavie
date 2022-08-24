@@ -129,7 +129,7 @@ class CartScreen extends StatelessWidget {
                                                     (926 / 14),
                                           ),
                                           Text(
-                                            "200 EGP",
+                                            "800 EGP",
                                             style: TextStyle(
                                                 color: defaultColor,
                                                 fontWeight: FontWeight.w500),

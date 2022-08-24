@@ -91,16 +91,18 @@ class Forums extends StatelessWidget {
                     child: TabBarView(children: [
                       forums(
                           context: context,
-                          forumUserName: "Khalid Mohamed",
                           posts: allPosts,
                           forumDate: forumDate,
-                          forumUserImage: forumUserImage),
-                      forums(
+                          // forumUserImage: forumUserImage
+                          ),
+                      myPosts.isNotEmpty? forums(
                           context: context,
-                          forumUserName: forumUserName,
                           posts: myPosts,
                           forumDate: forumDate,
-                          forumUserImage: "assets/images/A5.png"),
+                          // forumUserImage: "assets/images/A5.png"
+                          ):const Center(
+                            child: Text("No Posts yets",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),),
+                          )
                     ]),
                   ),
                 ],
@@ -125,8 +127,7 @@ class Forums extends StatelessWidget {
   Widget forums({
     required context,
     required List<Forum> posts,
-    required String forumUserImage,
-    forumUserName,
+    // required String forumUserImage,
     forumDate,
   }) {
     return GridView.count(
