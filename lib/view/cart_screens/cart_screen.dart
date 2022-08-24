@@ -11,7 +11,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List allBlogs = myProvider(context: context).allBlogs;
+    List allBlogs = myProvider(context: context).allproducts;
 
     Widget emptyCart = Center(
       child: Column(
@@ -240,7 +240,8 @@ class CartScreen extends StatelessWidget {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            "${myProvider(context: context).totalCartPrice} EGP",
+                            // "${myProvider(context: context).totalCartPrice} EGP",
+                            "800 EGP",
                             style: TextStyle(
                                 color: defaultColor,
                                 fontSize: 18,
