@@ -148,7 +148,7 @@ class _AddForumState extends State<AddForum> {
                 TextField(
                   controller: postDescription,
                   maxLines: 7,
-                  decoration: textFieldBorderStyle(),
+                  decoration: textFieldBorderStyle(contetPadding: EdgeInsets.all(10)),
                 ),
                 SizedBox(
                   height: screenHeigth(context: context) * 0.03,
@@ -159,8 +159,8 @@ class _AddForumState extends State<AddForum> {
                       onPressed: () {
                         print("image: ${postImageURL.text.length}");
                         if (!(postTitle.text == "" ||
-                            postDescription.text == "" ||
-                            postImageURL.text == "")) {
+                            postDescription.text == ""||
+                            postImageURL.text=="" )) {
                           myProvider(context: context).addForum(
                               title: postTitle.text,
                               description: postDescription.text,
@@ -174,18 +174,7 @@ class _AddForumState extends State<AddForum> {
                         }
                       },
                       child: const Text("post"),
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(Size.infinite),
-                        padding: MaterialStateProperty.all(EdgeInsets.all(15)),
-                        backgroundColor:
-                            MaterialStateProperty.all(defaultColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(9.0),
-                                    side: BorderSide(
-                                        color: defaultColor, width: 1.5))),
-                      )),
+                      style: roundedButtonStyle()),
                 ),
               ],
             ),

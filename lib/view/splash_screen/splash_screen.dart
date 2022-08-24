@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/view/components.dart';
 import 'package:provider/provider.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../controller/provider/my_provider.dart';
 import '../../controller/services/app_shared_pref.dart';
+import '../../utils/constants.dart';
 import '../shop_layout/shop_layout.dart';
 import '../signup_login_screens/signup_login_screen.dart';
 
@@ -21,12 +23,11 @@ class _SpalshScreenState extends State<SpalshScreen> {
   void initState() {
     super.initState();
 
-    String? userToken = AppSharedPref.getToken();
     print("userToken from splash: $userToken");
     var myprovider = Provider.of<MyProvider>(context, listen: false);
     print("All product length ${myprovider.allproducts.length}");
     Widget nexWidget;
-    if (userToken == null) {
+    if (userToken == null || isTokenExpired()) {
       nexWidget = SignupLogin();
     } else {
       myprovider.getAllTools();

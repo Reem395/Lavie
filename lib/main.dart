@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/view/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'controller/provider/my_provider.dart';
 import 'controller/services/app_shared_pref.dart';
 import 'view/splash_screen/splash_screen.dart';
+import 'controller/local/database/database_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppSharedPref.init();
+  // await DatabaseHelper.helper.getDbInstance();
   runApp(const MyApp());
 }
 

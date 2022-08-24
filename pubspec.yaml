@@ -42,6 +42,10 @@ dependencies:
   container_tab_indicator: ^0.3.0
   curved_navigation_bar: ^1.0.3
   like_button: ^2.0.4
+  jwt_decode: ^0.3.1
+  sqflite: ^2.0.2+1
+  intl: ^0.17.0
+  qr_code_scanner: ^0.7.0
   
 
 dev_dependencies:
@@ -86,6 +90,11 @@ flutter:
     - family: Meddon
       fonts:
         - asset: assets/fonts/Meddon.ttf
+    - family: Karantina
+      fonts:
+        - asset: assets/fonts/Karantina-Regular.ttf
+        - asset: assets/fonts/Karantina-Bold.ttf
+          weight: 700
     # - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

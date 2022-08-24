@@ -45,8 +45,10 @@ Widget searchBar(
 InputDecoration textFieldBorderStyle(
     {EdgeInsetsGeometry? contetPadding,
     double? borderRaduis,
-    Color? borderColor}) {
+    Color? borderColor,
+    String? hintText}) {
   return InputDecoration(
+    hintText: hintText ?? "",
     contentPadding: contetPadding ?? EdgeInsets.all(3),
     border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -90,5 +92,26 @@ Widget roundedImage({required Image image, double? raduis}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(raduis ?? 13),
     child: image,
+  );
+}
+
+ButtonStyle roundedButtonStyle(
+    {EdgeInsetsGeometry? padding,
+    Color? buttonColor,
+    Color? borderColor,
+    Color? foregroundColor,
+    double? borderWidth,
+    double? borderRaduis}) {
+  return ButtonStyle(
+    fixedSize: MaterialStateProperty.all(Size.infinite),
+    padding: MaterialStateProperty.all(padding ?? const EdgeInsets.all(15)),
+    backgroundColor: MaterialStateProperty.all(buttonColor ?? defaultColor),
+    foregroundColor: MaterialStateProperty.all(foregroundColor ?? Colors.white),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRaduis ?? 9.0),
+            side: BorderSide(
+                color: borderColor ?? defaultColor,
+                width: borderWidth ?? 1.5))),
   );
 }

@@ -1,12 +1,12 @@
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/view/components.dart';
-import 'package:flutter_hackathon/models/forum_model/forum.dart';
 import 'package:like_button/like_button.dart';
-import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
+import '../../models/forum_model/Forum.dart';
 import '../../utils/constants.dart';
-import '../../controller/provider/my_provider.dart';
+
 import 'add_forum.dart';
 
 class Forums extends StatelessWidget {
@@ -23,10 +23,8 @@ class Forums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Forum> allPosts =
-        Provider.of<MyProvider>(context, listen: false).allPosts;
-    List<Forum> myPosts =
-        Provider.of<MyProvider>(context, listen: false).myPosts;
+    List<Forum> allPosts = myProvider(context: context).allPosts;
+    List<Forum> myPosts = myProvider(context: context).myPosts;
     print("allposts len: ${allPosts.length}");
     print("myPosts len: ${myPosts.length}");
     return Scaffold(
@@ -151,10 +149,21 @@ class Forums extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 30,
-                              child: Image.asset(
-                                forumUserImage,
-                                fit: BoxFit.cover,
-                              ),
+                              backgroundColor: Colors.white,
+                              child: posts[index].user!.imageUrl != null
+                                  ? roundedImage(
+                                      raduis: 50,
+                                      image: Image.network(
+                                        "${posts[index].user!.imageUrl}",
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Text("No Image Found");
+                                        },
+                                      ))
+                                  : Image.asset(
+                                      forumUserImage,
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                             SizedBox(
                               width: screenWidth(context: context) * 0.02,
@@ -163,7 +172,7 @@ class Forums extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  forumUserName,
+                                  "${posts[index].user!.firstName} ${posts[index].user!.lastName}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -237,7 +246,7 @@ class Forums extends StatelessWidget {
                         return Icon(Icons.thumb_up_outlined,
                             color: isLiked ? defaultColor : Colors.grey);
                       }),
-                      likeCount: 0,
+                      likeCount: posts[index].forumLikes!.length,
                       countBuilder: (count, isLiked, text) {
                         var color = Colors.grey;
                         String text = count == 0 ? "Likes" : "Like";
@@ -251,9 +260,110 @@ class Forums extends StatelessWidget {
                     width: screenWidth(context: context) * 0.05,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        clipBehavior: Clip.hardEdge,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
+                            side: BorderSide(color: defaultColor, width: 3)),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: screenHeigth(context: context) * 0.85,
+                            color: lightGrey,
+                            child: Center(
+                                child: posts[index].forumComments!.length != 0
+                                    ? ListView.builder(
+                                        itemCount:
+                                            posts[index].forumComments!.length,
+                                        padding: const EdgeInsets.only(top: 10),
+                                        itemBuilder: ((context, idx) {
+                                          DateTime createdDate = DateTime.parse(
+                                              posts[index]
+                                                  .forumComments![idx]
+                                                  .createdAt!);
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ListTile(
+                                              leading: Image.asset(idx % 2 == 0
+                                                  ? "assets/images/A3.png"
+                                                  : "assets/images/A4.png"),
+                                              title: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Container(
+                                                    decoration:
+                                                        roundedContainer(
+                                                            color: lightGrey),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            idx % 2 == 0
+                                                                ? "Lina Walid"
+                                                                : "Edward Sam ",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                                fontSize: 17),
+                                                          ),
+                                                          SizedBox(
+                                                            height: screenHeigth(
+                                                                    context:
+                                                                        context) *
+                                                                0.015,
+                                                          ),
+                                                          Text(
+                                                            "${posts[index].forumComments![idx].comment}",
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: screenHeigth(
+                                                            context: context) *
+                                                        0.015,
+                                                  ),
+                                                  Text(
+                                                    "${DateFormat('yyyy-MM-dd ').format(createdDate)}",
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.grey),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }))
+                                    : const Center(
+                                        child: Text(
+                                        "No replies to show yet",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ))),
+                          );
+                        },
+                      );
+                    },
                     child: Text(
-                      "$noOfReplies Replies",
+                      "${posts[index].forumComments!.length} Replies",
                       style: const TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold),
                     ),

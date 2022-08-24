@@ -43,7 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: firstNameController,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -60,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: lastNameController,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -77,7 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: emailController,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -94,7 +94,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: passwordController,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
               obscureText: true,
             ),
             SizedBox(
@@ -112,7 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: confirmPasswordController,
-              decoration: textFieldBorderStyle(),
+              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
               obscureText: true,
             ),
             SizedBox(
@@ -122,20 +122,21 @@ class _SignupScreenState extends State<SignupScreen> {
             ElevatedButton(
               onPressed: () {
                 try {
-                  if ( firstNameController.text==""||
-                      lastNameController.text==""||
+                  if (firstNameController.text == "" ||
+                      lastNameController.text == "" ||
                       emailController.text == "" ||
-                      passwordController.text == ""||
-                      confirmPasswordController.text=="") {
+                      passwordController.text == "" ||
+                      confirmPasswordController.text == "") {
                     Fluttertoast.showToast(
                         msg: "Please enter all fields",
                         toastLength: Toast.LENGTH_SHORT);
                   } else {
                     myProvider(context: context).signUp(
-                      firstName: firstNameController.text,
-                       lastName: lastNameController.text,
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
                         email: emailController.text,
-                         password: passwordController.text, context: context);
+                        password: passwordController.text,
+                        context: context);
                   }
                 } catch (e) {
                   print("error: $e");
