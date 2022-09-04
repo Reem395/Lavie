@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ import '../forums_screens/forums_screen.dart';
 import '../signup_login_screens/signup_login_screen.dart';
 
 class ShopLayout extends StatefulWidget {
-  ShopLayout({Key? key}) : super(key: key);
+  ShopLayout({Key key}) : super(key: key);
 
   @override
   State<ShopLayout> createState() => _ShopLayoutState();
@@ -64,7 +65,6 @@ class _ShopLayoutState extends State<ShopLayout> {
               size: 25,
               color: _selectedIndex == 1 ? Colors.white : Colors.black,
             ),
-           
             Icon(
               Icons.mobile_friendly,
               size: 25,

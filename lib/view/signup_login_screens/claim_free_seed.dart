@@ -12,10 +12,10 @@ class ClaimFreeSeed extends StatefulWidget {
   State<ClaimFreeSeed> createState() => _ClaimFreeSeedState();
 }
 
+    TextEditingController addressController = TextEditingController();
 class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController addressController = TextEditingController();
     return Scaffold(
         extendBodyBehindAppBar: true,
         body: SingleChildScrollView(
