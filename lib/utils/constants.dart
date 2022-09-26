@@ -16,9 +16,6 @@ String baseURL = "https://lavie.orangedigitalcenteregypt.com";
 String? userToken = AppSharedPref.getToken();
 String? userId = AppSharedPref.getUserId();
 
-
-
-
 Size screenSize({required context}) {
   return MediaQuery.of(context).size;
 }
@@ -31,8 +28,8 @@ double screenWidth({required context}) {
   return MediaQuery.of(context).size.width;
 }
 
-MyProvider myProvider({required BuildContext context, bool? listen}) {
-  return Provider.of<MyProvider>(context, listen: listen ?? false);
+MyProvider myProvider({required BuildContext context, bool listen = false}) {
+  return Provider.of<MyProvider>(context, listen: listen);
 }
 
 bool isTokenExpired() {
@@ -62,5 +59,3 @@ void checkToken(BuildContext context) {
     });
   }
 }
-
-

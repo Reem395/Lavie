@@ -1,5 +1,3 @@
-import 'package:flutter_hackathon/models/user_model/user.dart';
-
 class ForumLike {
   String? forumId;
   String? userId;

@@ -11,6 +11,8 @@ class SignupScreen extends StatefulWidget {
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
+bool hidePassword = true;
+
 class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailController = TextEditingController();
 
@@ -43,7 +45,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: firstNameController,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              decoration:
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -60,7 +63,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: lastNameController,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              decoration:
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -77,7 +81,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: emailController,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              decoration:
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -94,7 +99,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: passwordController,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              decoration:
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
               obscureText: true,
             ),
             SizedBox(
@@ -112,8 +118,19 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: confirmPasswordController,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
-              obscureText: true,
+              obscureText: hidePassword,
+              decoration: textFieldBorderStyle(
+                  contetPadding: const EdgeInsets.all(10),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    icon: hidePassword
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                  )),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *

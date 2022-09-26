@@ -4,16 +4,15 @@ import 'package:sqflite/sqflite.dart';
 import '../../../models/cart_model/cart.dart';
 
 class DatabaseHelper {
-
-   String dbName = 'la_Vie.db';
- int dbVersion = 1;
- String tableName = 'userCart';
+  String dbName = 'la_Vie.db';
+  int dbVersion = 1;
+  String tableName = 'userCart';
 // //cols
- String colId = 'id';
- String colNoProductsInCart= 'noProductsInCart';
- String colProductId = 'productId';
- String productType = 'productType';
- String colUserId = 'userId';
+  String colId = 'id';
+  String colNoProductsInCart = 'noProductsInCart';
+  String colProductId = 'productId';
+  String productType = 'productType';
+  String colUserId = 'userId';
   DatabaseHelper._instance();
   static final DatabaseHelper helper = DatabaseHelper._instance();
 
@@ -31,6 +30,7 @@ class DatabaseHelper {
     print(sql);
     db.execute(sql);
   }
+
   Future<Database> getDbInstance() async {
     int oldV = dbVersion - 1;
     String path = await getDbPath();
@@ -39,13 +39,13 @@ class DatabaseHelper {
         version: dbVersion, onCreate: (db, version) => _onCreate(db));
   }
 
-   Future<int> insertDb(Cart cart) async {
+  Future<int> insertDb(Cart cart) async {
     Database db = await getDbInstance();
     return db.insert(tableName, cart.toJson());
   }
-    Future<int> deleteFromDb(int id) async {
-    Database db = await getDbInstance();
-    return db.delete(tableName,where: '$colId=?',whereArgs: [id]);
 
+  Future<int> deleteFromDb(int id) async {
+    Database db = await getDbInstance();
+    return db.delete(tableName, where: '$colId=?', whereArgs: [id]);
   }
 }

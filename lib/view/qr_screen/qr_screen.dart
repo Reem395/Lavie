@@ -66,7 +66,6 @@ class _QrScreenState extends State<QrScreen> {
       //   myProvider(context: context).getProductById(productId: "${result!.code}");
       //   print("${result!.code}");
       // }
-    
     });
   }
 

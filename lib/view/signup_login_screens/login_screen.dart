@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 
 import '../components.dart';
 import '../../utils/constants.dart';
-import '../../controller/provider/my_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -12,6 +10,8 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
+bool hidePassword = true;
 
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
@@ -40,7 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              decoration:
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -57,8 +58,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextField(
               controller: passwordController,
-              obscureText: true,
-              decoration: textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
+              obscureText: hidePassword,
+              decoration: textFieldBorderStyle(
+                  contetPadding: const EdgeInsets.all(10),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    icon: hidePassword
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                  )),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
 
 Widget laVieLogo({Size? screenSize, double? textSize}) {
   return Stack(
@@ -46,8 +46,10 @@ InputDecoration textFieldBorderStyle(
     {EdgeInsetsGeometry? contetPadding,
     double? borderRaduis,
     Color? borderColor,
+    Widget? suffixIcon,
     String? hintText}) {
   return InputDecoration(
+    suffixIcon: suffixIcon,
     hintText: hintText ?? "",
     contentPadding: contetPadding ?? EdgeInsets.all(3),
     border: OutlineInputBorder(

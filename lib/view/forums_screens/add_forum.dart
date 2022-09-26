@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'dart:convert';
 
 import '../components.dart';
-import '../../controller/provider/my_provider.dart';
+import '../shop_layout/shop_layout.dart';
 
 class AddForum extends StatefulWidget {
   const AddForum({Key? key}) : super(key: key);
@@ -17,6 +21,55 @@ class _AddForumState extends State<AddForum> {
   TextEditingController postTitle = TextEditingController();
   TextEditingController postDescription = TextEditingController();
   TextEditingController postImageURL = TextEditingController();
+
+  final ImagePicker _imagePicker = ImagePicker();
+  dynamic _pickImageError;
+  List<XFile>? _imageFileList;
+  String? img64;
+  XFile? pickedFile;
+
+  Widget addImage() {
+    return Center(
+      child: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          border: Border.all(color: defaultColor, width: 1.5),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              color: defaultColor,
+              onPressed: () {
+                _onImageButtonPressed(ImageSource.gallery, context: context);
+              },
+            ),
+            Text(
+              "Add Photo",
+              style:
+                  TextStyle(color: defaultColor, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onImageButtonPressed(ImageSource source,
+      {BuildContext? context, bool isMultiImage = false}) async {
+    try {
+      pickedFile = await _imagePicker.pickImage(source: source);
+      final bytes = File(pickedFile!.path).readAsBytesSync();
+      img64 = "data:image/jpeg;base64," + base64Encode(bytes);
+      setState(() {});
+    } catch (e) {
+      print("image error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,77 +100,28 @@ class _AddForumState extends State<AddForum> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: defaultColor, width: 1.5),
-                      borderRadius: const BorderRadius.all(Radius.circular(7)),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          color: defaultColor,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(
-                                    'Image',
-                                    style: TextStyle(color: defaultColor),
-                                  ),
-                                  content: SizedBox(
-                                    height:
-                                        screenHeigth(context: context) * 0.2,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text("Add Image URL"),
-                                        SizedBox(
-                                          height:
-                                              screenHeigth(context: context) *
-                                                  0.01,
-                                        ),
-                                        TextField(
-                                          controller: postImageURL,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Back'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Save'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
+                pickedFile == null
+                    ? addImage()
+                    : InkWell(
+                        onTap: () {
+                          _onImageButtonPressed(ImageSource.gallery,
+                              context: context);
+                        },
+                        child: Center(
+                          child: SizedBox(
+                            width: 160,
+                            height: screenHeigth(context: context) * 0.16,
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(7)),
+                              child: Image.file(
+                                File(pickedFile!.path),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ),
-                        Text(
-                          "Add Photo",
-                          style: TextStyle(
-                              color: defaultColor, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
                 SizedBox(
                   height: screenHeigth(context: context) * 0.05,
                 ),
@@ -148,7 +152,8 @@ class _AddForumState extends State<AddForum> {
                 TextField(
                   controller: postDescription,
                   maxLines: 7,
-                  decoration: textFieldBorderStyle(contetPadding: EdgeInsets.all(10)),
+                  decoration:
+                      textFieldBorderStyle(contetPadding: EdgeInsets.all(10)),
                 ),
                 SizedBox(
                   height: screenHeigth(context: context) * 0.03,
@@ -156,17 +161,20 @@ class _AddForumState extends State<AddForum> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         print("image: ${postImageURL.text.length}");
                         if (!(postTitle.text == "" ||
                             postDescription.text == ""||
-                            postImageURL.text=="" )) {
+                            img64 == null)) {
                           myProvider(context: context).addForum(
                               title: postTitle.text,
                               description: postDescription.text,
-                              image: postImageURL.text);
-
-                          Navigator.pop(context);
+                              image: img64!);
+                          await Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute<void>(
+                                  builder: (context) => ShopLayout()),
+                              (r) => false);
+                          myProvider(context: context).selectedIndex = 0;
                         } else {
                           Fluttertoast.showToast(
                               msg: "Please enter all fields",
