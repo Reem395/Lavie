@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/view/components.dart';
 import 'package:flutter_hackathon/view/shop_layout/shop_layout.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../utils/constants.dart';
+import '../components.dart';
 
 class ClaimFreeSeed extends StatefulWidget {
   const ClaimFreeSeed({Key? key}) : super(key: key);
@@ -12,7 +12,8 @@ class ClaimFreeSeed extends StatefulWidget {
   State<ClaimFreeSeed> createState() => _ClaimFreeSeedState();
 }
 
-    TextEditingController addressController = TextEditingController();
+TextEditingController addressController = TextEditingController();
+
 class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
   @override
   Widget build(BuildContext context) {

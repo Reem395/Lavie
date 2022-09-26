@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/models/user_model/user.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
+
+import '../qr_screen/qr_screen.dart';
 
 class Profile extends StatelessWidget {
   Profile({Key? key}) : super(key: key);
 
-  late String userName = "Mayar Mohammed";
-  int points = 30;
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    User? currentUser = myProvider(context: context, listen: true).currentUser;
+    int points = myProvider(context: context).currentUser!.userPoints ?? 0;
+
     return Scaffold(
       // backgroundColor: Colors.grey,
       extendBody: true,
@@ -30,7 +38,6 @@ class Profile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 80),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
                   radius: 50,
@@ -40,7 +47,7 @@ class Profile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "$userName",
+                  "${currentUser!.firstName} ${currentUser.lastName}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -57,7 +64,6 @@ class Profile extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           height: screenHeigth(context: context) * 0.5,
           width: double.infinity,
-          // height: screenHeigth(context: context)*0.52,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -70,7 +76,7 @@ class Profile extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(56, 211, 240, 226),
+                    color: const Color.fromARGB(56, 211, 240, 226),
                     borderRadius: BorderRadius.circular(8)),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -118,28 +124,108 @@ class Profile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: ListTile(
-                      leading: Container(
-                        color: const Color.fromARGB(255, 11, 82, 13),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(
-                            Icons.compare_arrows,
-                            color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                  "Change Name",
+                                  style: TextStyle(color: defaultColor),
+                                ),
+                                content: SizedBox(
+                                  height: screenHeigth(context: context) * 0.2,
+                                  child: SingleChildScrollView(
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        children: [
+                                          TextFormField(
+                                            controller: firstNameController,
+                                            decoration: const InputDecoration(
+                                                labelText: "First Name"),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "First Name is Required";
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                          TextFormField(
+                                            controller: lastNameController,
+                                            decoration: const InputDecoration(
+                                                labelText: "Last Name"),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "Last Name is Required";
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        if (_formKey.currentState!.validate()) {
+                                          await myProvider(context: context)
+                                              .editCurrentUser(
+                                                  firstName:
+                                                      firstNameController.text,
+                                                  lastName:
+                                                      lastNameController.text);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text('Name Changed')),
+                                          );
+                                          Navigator.of(context).pop();
+                                          firstNameController.clear();
+                                          lastNameController.clear();
+                                        }
+                                      } catch (e) {
+                                        print("Error changing name $e");
+                                      }
+                                    },
+                                    child: const Text("Ok"),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Cancel"))
+                                ],
+                              );
+                            });
+                      },
+                      child: ListTile(
+                        leading: Container(
+                          color: const Color.fromARGB(255, 11, 82, 13),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(
+                              Icons.compare_arrows,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
+                        title: const Text(
+                          "Change Name",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_right_alt,
+                          color: Color.fromARGB(255, 11, 82, 13),
+                          size: 30,
+                        ),
                       ),
-                      title: const Text(
-                        "Change Name",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.arrow_right_alt,
-                            color: Color.fromARGB(255, 11, 82, 13),
-                            size: 30,
-                          )),
                     ),
                   ),
                 ),
@@ -156,28 +242,88 @@ class Profile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: ListTile(
-                      leading: Container(
-                        color: const Color.fromARGB(255, 11, 82, 13),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(
-                            Icons.compare_arrows,
-                            color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                  "Change Email",
+                                  style: TextStyle(color: defaultColor),
+                                ),
+                                content: SizedBox(
+                                  height: screenHeigth(context: context) * 0.1,
+                                  child: SingleChildScrollView(
+                                    child: Form(
+                                      key: _formKey,
+                                      child: TextFormField(
+                                        controller: emailController,
+                                        decoration: const InputDecoration(
+                                            labelText: "Email"),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Email is Required";
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        if (_formKey.currentState!.validate()) {
+                                          await myProvider(context: context)
+                                              .editCurrentUser(
+                                                  email: emailController.text);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text('Email Changed')),
+                                          );
+                                          Navigator.of(context).pop();
+                                          firstNameController.clear();
+                                          lastNameController.clear();
+                                        }
+                                      } catch (e) {
+                                        print("Error changing Email $e");
+                                      }
+                                    },
+                                    child: const Text("Ok"),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Cancel"))
+                                ],
+                              );
+                            });
+                      },
+                      child: ListTile(
+                        leading: Container(
+                          color: const Color.fromARGB(255, 11, 82, 13),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(
+                              Icons.compare_arrows,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
+                        title: const Text(
+                          "Change Email",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_right_alt,
+                          color: Color.fromARGB(255, 11, 82, 13),
+                          size: 30,
+                        ),
                       ),
-                      title: const Text(
-                        "Change Email",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.arrow_right_alt,
-                            color: Color.fromARGB(255, 11, 82, 13),
-                            size: 30,
-                          )),
                     ),
                   ),
                 ),
@@ -186,6 +332,19 @@ class Profile extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => QrScreen(),
+            ),
+          );
+        },
+        child: const Icon(Icons.qr_code_scanner_outlined),
+        backgroundColor: defaultColor,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
     );
   }
 }

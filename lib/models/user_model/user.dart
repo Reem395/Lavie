@@ -1,3 +1,5 @@
+import 'user_notification.dart';
+
 class User {
   String? userId;
   String? firstName;
@@ -6,6 +8,8 @@ class User {
   String? imageUrl;
   dynamic address;
   String? role;
+  dynamic userPoints;
+  List<UserNotification>? userNotification;
 
   User({
     this.userId,
@@ -15,6 +19,8 @@ class User {
     this.imageUrl,
     this.address,
     this.role,
+    this.userPoints,
+    this.userNotification,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -25,6 +31,10 @@ class User {
         imageUrl: json['imageUrl'] as String?,
         address: json['address'] as dynamic,
         role: json['role'] as String?,
+        userPoints: json['UserPoints'] as dynamic,
+        userNotification: (json['UserNotification'] as List<dynamic>?)
+            ?.map((e) => UserNotification.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +45,7 @@ class User {
         'imageUrl': imageUrl,
         'address': address,
         'role': role,
+        'UserPoints': userPoints,
+        'UserNotification': userNotification?.map((e) => e.toJson()).toList(),
       };
 }

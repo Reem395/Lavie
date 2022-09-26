@@ -10,12 +10,15 @@ import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../models/forum_model/Forum.dart';
+import '../../models/forum_model/forum_comment.dart';
+import '../../models/forum_model/forum_like.dart';
 import '../../models/forum_model/forum_model.dart';
 import '../../models/products_model/products.dart';
 import '../../models/products_model/products_model.dart';
 import '../../models/seeds_model/seeds.dart';
 import '../../models/seeds_model/seeds_model.dart';
 import '../../models/tools_model/tool.dart';
+import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
 import '../../utils/constants.dart';
 import '../../view/shop_layout/shop_layout.dart';
@@ -27,6 +30,8 @@ class MyProvider with ChangeNotifier {
   DateTime? currentExamDate;
   DateTime? nextExamDate;
   bool isExamAvailable = false;
+  int selectedIndex = 2;
+  User? currentUser;
 
   List<Seeds> allSeeds = [];
   List<Tool> allTools = [];
@@ -35,12 +40,13 @@ class MyProvider with ChangeNotifier {
   List<Forum> allPosts = [];
   List<Forum> myPosts = [];
   List<dynamic> allBlogs = [];
-  List userCart =[];
-  List<Map<String, int>> cartProdCount = [];
+  List userCart = [];
+  List<Map<String, int>> cartProdCount =[]; //contains Id of product and intial count in cart (0)
   List<Map<String, int>> cartPlantCount = [];
   List<Map<String, int>> cartSeedsCount = [];
   List<Map<String, int>> cartToolsCount = [];
-  // String? accessToken = AppSharedPref.getToken();
+
+//****************** Exams ********************************* */
 
   void currentExamAccessDate() {
     DateTime now = DateTime.now();
@@ -83,6 +89,8 @@ class MyProvider with ChangeNotifier {
     }
   }
 
+//****************** get seed, plants, tools, products ********************************* */
+
   Future getAllSeeds() async {
     try {
       allSeeds.clear();
@@ -95,7 +103,7 @@ class MyProvider with ChangeNotifier {
       SeedsModel res = SeedsModel.fromJson(response.data);
       allSeeds = [...?res.data];
       for (var item in allSeeds) {
-        cartSeedsCount.add({"${item.seedId}":0});
+        cartSeedsCount.add({"${item.seedId}": 0});
       }
       notifyListeners();
     } on DioError catch (e) {
@@ -126,7 +134,7 @@ class MyProvider with ChangeNotifier {
       PlantsModel res = PlantsModel.fromJson(response.data);
       allPlants = [...?res.data];
       for (var item in allPlants) {
-        cartPlantCount.add({"${item.plantId}":0});
+        cartPlantCount.add({"${item.plantId}": 0});
       }
       notifyListeners();
     } on DioError catch (e) {
@@ -146,7 +154,7 @@ class MyProvider with ChangeNotifier {
       ToolsModel res = ToolsModel.fromJson(response.data);
       allTools = [...?res.data];
       for (var item in allTools) {
-        cartToolsCount.add({"${item.toolId}":0});
+        cartToolsCount.add({"${item.toolId}": 0});
       }
       notifyListeners();
     } on DioError catch (e) {
@@ -167,7 +175,7 @@ class MyProvider with ChangeNotifier {
 
       allproducts = [...?res.data];
       for (var item in allproducts) {
-        cartProdCount.add({"${item.productId}":0});
+        cartProdCount.add({"${item.productId}": 0});
       }
       notifyListeners();
     } catch (e) {
@@ -184,10 +192,9 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       ProductSingleModel res = ProductSingleModel.fromJson(response.data);
-      if(res.data!=null){
-
-      print("single prod: ${res.data!.name}");
-      }else{
+      if (res.data != null) {
+        print("single prod: ${res.data!.name}");
+      } else {
         print("single product ${res.data}");
       }
       return res.data;
@@ -195,6 +202,9 @@ class MyProvider with ChangeNotifier {
       print("Error from product by ID: ${e.response!.data['message']}");
     }
   }
+
+
+//****************** Forums ********************************* */
 
   Future getAllForums() async {
     try {
@@ -228,6 +238,41 @@ class MyProvider with ChangeNotifier {
     }
   }
 
+  Future likePost(String forumId) async {
+    try {
+      var response = await Dio().post('$baseURL/api/v1/forums/$forumId/like',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      // print('Liked successfully');
+      ForumLike res = ForumLike.fromJson(response.data);
+      print('res: ${res}');
+      print('Liked successfully: ${res.forumId}');
+      // getAllForums();
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from get forums like: ${e.response!.data['message']}");
+    }
+  }
+
+  Future commentOnPost(String forumId,String comment) async {
+    try {
+      var response = await Dio().post('$baseURL/api/v1/forums/$forumId/comment',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })),data: {"comment":comment});
+      ForumComment res = ForumComment.fromJson(response.data);
+      print('res: ${res}');
+      print('commented successfully: ${res.forumId}');
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from commentOnPost: ${e.response!.data['message']}");
+    }
+  }
+
+
   Future addForum(
       {required String title,
       required String description,
@@ -252,9 +297,11 @@ class MyProvider with ChangeNotifier {
       getMyForums();
       notifyListeners();
     } on DioError catch (e) {
-      print('Error Adding forum: ${e.message}');
+      print('Error Adding forum: ${e.response!.data['message']}');
     }
   }
+
+//****************** Blogs ********************************* */
 
   Future getBlogs() async {
     try {
@@ -275,6 +322,108 @@ class MyProvider with ChangeNotifier {
     } on DioError catch (e) {
       print("Error from get my forums: $e");
     }
+  }
+
+//****************** Cart ********************************* */
+
+  incrementCartItem(
+      {required List productMap, required dynamic productInstance}) {
+    String prodId;
+    if (productInstance is Plants) {
+      prodId = productInstance.plantId!;
+    } else if (productInstance is Tool) {
+      prodId = productInstance.toolId!;
+    } else if (productInstance is Products) {
+      prodId = productInstance.productId!;
+    } else {
+      prodId = productInstance.seedId;
+    }
+    for (Map item in productMap) {
+      if (item.containsKey(prodId)) {
+        item[prodId] = (item.values.first) + 1;
+        notifyListeners();
+      }
+    }
+  }
+
+  decrementCartItem(
+      {required List productMap, required dynamic productInstance}) {
+    String prodId;
+    if (productInstance is Plants) {
+      prodId = productInstance.plantId!;
+    } else if (productInstance is Tool) {
+      prodId = productInstance.toolId!;
+    } else if (productInstance is Products) {
+      prodId = productInstance.productId!;
+    } else {
+      prodId = productInstance.seedId;
+    }
+    for (Map item in productMap) {
+      if (item.containsKey(prodId)) {
+        if (item.values.first >= 1) {
+          item[prodId] = (item.values.first) - 1;
+        }
+        notifyListeners();
+      }
+    }
+  }
+
+// addToCart({required List productMap, required dynamic productInstance,required Cart myCart}){
+
+// }
+  List oldCart = [];
+  addToCart({required Cart myCart}) {
+    oldCart.clear();
+    oldCart = [...userCart];
+    if (oldCart.isNotEmpty) {
+      for (Cart item in oldCart) {
+        if (item.productId != myCart.productId) {
+          userCart.add(myCart);
+        }
+      }
+    } else {
+      userCart.add(myCart);
+    }
+    notifyListeners();
+  }
+
+  removeFromCart() {}
+//****************** User ********************************* */
+
+  Future getCurrentUser() async {
+    try {
+      var response = await Dio().get('$baseURL/api/v1/user/me',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })));
+      currentUser = User.fromJson(response.data['data']);
+      notifyListeners();
+    } on DioError catch (e) {
+      print("Error from get current user: ${e.response!.data['message']}");
+    }
+    return null;
+  }
+
+  Future editCurrentUser({String? firstName,String? lastName,String? email,String? address}) async {
+    try {
+      var response = await Dio().patch('$baseURL/api/v1/user/me',
+          options: Options(
+              headers: ({
+            'Authorization': 'Bearer ${AppSharedPref.getToken()}'
+          })),
+          data: {
+            "firstName": firstName??currentUser!.firstName,
+            "lastName": lastName??currentUser!.lastName,
+            "email": email??currentUser!.email,
+            "address": address??currentUser!.address
+          });
+       print("user edited : ${User.fromJson(response.data['data'])}");
+      await getCurrentUser();
+    } on DioError catch (e) {
+      print("Error from get current user: ${e.response!.data['message']}");
+    }
+    return null;
   }
 
   Future signUp(
@@ -299,7 +448,7 @@ class MyProvider with ChangeNotifier {
       AppSharedPref.setToken(userToken);
       userId = retrievedUser.data!.user!.userId;
       AppSharedPref.setUserId(userId);
-      print("token => ${AppSharedPref.getToken()}");
+      // print("token => ${AppSharedPref.getToken()}");
 
       if (userToken != null) {
         getAllTools();
@@ -363,64 +512,4 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-incrementCartItem({required List productMap, required dynamic productInstance}){
-
-  String prodId;
-      if (productInstance is Plants) {
-        prodId = productInstance.plantId!;
-      } else if (productInstance is Tool) {
-        prodId = productInstance.toolId!;
-      } else if (productInstance is Products) {
-        prodId = productInstance.productId!;
-      } else {
-        prodId = productInstance.seedId;
-      }
-    for (Map item in productMap) {
-      if (item.containsKey(prodId)) {
-        item[prodId]= (item.values.first)+1;
-        notifyListeners();
-      }
-    }
-}
-decrementCartItem({required List productMap, required dynamic productInstance}){
-
-  String prodId;
-      if (productInstance is Plants) {
-        prodId = productInstance.plantId!;
-      } else if (productInstance is Tool) {
-        prodId = productInstance.toolId!;
-      } else if (productInstance is Products) {
-        prodId = productInstance.productId!;
-      } else {
-        prodId = productInstance.seedId;
-      }
-    for (Map item in productMap) {
-      if (item.containsKey(prodId)) {
-        if(item.values.first>=1){
-        item[prodId]= (item.values.first)-1;
-        }
-        notifyListeners();
-      }
-    }
-}
-
-// addToCart({required List productMap, required dynamic productInstance,required Cart myCart}){
-
-// }
- List oldCart=[];
-addToCart({required Cart myCart}){
-  oldCart.clear();
-   oldCart = [...userCart];
-  if(oldCart.isNotEmpty){
-  for (Cart item in oldCart) {
-    if(item.productId!=myCart.productId){
-        userCart.add(myCart);
-     }}
-
-  }else{
-        userCart.add(myCart);
-  }
-  notifyListeners();
-}
-removeFromCart(){}
 }

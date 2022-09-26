@@ -13,6 +13,7 @@ class QuizScreen extends StatefulWidget {
 }
 
 enum Answers { a1, a2, a3 }
+
 Answers? userAnswer = Answers.a1;
 String question = "What is the user experience ?";
 String choice1 = "The user experience is how the developer feels about a user";
@@ -143,7 +144,6 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            // gradient: sLinearColorBlue,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(8),
                             ),
@@ -164,7 +164,6 @@ class _QuizScreenState extends State<QuizScreen> {
                                   onChanged: (value) {
                                     setState(() {
                                       userAnswer = value as Answers?;
-                                      print(userAnswer);
                                     });
                                   }),
                             ],

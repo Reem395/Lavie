@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/view/components.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 import 'package:flutter_hackathon/models/blogs_model/blogs.dart';
 import 'package:flutter_hackathon/view/home_screen/home_screen.dart';
@@ -28,23 +27,21 @@ class ShopLayout extends StatefulWidget {
 class _ShopLayoutState extends State<ShopLayout> {
   List<Widget> navPages = [
     Forums(),
-    QrScreen(),
     const BlogScreen(),
     HomeScreen(),
     NotificationScreen(),
     Profile(),
   ];
 
-  int _selectedIndex = 3;
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      myProvider(context: context).selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    int _selectedIndex = myProvider(context: context).selectedIndex;
     return Scaffold(
       extendBodyBehindAppBar: true,
 
@@ -61,40 +58,29 @@ class _ShopLayoutState extends State<ShopLayout> {
               color: _selectedIndex == 0 ? Colors.white : Colors.black,
             ),
             Icon(
-              Icons.qr_code_scanner_outlined,
+              Icons.mobile_friendly,
               size: 25,
               color: _selectedIndex == 1 ? Colors.white : Colors.black,
             ),
             Icon(
-              Icons.mobile_friendly,
+              Icons.home_outlined,
               size: 25,
               color: _selectedIndex == 2 ? Colors.white : Colors.black,
             ),
             Icon(
-              Icons.home_outlined,
+              Icons.notifications_none,
               size: 25,
               color: _selectedIndex == 3 ? Colors.white : Colors.black,
             ),
             Icon(
-              Icons.notifications_none,
-              size: 25,
-              color: _selectedIndex == 4 ? Colors.white : Colors.black,
-            ),
-            Icon(
               Icons.person_outline,
               size: 25,
-              color: _selectedIndex == 5 ? Colors.white : Colors.black,
+              color: _selectedIndex == 4 ? Colors.white : Colors.black,
             ),
           ]),
       body: SafeArea(
         child: navPages[_selectedIndex],
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: defaultColor,
-      //   child: const Icon(Icons.home_outlined),
-      //   onPressed: () {},
-      // ),
     );
   }
 }

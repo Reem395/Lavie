@@ -209,9 +209,7 @@ class CartScreen extends StatelessWidget {
                                                   Icons.delete,
                                                   color: defaultColor,
                                                 ),
-                                                onPressed: () {
-                                                  
-                                                },
+                                                onPressed: () {},
                                               ),
                                             ],
                                           ),

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/view/components.dart';
 import 'package:provider/provider.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../controller/provider/my_provider.dart';
 import '../../controller/services/app_shared_pref.dart';
 import '../../utils/constants.dart';
+import '../components.dart';
 import '../shop_layout/shop_layout.dart';
 import '../signup_login_screens/signup_login_screen.dart';
 
@@ -34,9 +34,10 @@ class _SpalshScreenState extends State<SpalshScreen> {
       myprovider.getAllPlants();
       myprovider.getAllSeeds();
       myprovider.getAllProducts();
-      myprovider.getAllForums();
+      // myprovider.getAllForums();
       myprovider.getMyForums();
       myprovider.getBlogs();
+      myprovider.getCurrentUser();
       nexWidget = ShopLayout();
     }
     Timer(

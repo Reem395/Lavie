@@ -1,4 +1,3 @@
-
 import 'package:flutter_hackathon/models/products_model/products.dart';
 
 class ProductSingleModel {
@@ -10,14 +9,13 @@ class ProductSingleModel {
 
   factory ProductSingleModel.fromJson(Map<String, dynamic> json) {
     try {
-      
-    return ProductSingleModel(
-      type: json['type'] as String?,
-      message: json['message'] as String?,
-      data: json['data'] == null
-          ? null
-          : Products.fromJson(json['data'] as Map<String, dynamic>),
-    );
+      return ProductSingleModel(
+        type: json['type'] as String?,
+        message: json['message'] as String?,
+        data: json['data'] == null
+            ? null
+            : Products.fromJson(json['data'] as Map<String, dynamic>),
+      );
     } catch (e) {
       return ProductSingleModel();
     }
