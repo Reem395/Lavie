@@ -22,19 +22,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<dynamic> allproducts = [];
-  List<Seeds> allSeeds = [];
-  List<Tool> allTools = [];
-  List<Plants> allPlants = [];
-  // var screenSize;
 
   @override
   void initState() {
     super.initState();
-    // allTools=List.from(Provider.of<MyProvider>(context, listen: false).allTools);
-    // allSeeds = List.from(Provider.of<MyProvider>(context, listen: false).allSeeds);
-    // allPlants = List.from(Provider.of<MyProvider>(context, listen: false).allPlants);
-    // allproducts = List.from(Provider.of<MyProvider>(context, listen: false).allproducts);
     print(
         "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
     print(
@@ -43,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
         "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}");
     print(
         "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
-    // Provider.of<MyProvider>(context,listen: false).examAvailable();
     checkToken(context);
   }
 
@@ -66,12 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 myProvider(context: context).isExamAvailable
                     ? IconButton(
                         onPressed: () {
-                          DateTime now = DateTime.now();
-                          DateTime date = DateTime(now.year, now.month, now.day,
-                              now.hour, (now.minute) + 8);
-                          print("now: ${now.minute}");
-                          print("date: ${date}");
-                          print("date min: ${date.minute}");
+                          // DateTime now = DateTime.now();
+                          // DateTime date = DateTime(now.year, now.month, now.day,
+                          //     now.hour, (now.minute) + 8);
+                          // print("now: ${now.minute}");
+                          // print("date: ${date}");
+                          // print("date min: ${date.minute}");
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
@@ -195,13 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: TabBarView(children: [
                         selectedPage(myProvider.allproducts,
-                            myProvider.cartProdCount, "productId"),
+                            myProvider.cartProdCount),
                         selectedPage(myProvider.allPlants,
-                            myProvider.cartPlantCount, "plantId"),
+                            myProvider.cartPlantCount),
                         selectedPage(myProvider.allSeeds,
-                            myProvider.cartSeedsCount, "toolId"),
+                            myProvider.cartSeedsCount),
                         selectedPage(myProvider.allTools,
-                            myProvider.cartToolsCount, "seedId"),
+                            myProvider.cartToolsCount),
                       ]),
                     ),
                   ]),
@@ -212,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget selectedPage(List category, List productCount, String productIdType) {
+  Widget selectedPage(List category, List productCount) {
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 80,
@@ -264,7 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          myProvider(context: context).decrementCartItem(productMap: productCount, productInstance: category[index]);
+                          myProvider(context: context).decrementCartItem(
+                              productMap: productCount,
+                              productInstance: category[index]);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -288,14 +280,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Text(prodCount(
                               productCount: productCount,
-                              productIdType: productIdType,
-                              productInstance: category[index]).toString()),
+                              productInstance: category[index])
+                          .toString()),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
                       InkWell(
                         onTap: () {
-                          myProvider(context: context).incrementCartItem(productMap: productCount, productInstance: category[index]);
+                          myProvider(context: context).incrementCartItem(
+                              productMap: productCount,
+                              productInstance: category[index]);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -363,14 +357,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         //   print("Item: ${item.noProductsInCart}");
                         // }
 
-                      var noItems= prodCount(
-                              productCount: productCount,
-                              productIdType: productIdType,
-                              productInstance: category[index]);
+                        var noItems = prodCount(
+                            productCount: productCount,
+                            // productIdType: productIdType,
+                            productInstance: category[index]);
 
-                        Cart toCart = Cart(userId: userId!,
-                         productId: productId, noProductsInCart: noItems , productType: productType);
-                         myProvider(context: context).addToCart(myCart: toCart);
+                        Cart toCart = Cart(
+                            userId: userId!,
+                            productId: productId,
+                            noProductsInCart: noItems,
+                            productType: productType);
+                        myProvider(context: context).addToCart(myCart: toCart);
                       },
                       child: const Text("Add To Cart"),
                       style: roundedButtonStyle(
@@ -389,19 +386,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   prodCount(
       {required List productCount,
-       String? productIdType,
+      // String? productIdType,
       required dynamic productInstance}) {
-
-      String prodId;
-      if (productInstance is Plants) {
-        prodId = productInstance.plantId!;
-      } else if (productInstance is Tool) {
-        prodId = productInstance.toolId!;
-      } else if (productInstance is Products) {
-        prodId = productInstance.productId!;
-      } else {
-        prodId = productInstance.seedId;
-      }
+    String prodId;
+    if (productInstance is Plants) {
+      prodId = productInstance.plantId!;
+    } else if (productInstance is Tool) {
+      prodId = productInstance.toolId!;
+    } else if (productInstance is Products) {
+      prodId = productInstance.productId!;
+    } else {
+      prodId = productInstance.seedId;
+    }
     for (Map item in productCount) {
       if (item.containsKey(prodId)) {
         print("value is: ${item.values}");
