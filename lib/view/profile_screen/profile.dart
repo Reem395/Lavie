@@ -15,6 +15,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     User? currentUser = myProvider(context: context, listen: true).currentUser;
     int points = myProvider(context: context).currentUser!.userPoints ?? 0;
+    // int points = myProvider(context: context).currentUser!.userPoints ?? 0;
 
     return Scaffold(
       // backgroundColor: Colors.grey,

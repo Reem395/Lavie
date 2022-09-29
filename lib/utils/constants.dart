@@ -5,6 +5,7 @@ import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:provider/provider.dart';
 
+import '../controller/local/database/database_helper.dart';
 import '../controller/provider/my_provider.dart';
 import '../controller/services/app_shared_pref.dart';
 import '../models/plants_model/plants.dart';
@@ -92,18 +93,8 @@ ProductType getInstanceType({required dynamic productInstance}){
     return productType;
 }
 
-// findProductbyID({dynamic product, required BuildContext context}){
-//     dynamic foundedProduct;
-//     if(myProvider(context: context).allproducts.any((element) => product.productId == element.productId)){
-//         // foundedProduct = ele
-//     }
-// }
-ProductInCart({required Cart cartProduct, required BuildContext context}){
+productInCart({required Cart cartProduct, required BuildContext context}){
     dynamic foundedProduct;
-    // if(myProvider(context: context).allproducts.any((element) => product.productId == element.productId)){
-    //     // foundedProduct = ele
-    // }
-
   if (cartProduct.productType == ProductType.products.toString()) {
     myProvider(context: context).allproducts.forEach((item) { 
        if(item.productId == cartProduct.productId){
@@ -146,12 +137,9 @@ List getProductMap({required dynamic productInstance, required BuildContext cont
     return productCountMap;
 }
 
-  prodCount(
-      {
-      // String? productIdType,
+  prodCount({
       required dynamic productInstance, required BuildContext context}) {
       List productCountMap =getProductMap(productInstance: productInstance,context: context);  
-    // String prodId;
     
     for (Map item in productCountMap) {
       if (item.containsKey(getInstanceId(productInstance: productInstance))) {
@@ -160,5 +148,7 @@ List getProductMap({required dynamic productInstance, required BuildContext cont
       }
     }
   }
+
+
 
 

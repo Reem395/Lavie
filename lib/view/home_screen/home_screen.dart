@@ -26,20 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print(
-        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
-    print(
-        "All allPlants length from provider ${Provider.of<MyProvider>(context, listen: false).allPlants.length}");
-    print(
-        "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}");
-    print(
-        "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
+    myProvider(context: context).getCart();
     checkToken(context);
   }
 
-  int noProducts = 1;
-  String productName = "";
-  var productPrice = 70;
+  // int noProducts = 1;
+  // String productName = "";
+  // var productPrice = 70;
 
   TextEditingController searchController = TextEditingController();
 
@@ -56,12 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 myProvider(context: context).isExamAvailable
                     ? IconButton(
                         onPressed: () {
-                          // DateTime now = DateTime.now();
-                          // DateTime date = DateTime(now.year, now.month, now.day,
-                          //     now.hour, (now.minute) + 8);
-                          // print("now: ${now.minute}");
-                          // print("date: ${date}");
-                          // print("date min: ${date.minute}");
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
@@ -277,11 +264,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
-                      Text(prodCount(
-                              // productCount: productCount,
-                              context: context,
-                              productInstance: category[index])
-                          .toString()),
+                      Text(
+                        // prodCount(
+                        //       // productCount: productCount,
+                        //       context: context,
+                        //       productInstance: category[index])
+                        //   .toString()
+                        myProvider(context: context).getCount(product: category[index],context: context).toString()
+                          ),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),

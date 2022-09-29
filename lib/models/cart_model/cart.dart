@@ -1,31 +1,32 @@
 class Cart {
-  String? id;
+  int? id;
   late String userId;
   late String productId;
   late String productType;
   late int noProductsInCart;
   Cart(
       {this.id,
-      required this.userId,
-      required this.productId,
       required this.noProductsInCart,
-      required this.productType});
+      required this.productId,
+      required this.productType,
+      required this.userId,
+      });
 
   Cart.fromJson(Map<dynamic, dynamic> map) {
     id = map['id'];
-    userId = map['userId'];
+    noProductsInCart = map['noProductsInCart'];
     productId = map['productId'];
     productType = map['productType'];
-    noProductsInCart = map['noProductsInCart'];
+    userId = map['userId'];
   }
 
   toJson() {
     return {
       'id': id,
-      'userId': userId,
+      'noProductsInCart': noProductsInCart,
       'productId': productId,
       'productType': productType,
-      'noProductsInCart': noProductsInCart
+      'userId': userId,
     };
   }
 }

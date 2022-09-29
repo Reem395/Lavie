@@ -22,6 +22,7 @@ import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
 import '../../utils/constants.dart';
 import '../../view/shop_layout/shop_layout.dart';
+import '../local/database/database_helper.dart';
 import '../services/app_shared_pref.dart';
 
 class MyProvider with ChangeNotifier {
@@ -330,14 +331,15 @@ class MyProvider with ChangeNotifier {
     for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         item[prodId] = (item.values.first) + 1;
-        notifyListeners();
+        // getCount(product:productInstance,context: context);
         calculateCartTotalPrice(context: context);
+        notifyListeners();
       }
     }
   }
   
   decrementCartItem(
-      {required dynamic productInstance, required BuildContext context}) {
+      {required dynamic productInstance, required BuildContext context,cartId}) {
     String prodId = getInstanceId(productInstance: productInstance);
       List productCountMap =getProductMap(productInstance: productInstance,context: context);  
     
@@ -345,14 +347,57 @@ class MyProvider with ChangeNotifier {
       if (item.containsKey(prodId)) {
         if (item.values.first >= 1) {
           item[prodId] = (item.values.first) - 1;
+            if(item.values.first==0){
+          if(cartId != null){
+          
+             deleteFromCart(cartId);
+          }
+            }
+          
+        }
+        else if(item.values.first<1){
+          
         }
         calculateCartTotalPrice(context: context);
         notifyListeners();
       }
     }
   }
+   getCount({required product,required BuildContext context}){ 
+   var prodId = getInstanceId(productInstance: product);
+    for (var item in userCart) {
+      if(item.productId ==prodId) {
+        return item.noProductsInCart;
+      }
+    }
+      return prodCount(productInstance: product, context: context) ;
+  }
+   getCart() {
+    DatabaseHelper.helper.getuserCart().then((value) {
+      print("from get : ${value.length}");
+      userCart = value;
+    // for (var item in userCart) {
+    //   var count = item.noProductsInCart;
 
-  // List oldCart = [];
+    // }
+      notifyListeners();
+      return userCart;
+    });
+  }
+
+  void deleteFromCart(int cartId) {
+    DatabaseHelper.helper.deleteFromDb(cartId).then((value) =>
+        value > 0 ? print('element deleted from cart') : print('something went wrong'));
+    getCart();
+  }
+
+  void updateCart({ required Cart myCart,required BuildContext context}) {
+    DatabaseHelper.helper.updateDb(myCart).then((value) =>
+        value > 0 ? print('cart updated') : print('something went wrong'));
+    getCart();
+    calculateCartTotalPrice(context: context);
+    notifyListeners();
+  }
   addToCart({required Cart myCart, required BuildContext context}) {
    if(myCart.noProductsInCart ==0){
       Fluttertoast.showToast(msg: "Please incerase number of products",toastLength:Toast.LENGTH_SHORT);
@@ -361,13 +406,16 @@ class MyProvider with ChangeNotifier {
       if (userCart.isNotEmpty) {
          if(!(userCart.any((element) => element.productId == myCart.productId))){
             userCart.add(myCart); 
-            // var productInstance = ProductInCart(cartProduct: myCart,context: context);
-            // int productCount = prodCount(context: context,productInstance: productInstance);
-            // productCountPrice.add({productInstance.price:productCount});
+            DatabaseHelper.helper.insertDb(myCart).then((value) =>
+            value > 0 ? print('cart Saved') : print('something went wrong'));
+            getCart();
         }
       }
       else{
-      userCart.add(myCart);
+        userCart.add(myCart);
+        DatabaseHelper.helper.insertDb(myCart).then((value) =>
+        value > 0 ? print('cart Saved') : print('something went wrong'));
+        getCart();
       }
       for (var element in userCart) {
         print("usercart: ${element.productId}");
@@ -378,21 +426,29 @@ class MyProvider with ChangeNotifier {
   }
 
   elementToRemove({required elementToRemove,required BuildContext context}) {
+    int cartId =elementToRemove.id;
     userCart.remove(elementToRemove);
         calculateCartTotalPrice(context: context);
-
+        deleteFromCart(elementToRemove.id);
     notifyListeners();
   }
 
   calculateCartTotalPrice({required BuildContext context}){
     cartTotalPrice=0.0;
+    print("from calcu userCart ${userCart.length}");
+    getCart();
     for (var item in userCart) {
-      var foundedProduct = ProductInCart(cartProduct: item, context: context);
+      var foundedProduct = productInCart(cartProduct: item, context: context);
+    print("from calcu foundedProduct ${foundedProduct}");
+      
       var price = foundedProduct.price;
-      var count = prodCount(productInstance: foundedProduct, context: context);
+    print("from calcu price ${price}");
+
+      var count = item.noProductsInCart;
+    print("from calcu userCart ${userCart.length}");
+
       cartTotalPrice += price * count;
     }
-    notifyListeners();
   }
 //****************** User ********************************* */
 
@@ -464,6 +520,7 @@ class MyProvider with ChangeNotifier {
         getAllForums();
         getMyForums();
         getBlogs();
+        getCurrentUser();
         notifyListeners();
 
         print("User token is not null: $userToken");
@@ -502,6 +559,8 @@ class MyProvider with ChangeNotifier {
         getAllForums();
         getMyForums();
         getBlogs();
+        getCurrentUser();
+
         notifyListeners();
 
         print("User token is not null: $userToken");

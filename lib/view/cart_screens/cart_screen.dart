@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/controller/provider/my_provider.dart';
 import 'package:flutter_hackathon/models/cart_model/cart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/plants_model/plants.dart';
@@ -9,14 +10,26 @@ import '../../utils/constants.dart';
 import '../blog_screens/single_blog_screen.dart';
 import '../components.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+
+    @override
+  void initState() {
+    myProvider(context: context).getCart();
+    // myProvider(context: context).calculateCartTotalPrice(context: context);
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    // List allBlogs = myProvider(context: context).allproducts;
-    // List myCart = myProvider(context: context).userCart;
-    List<Map> productCountPrice;
+    myProvider(context: context).calculateCartTotalPrice(context: context);
+
     Widget emptyCart = Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -32,7 +45,6 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             height: screenHeigth(context: context) * 0.04,
           ),
-          // const Text("Your Cart is Empty",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
         ],
       ),
     );
@@ -62,7 +74,7 @@ class CartScreen extends StatelessWidget {
                         
                         itemCount: myCart.length,
                         itemBuilder: ((context, index) {
-                        dynamic cartElement = ProductInCart(cartProduct: myCart[index],context: context) ;
+                        dynamic cartElement = productInCart(cartProduct: myCart[index],context: context) ;
 
                           return Padding(
                             padding: const EdgeInsets.all(18.0),
@@ -147,14 +159,21 @@ class CartScreen extends StatelessWidget {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400,
-                                                              fontSize: 18,
+                                                              fontSize: 20,
                                                               color:
                                                                   defaultColor),
                                                         ),
                                                         onTap: () {
                                                           myProvider.decrementCartItem(
                                                             context: context,
+                                                            productInstance: cartElement,cartId: myCart[index].id);
+                                                            myCart[index].noProductsInCart=prodCount(
+                                                            context: context,
                                                             productInstance: cartElement);
+                                                            myProvider.updateCart(myCart: myCart[index],context: context );
+
+
+                                                            
                                                         },
                                                       ),
                                                       SizedBox(
@@ -164,9 +183,10 @@ class CartScreen extends StatelessWidget {
                                                             0.03,
                                                       ),
                                                       Text(
-                                                    prodCount(
-                                                      context: context,
-                                                      productInstance: cartElement).toString()
+                                                    // prodCount(
+                                                    //   context: context,
+                                                    //   productInstance: cartElement).toString()
+                                                    myCart[index].noProductsInCart.toString()
                                                       ),
                                                       SizedBox(
                                                         width: screenWidth(
@@ -189,6 +209,12 @@ class CartScreen extends StatelessWidget {
                                                           myProvider.incrementCartItem(
                                                             context: context,
                                                             productInstance: cartElement);
+
+                                                            myCart[index].noProductsInCart = prodCount(
+                                                            context: context,
+                                                            productInstance: cartElement);
+                                                            myProvider.updateCart(myCart: myCart[index],context: context );
+
                                                         },
                                                       ),
                                                     ],
@@ -231,7 +257,6 @@ class CartScreen extends StatelessWidget {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            // "${myProvider(context: context).totalCartPrice} EGP",
                             "${myProvider.cartTotalPrice} EGP",
                             style: TextStyle(
                                 color: defaultColor,
@@ -244,7 +269,9 @@ class CartScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Fluttertoast.showToast(msg: "Order have been send",toastLength: Toast.LENGTH_LONG);
+                          },
                           child: const Text("CheckOut"),
                           style: ButtonStyle(
                             fixedSize: MaterialStateProperty.all(Size.infinite),
