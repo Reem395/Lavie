@@ -41,6 +41,7 @@ class MyProvider with ChangeNotifier {
   List<Forum> myPosts = [];
   List<dynamic> allBlogs = [];
   List userCart = [];
+  double cartTotalPrice = 0.0;
   List<Map<String, int>> cartProdCount =[]; //contains Id of product and intial count in cart (0)
   List<Map<String, int>> cartPlantCount = [];
   List<Map<String, int>> cartSeedsCount = [];
@@ -54,7 +55,6 @@ class MyProvider with ChangeNotifier {
         DateTime(now.year, now.month, now.day, now.hour, now.minute);
     nextExamDate =
         DateTime(now.year, now.month, (now.day) + 10, now.hour, now.minute);
-    // DateTime(now.year, now.month, now.day, now.hour, (now.minute)+30);
     AppSharedPref.setNextExamDate(nextExamDate: nextExamDate!);
     isExamAvailable = false;
     notifyListeners();
@@ -245,11 +245,9 @@ class MyProvider with ChangeNotifier {
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
-      // print('Liked successfully');
       ForumLike res = ForumLike.fromJson(response.data);
       print('res: ${res}');
       print('Liked successfully: ${res.forumId}');
-      // getAllForums();
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get forums like: ${e.response!.data['message']}");
@@ -288,9 +286,7 @@ class MyProvider with ChangeNotifier {
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
-
       print('Forum Added successfully: ${response.data}');
-
       var retrievedPost = Forum.fromJson(response.data);
       print("retrievedForum fromJson => $retrievedPost");
       getAllForums();
@@ -327,67 +323,77 @@ class MyProvider with ChangeNotifier {
 //****************** Cart ********************************* */
 
   incrementCartItem(
-      {required List productMap, required dynamic productInstance}) {
-    String prodId;
-    if (productInstance is Plants) {
-      prodId = productInstance.plantId!;
-    } else if (productInstance is Tool) {
-      prodId = productInstance.toolId!;
-    } else if (productInstance is Products) {
-      prodId = productInstance.productId!;
-    } else {
-      prodId = productInstance.seedId;
-    }
-    for (Map item in productMap) {
+      {required dynamic productInstance, required BuildContext context}) {
+    String prodId = getInstanceId(productInstance: productInstance);
+      List productCountMap =getProductMap(productInstance: productInstance,context: context);  
+    
+    for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         item[prodId] = (item.values.first) + 1;
         notifyListeners();
+        calculateCartTotalPrice(context: context);
       }
     }
   }
-
+  
   decrementCartItem(
-      {required List productMap, required dynamic productInstance}) {
-    String prodId;
-    if (productInstance is Plants) {
-      prodId = productInstance.plantId!;
-    } else if (productInstance is Tool) {
-      prodId = productInstance.toolId!;
-    } else if (productInstance is Products) {
-      prodId = productInstance.productId!;
-    } else {
-      prodId = productInstance.seedId;
-    }
-    for (Map item in productMap) {
+      {required dynamic productInstance, required BuildContext context}) {
+    String prodId = getInstanceId(productInstance: productInstance);
+      List productCountMap =getProductMap(productInstance: productInstance,context: context);  
+    
+    for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         if (item.values.first >= 1) {
           item[prodId] = (item.values.first) - 1;
         }
+        calculateCartTotalPrice(context: context);
         notifyListeners();
       }
     }
   }
 
-// addToCart({required List productMap, required dynamic productInstance,required Cart myCart}){
-
-// }
-  List oldCart = [];
-  addToCart({required Cart myCart}) {
-    oldCart.clear();
-    oldCart = [...userCart];
-    if (oldCart.isNotEmpty) {
-      for (Cart item in oldCart) {
-        if (item.productId != myCart.productId) {
-          userCart.add(myCart);
+  // List oldCart = [];
+  addToCart({required Cart myCart, required BuildContext context}) {
+   if(myCart.noProductsInCart ==0){
+      Fluttertoast.showToast(msg: "Please incerase number of products",toastLength:Toast.LENGTH_SHORT);
+    }
+    else{
+      if (userCart.isNotEmpty) {
+         if(!(userCart.any((element) => element.productId == myCart.productId))){
+            userCart.add(myCart); 
+            // var productInstance = ProductInCart(cartProduct: myCart,context: context);
+            // int productCount = prodCount(context: context,productInstance: productInstance);
+            // productCountPrice.add({productInstance.price:productCount});
         }
       }
-    } else {
+      else{
       userCart.add(myCart);
+      }
+      for (var element in userCart) {
+        print("usercart: ${element.productId}");
+      }
     }
+        calculateCartTotalPrice(context: context);
     notifyListeners();
   }
 
-  removeFromCart() {}
+  elementToRemove({required elementToRemove,required BuildContext context}) {
+    userCart.remove(elementToRemove);
+        calculateCartTotalPrice(context: context);
+
+    notifyListeners();
+  }
+
+  calculateCartTotalPrice({required BuildContext context}){
+    cartTotalPrice=0.0;
+    for (var item in userCart) {
+      var foundedProduct = ProductInCart(cartProduct: item, context: context);
+      var price = foundedProduct.price;
+      var count = prodCount(productInstance: foundedProduct, context: context);
+      cartTotalPrice += price * count;
+    }
+    notifyListeners();
+  }
 //****************** User ********************************* */
 
   Future getCurrentUser() async {
