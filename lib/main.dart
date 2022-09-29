@@ -14,7 +14,7 @@ import 'controller/local/database/database_helper.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppSharedPref.init();
-  // await DatabaseHelper.helper.getDbInstance();
+  await DatabaseHelper.helper.getDbInstance();
   runApp(const MyApp());
 }
 
