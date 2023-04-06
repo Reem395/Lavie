@@ -12,6 +12,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 bool hidePassword = true;
+bool hideConfirmPassword = true;
 
 class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailController = TextEditingController();
@@ -99,9 +100,19 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: passwordController,
+              obscureText: hidePassword,
               decoration:
-                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10)),
-              obscureText: true,
+                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        hidePassword = !hidePassword;
+                      });
+                    },
+                    icon: hidePassword
+                        ? Icon(Icons.visibility_off)
+                        : Icon(Icons.visibility),
+                  )),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
@@ -118,16 +129,16 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             TextField(
               controller: confirmPasswordController,
-              obscureText: hidePassword,
+              obscureText: hideConfirmPassword,
               decoration: textFieldBorderStyle(
                   contetPadding: const EdgeInsets.all(10),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
-                        hidePassword = !hidePassword;
+                        hideConfirmPassword = !hideConfirmPassword;
                       });
                     },
-                    icon: hidePassword
+                    icon: hideConfirmPassword
                         ? Icon(Icons.visibility_off)
                         : Icon(Icons.visibility),
                   )),

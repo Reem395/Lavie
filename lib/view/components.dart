@@ -59,8 +59,10 @@ InputDecoration textFieldBorderStyle(
 }
 
 Widget textForImageError() {
-  return const Text("Image Not Found",
-      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold));
+  return const Center(
+    child:  Text("Image Not Found",
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  );
 }
 
 Decoration roundedContainer({double? raduis, Color? color}) {
