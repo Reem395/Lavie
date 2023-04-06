@@ -9,6 +9,8 @@ class AppSharedPref {
       await sharedPreferences.setString("accessToken", userToken);
   static String? getToken() => sharedPreferences.getString("accessToken");
 
+  static Future clearUserToken ()async => await sharedPreferences.remove('accessToken');
+
   static Future setUserMail(userMail) async =>
       await sharedPreferences.setString("userMail", userMail);
   static String? getUserMail() => sharedPreferences.getString("userMail");
