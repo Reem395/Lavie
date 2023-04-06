@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
 import 'package:provider/provider.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -28,7 +29,11 @@ class _SpalshScreenState extends State<SpalshScreen> {
     print("All product length ${myprovider.allproducts.length}");
     Widget nexWidget;
     if (userToken == null || isTokenExpired()) {
-      nexWidget = SignupLogin();
+      nexWidget = const SignupLogin();
+      Timer(
+        const Duration(seconds: 3),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => nexWidget)));
     } else {
       myprovider.getAllTools();
       myprovider.getAllPlants();
@@ -37,13 +42,19 @@ class _SpalshScreenState extends State<SpalshScreen> {
       // myprovider.getAllForums();
       myprovider.getMyForums();
       myprovider.getBlogs();
-      myprovider.getCurrentUser();
-      nexWidget = ShopLayout();
-    }
+      // myprovider.getCurrentUser();
+      //    print("userAddressFrom Splash: ${myprovider.userAddress}");
+      Future.delayed(const Duration(milliseconds: 1)).then((_) async {
+        await myprovider.getCurrentUser();
+      nexWidget =
+          myprovider.userAddress == null ? const ClaimFreeSeed() : ShopLayout();
     Timer(
         const Duration(seconds: 3),
         () => Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => nexWidget)));
+      });
+
+    }
   }
 
   @override

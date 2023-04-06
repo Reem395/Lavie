@@ -13,7 +13,6 @@ import '../../models/forum_model/Forum.dart';
 import '../../models/forum_model/forum_comment.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../models/forum_model/forum_model.dart';
-import '../../models/products_model/products.dart';
 import '../../models/products_model/products_model.dart';
 import '../../models/seeds_model/seeds.dart';
 import '../../models/seeds_model/seeds_model.dart';
@@ -21,6 +20,7 @@ import '../../models/tools_model/tool.dart';
 import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
 import '../../utils/constants.dart';
+import '../../view/components.dart';
 import '../../view/shop_layout/shop_layout.dart';
 import '../local/database/database_helper.dart';
 import '../services/app_shared_pref.dart';
@@ -33,17 +33,22 @@ class MyProvider with ChangeNotifier {
   bool isExamAvailable = false;
   int selectedIndex = 2;
   User? currentUser;
+  dynamic userAddress;
 
   List<Seeds> allSeeds = [];
+  List<Widget> allPostImg = [];
   List<Tool> allTools = [];
   List<Plants> allPlants = [];
   List<dynamic> allproducts = [];
   List<Forum> allPosts = [];
   List<Forum> myPosts = [];
+  List<Widget> allPostsImgs = [];
+  List<Widget> myPostsImgs = [];
   List<dynamic> allBlogs = [];
   List userCart = [];
   double cartTotalPrice = 0.0;
-  List<Map<String, int>> cartProdCount =[]; //contains Id of product and intial count in cart (0)
+  List<Map<String, int>> cartProdCount =
+      []; //contains Id of product and intial count in cart (0)
   List<Map<String, int>> cartPlantCount = [];
   List<Map<String, int>> cartSeedsCount = [];
   List<Map<String, int>> cartToolsCount = [];
@@ -204,6 +209,38 @@ class MyProvider with ChangeNotifier {
     }
   }
 
+  Future fetchImage(List<Forum> postLis) async {
+// Future<Widget> fetchImage(String imgUrl) async {
+    // final url = Uri.parse('https://example.com/image.jpg');
+    for (var element in postLis) {
+      if (element.imageUrl == null) {
+        print('imgnull:');
+
+        allPostImg.add(textForImageError());
+      } else {
+        try {
+          String? url = element.imageUrl!.startsWith('/')
+              ? "$baseURL${element.imageUrl}"
+              : element.imageUrl;
+          var response = await Dio().get(url!);
+
+          if (response.statusCode == 200) {
+            // handle successful response
+            allPostImg.add(Image.network(url));
+          } else {
+            print('Error else:');
+
+            allPostImg.add(textForImageError());
+
+            // throw Exception('Failed to load image, status code: ${response.statusCode}');
+          }
+        } catch (error) {
+          print('Error loading image: $error');
+          allPostImg.add(textForImageError());
+        }
+      }
+    }
+  }
 
 //****************** Forums ********************************* */
 
@@ -216,7 +253,10 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       ForumModel res = ForumModel.fromJson(response.data);
-      allPosts = [...?res.data];
+       allPosts = [...?res.data];
+      // print("allPosts len: ${allPosts.length}");
+      // await fetchImage(allPosts);
+      // print("postImg len: ${allPostsImgs.length}");
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get All forums: $e");
@@ -255,13 +295,14 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  Future commentOnPost(String forumId,String comment) async {
+  Future commentOnPost(String forumId, String comment) async {
     try {
       var response = await Dio().post('$baseURL/api/v1/forums/$forumId/comment',
           options: Options(
               headers: ({
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
-          })),data: {"comment":comment});
+          })),
+          data: {"comment": comment});
       ForumComment res = ForumComment.fromJson(response.data);
       print('res: ${res}');
       print('commented successfully: ${res.forumId}');
@@ -270,7 +311,6 @@ class MyProvider with ChangeNotifier {
       print("Error from commentOnPost: ${e.response!.data['message']}");
     }
   }
-
 
   Future addForum(
       {required String title,
@@ -326,8 +366,9 @@ class MyProvider with ChangeNotifier {
   incrementCartItem(
       {required dynamic productInstance, required BuildContext context}) {
     String prodId = getInstanceId(productInstance: productInstance);
-      List productCountMap =getProductMap(productInstance: productInstance,context: context);  
-    
+    List productCountMap =
+        getProductMap(productInstance: productInstance, context: context);
+
     for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         item[prodId] = (item.values.first) + 1;
@@ -337,115 +378,118 @@ class MyProvider with ChangeNotifier {
       }
     }
   }
-  
+
   decrementCartItem(
-      {required dynamic productInstance, required BuildContext context,cartId}) {
+      {required dynamic productInstance,
+      required BuildContext context,
+      cartId}) {
     String prodId = getInstanceId(productInstance: productInstance);
-      List productCountMap =getProductMap(productInstance: productInstance,context: context);  
-    
+    List productCountMap =
+        getProductMap(productInstance: productInstance, context: context);
+
     for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         if (item.values.first >= 1) {
           item[prodId] = (item.values.first) - 1;
-            if(item.values.first==0){
-          if(cartId != null){
-          
-             deleteFromCart(cartId);
-          }
+          if (item.values.first == 0) {
+            if (cartId != null) {
+              deleteFromCart(cartId);
             }
-          
-        }
-        else if(item.values.first<1){
-          
-        }
+          }
+        } else if (item.values.first < 1) {}
         calculateCartTotalPrice(context: context);
         notifyListeners();
       }
     }
   }
-   getCount({required product,required BuildContext context}){ 
-   var prodId = getInstanceId(productInstance: product);
+
+  getCount({required product, required BuildContext context}) {
+    var prodId = getInstanceId(productInstance: product);
     for (var item in userCart) {
-      if(item.productId ==prodId) {
+      if (item.productId == prodId) {
         return item.noProductsInCart;
       }
     }
-      return prodCount(productInstance: product, context: context) ;
+    return prodCount(productInstance: product, context: context);
   }
-   getCart() {
+
+  getCart() {
     DatabaseHelper.helper.getuserCart().then((value) {
       print("from get : ${value.length}");
       userCart = value;
-    // for (var item in userCart) {
-    //   var count = item.noProductsInCart;
+      // for (var item in userCart) {
+      //   var count = item.noProductsInCart;
 
-    // }
+      // }
       notifyListeners();
       return userCart;
     });
   }
 
   void deleteFromCart(int cartId) {
-    DatabaseHelper.helper.deleteFromDb(cartId).then((value) =>
-        value > 0 ? print('element deleted from cart') : print('something went wrong'));
+    DatabaseHelper.helper.deleteFromDb(cartId).then((value) => value > 0
+        ? print('element deleted from cart')
+        : print('something went wrong'));
     getCart();
   }
 
-  void updateCart({ required Cart myCart,required BuildContext context}) {
+  void updateCart({required Cart myCart, required BuildContext context}) {
     DatabaseHelper.helper.updateDb(myCart).then((value) =>
         value > 0 ? print('cart updated') : print('something went wrong'));
     getCart();
     calculateCartTotalPrice(context: context);
     notifyListeners();
   }
+
   addToCart({required Cart myCart, required BuildContext context}) {
-   if(myCart.noProductsInCart ==0){
-      Fluttertoast.showToast(msg: "Please incerase number of products",toastLength:Toast.LENGTH_SHORT);
-    }
-    else{
+    if (myCart.noProductsInCart == 0) {
+      Fluttertoast.showToast(
+          msg: "Please incerase number of products",
+          toastLength: Toast.LENGTH_SHORT);
+    } else {
       if (userCart.isNotEmpty) {
-         if(!(userCart.any((element) => element.productId == myCart.productId))){
-            userCart.add(myCart); 
-            DatabaseHelper.helper.insertDb(myCart).then((value) =>
-            value > 0 ? print('cart Saved') : print('something went wrong'));
-            getCart();
+        if (!(userCart
+            .any((element) => element.productId == myCart.productId))) {
+          userCart.add(myCart);
+          DatabaseHelper.helper.insertDb(myCart).then((value) =>
+              value > 0 ? print('cart Saved') : print('something went wrong'));
+          getCart();
         }
-      }
-      else{
+      } else {
         userCart.add(myCart);
         DatabaseHelper.helper.insertDb(myCart).then((value) =>
-        value > 0 ? print('cart Saved') : print('something went wrong'));
+            value > 0 ? print('cart Saved') : print('something went wrong'));
         getCart();
       }
       for (var element in userCart) {
         print("usercart: ${element.productId}");
       }
     }
-        calculateCartTotalPrice(context: context);
+    calculateCartTotalPrice(context: context);
     notifyListeners();
   }
 
-  elementToRemove({required elementToRemove,required BuildContext context}) {
-    int cartId =elementToRemove.id;
+  elementToRemove({required elementToRemove, required BuildContext context}) {
+    int cartId = elementToRemove.id;
     userCart.remove(elementToRemove);
-        calculateCartTotalPrice(context: context);
-        deleteFromCart(elementToRemove.id);
+    calculateCartTotalPrice(context: context);
+    deleteFromCart(elementToRemove.id);
     notifyListeners();
   }
 
-  calculateCartTotalPrice({required BuildContext context}){
-    cartTotalPrice=0.0;
+  calculateCartTotalPrice({required BuildContext context}) {
+    cartTotalPrice = 0.0;
     print("from calcu userCart ${userCart.length}");
     getCart();
     for (var item in userCart) {
       var foundedProduct = productInCart(cartProduct: item, context: context);
-    print("from calcu foundedProduct ${foundedProduct}");
-      
+      print("from calcu foundedProduct ${foundedProduct}");
+
       var price = foundedProduct.price;
-    print("from calcu price ${price}");
+      print("from calcu price ${price}");
 
       var count = item.noProductsInCart;
-    print("from calcu userCart ${userCart.length}");
+      print("from calcu userCart ${userCart.length}");
 
       cartTotalPrice += price * count;
     }
@@ -460,6 +504,9 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       currentUser = User.fromJson(response.data['data']);
+      userAddress = currentUser?.address;
+      print("userAddress: ${userAddress}");
+      // }
       notifyListeners();
     } on DioError catch (e) {
       print("Error from get current user: ${e.response!.data['message']}");
@@ -467,7 +514,11 @@ class MyProvider with ChangeNotifier {
     return null;
   }
 
-  Future editCurrentUser({String? firstName,String? lastName,String? email,String? address}) async {
+  Future editCurrentUser(
+      {String? firstName,
+      String? lastName,
+      String? email,
+      String? address}) async {
     try {
       var response = await Dio().patch('$baseURL/api/v1/user/me',
           options: Options(
@@ -475,12 +526,12 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })),
           data: {
-            "firstName": firstName??currentUser!.firstName,
-            "lastName": lastName??currentUser!.lastName,
-            "email": email??currentUser!.email,
-            "address": address??currentUser!.address
+            "firstName": firstName ?? currentUser!.firstName,
+            "lastName": lastName ?? currentUser!.lastName,
+            "email": email ?? currentUser!.email,
+            "address": address ?? currentUser!.address
           });
-       print("user edited : ${User.fromJson(response.data['data'])}");
+      print("user edited : ${User.fromJson(response.data['data'])}");
       await getCurrentUser();
     } on DioError catch (e) {
       print("Error from get current user: ${e.response!.data['message']}");
@@ -559,15 +610,19 @@ class MyProvider with ChangeNotifier {
         getAllForums();
         getMyForums();
         getBlogs();
-        getCurrentUser();
+        await getCurrentUser();
 
         notifyListeners();
 
         print("User token is not null: $userToken");
         Fluttertoast.showToast(
             msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ShopLayout()));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => userAddress == null
+                    ? const ClaimFreeSeed()
+                    : ShopLayout()));
       }
     } on DioError catch (e) {
       print('Error Login user: $e');
@@ -577,4 +632,5 @@ class MyProvider with ChangeNotifier {
     }
   }
 
+  checkImage() {}
 }

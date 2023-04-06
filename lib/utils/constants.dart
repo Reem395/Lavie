@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/provider/chat_provider.dart';
 import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,9 @@ Color lightGrey = const Color.fromARGB(31, 190, 187, 187);
 String baseURL = "https://lavie.orangedigitalcenteregypt.com";
 String? userToken = AppSharedPref.getToken();
 String? userId = AppSharedPref.getUserId();
-
+String? usermail = AppSharedPref.getUserMail();
+String sender ="Ksender";
+String reciever ="Kreciever";
 Size screenSize({required context}) {
   return MediaQuery.of(context).size;
 }
@@ -34,7 +37,9 @@ double screenWidth({required context}) {
 MyProvider myProvider({required BuildContext context, bool listen = false}) {
   return Provider.of<MyProvider>(context, listen: listen);
 }
-
+ChatProvider chatprovider({required BuildContext context, bool listen = false}) {
+  return Provider.of<ChatProvider>(context, listen: listen);
+}
 bool isTokenExpired() {
   if (userToken != null) {
     return Jwt.isExpired(userToken!);
@@ -43,7 +48,7 @@ bool isTokenExpired() {
 }
 
 void checkToken(BuildContext context) {
-  if (userToken != null) {
+  if (AppSharedPref.getToken() != null) {
     Map<String, dynamic> payload = Jwt.parseJwt(userToken!);
     DateTime? expiryDate = Jwt.getExpiryDate(userToken!);
     DateTime currentDate = DateTime.now();
@@ -60,6 +65,14 @@ void checkToken(BuildContext context) {
         );
       }
     });
+  }
+  else{
+    Navigator.pushAndRemoveUntil<void>(
+          context,
+          MaterialPageRoute<void>(
+              builder: (BuildContext context) => const SignupLogin()),
+          (route) => false,
+        );
   }
 }
 

@@ -9,6 +9,7 @@ import '../../models/forum_model/Forum.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../utils/constants.dart';
 
+import '../chat_screen/chat_screen.dart';
 import '../components.dart';
 import '../shop_layout/shop_layout.dart';
 import 'add_forum.dart';
@@ -50,7 +51,14 @@ class _ForumsState extends State<Forums> {
   //     icon: Icon(Icons.send,color: defaultColor,),
   //   );
   // }
-  
+    @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    checkToken(context);
+  });
+  }
+  List<Widget> imgs=[];
   @override
   Widget build(BuildContext context) {
     print("user id: ${AppSharedPref.getUserId()}");
@@ -140,17 +148,36 @@ class _ForumsState extends State<Forums> {
               )),
         ),
       ),
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AddForum(),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: defaultColor,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.small(
+            heroTag: "btn1",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const ChatScreen(),
+                ),
+              );
+            },
+            child: const Icon(Icons.chat),
+            backgroundColor: defaultColor,
+          ),
+          FloatingActionButton.small(
+            heroTag: "btn2",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const AddForum(),
+                ),
+              );
+            },
+            child: const Icon(Icons.add),
+            backgroundColor: defaultColor,
+          ),
+        ],
       ),
     );
   }
@@ -188,8 +215,7 @@ class _ForumsState extends State<Forums> {
             return GridView.count(
                 crossAxisCount: 1,
                 mainAxisSpacing: 10,
-                children: 
-                List.generate(posts.length, (index) {
+                children: List.generate(posts.length, (index) {
                   List<ForumLike>? postLikes = posts[index].forumLikes;
                   return Column(
                     children: [
@@ -209,23 +235,25 @@ class _ForumsState extends State<Forums> {
                                       radius: 30,
                                       backgroundColor: Colors.white,
                                       child:
-                                      //  posts[index].user!.imageUrl != null? 
-                                          roundedImage(
-                                              raduis: 50,
-                                              image: Image.network(
-                                                "${posts[index].user!.imageUrl}",
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return Image.asset(
-                                                    forumUserImage,
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                              ))
-                                          // : Image.asset(
-                                          //     forumUserImage,
-                                          //     fit: BoxFit.cover,
-                                          //   ),
+                                          //  posts[index].user!.imageUrl != null?
+                                          // roundedImage(
+                                          //     raduis: 50,
+                                          //     image: Image.network(
+                                          //       "${posts[index].user!.imageUrl}",
+                                          //       errorBuilder: (context, error,
+                                          //           stackTrace) {
+                                          //             print("image eror: ${error.toString()}");
+                                          //         return Image.asset(
+                                          //           forumUserImage,
+                                          //           fit: BoxFit.cover,
+                                          //         );
+                                          //       },
+                                          //     ))
+                                          // :
+                                          Image.asset(
+                                        postType=="my"? 'assets/images/A5.png':index%2==0?forumUserImage:'assets/images/A2.png',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     SizedBox(
                                       width:
@@ -280,23 +308,28 @@ class _ForumsState extends State<Forums> {
                                 height: screenHeigth(context: context) * 0.02,
                               ),
                               Expanded(
-                                child: (posts[index].imageUrl == null ||
-                                        posts[index].imageUrl == "")
-                                    ? Image.asset(
-                                        "assets/images/plantForum.png",
-                                        fit: BoxFit.fitHeight,
-                                      )
-                                    : Image.network(
-                                        posts[index].imageUrl!.startsWith('/')
-                                            ? "$baseURL${posts[index].imageUrl}"
-                                            : "${posts[index].imageUrl}",
-                                        width: double.infinity,
-                                        fit: BoxFit.fitWidth,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return textForImageError();
-                                        },
-                                      ),
+                                child:textForImageError(),
+                                //  (posts[index].imageUrl == null ||
+                                //         posts[index].imageUrl == "")
+                                //     ? Image.asset(
+                                //         "assets/images/plantForum.png",
+                                //         fit: BoxFit.fitHeight,
+                                //       )
+                                //     : Image.network(
+                                //         posts[index].imageUrl!.startsWith('/')
+                                //             ? "$baseURL${posts[index].imageUrl}"
+                                //             : "${posts[index].imageUrl}",
+                                //         errorBuilder:
+                                //             (context, error, stackTrace) {
+                                //           print(
+                                //               "image error: ${error.toString()}");
+                                //           return textForImageError();
+                                //         },
+                                       
+                                //         width: double.infinity,
+                                //         fit: BoxFit.fitWidth,
+                                //       ),
+                              
                               ),
                             ],
                           ),
@@ -321,7 +354,7 @@ class _ForumsState extends State<Forums> {
                               },
                               likeBuilder: ((liked) {
                                 liked = isLiked(posts[index]);
-                                print("lik $liked");
+                                // print("lik $liked");
                                 return Icon(Icons.thumb_up_outlined,
                                     color: liked ? defaultColor : Colors.grey);
                               }),
@@ -357,33 +390,59 @@ class _ForumsState extends State<Forums> {
                                     color: lightGrey,
                                     child: Center(
                                         child:
-                                            posts[index].forumComments!.length !=0 ? 
-                                            Column(
+                                            posts[index]
+                                                        .forumComments!
+                                                        .length !=
+                                                    0
+                                                ? Column(
                                                     children: [
                                                       Expanded(
                                                         child: ListView.builder(
-                                                          itemCount: posts[index].forumComments!.length,
+                                                            itemCount: posts[
+                                                                    index]
+                                                                .forumComments!
+                                                                .length,
                                                             padding:
-                                                                const EdgeInsets.only(top: 10),
-                                                            itemBuilder:((context,idx) {
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 10),
+                                                            itemBuilder:
+                                                                ((context,
+                                                                    idx) {
                                                               DateTime
                                                                   createdDate =
-                                                                  DateTime.parse(posts[index].forumComments![idx].createdAt!);
+                                                                  DateTime.parse(posts[
+                                                                          index]
+                                                                      .forumComments![
+                                                                          idx]
+                                                                      .createdAt!);
                                                               return Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                             .all(
                                                                         8.0),
                                                                 child: ListTile(
-                                                                  leading:
-                                                                  isCurrentUser(commentUser:posts[index].forumComments![idx].userId)?
-                                                                  //reem
-                                                                  Image.network(myProvider(context: context).currentUser!.imageUrl!,width: 61,height: 61,)
-                                                                  : 
-                                                                  Image.asset(idx %
-                                                                              2 ==0
-                                                                      ? "assets/images/A3.png"
-                                                                      :"assets/images/A4.png"),
+                                                                  leading: isCurrentUser(
+                                                                          commentUser: posts[index]
+                                                                              .forumComments![
+                                                                                  idx]
+                                                                              .userId)
+                                                                      ?
+                                                                      //reem
+                                                                      Image
+                                                                          .network(
+                                                                          myProvider(context: context)
+                                                                              .currentUser!
+                                                                              .imageUrl!,
+                                                                          width:
+                                                                              61,
+                                                                          height:
+                                                                              61,
+                                                                        )
+                                                                      : Image.asset(idx % 2 ==
+                                                                              0
+                                                                          ? "assets/images/A3.png"
+                                                                          : "assets/images/A4.png"),
                                                                   title: Column(
                                                                     crossAxisAlignment:
                                                                         CrossAxisAlignment
@@ -402,9 +461,11 @@ class _ForumsState extends State<Forums> {
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
                                                                               Text(
-                                                                                isCurrentUser(commentUser:posts[index].forumComments![idx].userId)?
-                                                                                "${myProvider(context: context).currentUser!.firstName} ${myProvider(context: context).currentUser!.lastName}":
-                                                                                idx % 2 == 0 ? "Lina Walid" : "Edward Sam ",
+                                                                                isCurrentUser(commentUser: posts[index].forumComments![idx].userId)
+                                                                                    ? "${myProvider(context: context).currentUser!.firstName} ${myProvider(context: context).currentUser!.lastName}"
+                                                                                    : idx % 2 == 0
+                                                                                        ? "Lina Walid"
+                                                                                        : "Edward Sam ",
                                                                                 style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
                                                                               ),
                                                                               SizedBox(
@@ -423,7 +484,8 @@ class _ForumsState extends State<Forums> {
                                                                             0.015,
                                                                       ),
                                                                       Text(
-                                                                        DateFormat('yyyy-MM-dd ').format(createdDate),
+                                                                        DateFormat('yyyy-MM-dd ')
+                                                                            .format(createdDate),
                                                                         style: const TextStyle(
                                                                             fontWeight:
                                                                                 FontWeight.w500,
@@ -451,75 +513,92 @@ class _ForumsState extends State<Forums> {
                                                           child: TextFormField(
                                                             controller:
                                                                 commentContoller,
-                                                                decoration: InputDecoration(
-                                                                suffixIcon: commentContoller.text.isEmpty? null:
-                                                                     IconButton(
-                                                                        onPressed:() async{
-                                                                          if(commentContoller.text.isNotEmpty){
-                                                                            myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
-                                                                            await Navigator.of(context).pushAndRemoveUntil(
-                                                                              MaterialPageRoute<void>(
-                                                                                  builder: (context) => ShopLayout()),
-                                                                              (r) => false);
-                                                                          myProvider(context: context).selectedIndex = 0;
-                                                                          }
-                                                                        },
-                                                                        icon: Icon(Icons.send,
-                                                                          color: defaultColor,)),
-                                                                hintText: "Write a comment..."),
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    suffixIcon: commentContoller
+                                                                            .text
+                                                                            .isEmpty
+                                                                        ? null
+                                                                        : IconButton(
+                                                                            onPressed:
+                                                                                () async {
+                                                                              if (commentContoller.text.isNotEmpty) {
+                                                                                myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
+                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => ShopLayout()), (r) => false);
+                                                                                myProvider(context: context).selectedIndex = 0;
+                                                                              }
+                                                                            },
+                                                                            icon:
+                                                                                Icon(
+                                                                              Icons.send,
+                                                                              color: defaultColor,
+                                                                            )),
+                                                                    hintText:
+                                                                        "Write a comment..."),
                                                           ),
                                                         ),
                                                       ),
-                                                   
                                                     ],
                                                   )
-                                                :  Column(
-                                                  children: [
-                                                   const Expanded(
-                                                     child:  Center(
-                                                          child: Text(
+                                                : Column(
+                                                    children: [
+                                                      const Expanded(
+                                                        child: Center(
+                                                            child: Text(
                                                           "No replies to show yet",
                                                           style: TextStyle(
                                                               fontSize: 18,
                                                               fontWeight:
-                                                                  FontWeight.w600),
+                                                                  FontWeight
+                                                                      .w600),
                                                         )),
-                                                   ),
-                                                     Container(
+                                                      ),
+                                                      Container(
                                                         color: lightGrey,
                                                         child: Padding(
                                                           padding: EdgeInsets.only(
-                                                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                                                              left: screenWidth(context:context) *0.07),
+                                                              bottom: MediaQuery
+                                                                      .of(
+                                                                          context)
+                                                                  .viewInsets
+                                                                  .bottom,
+                                                              left: screenWidth(
+                                                                      context:
+                                                                          context) *
+                                                                  0.07),
                                                           child: TextFormField(
                                                             controller:
                                                                 commentContoller,
-                                                                decoration: InputDecoration(
-                                                                suffixIcon: commentContoller.text.isEmpty? null:
-                                                                     IconButton(
-                                                                        onPressed:() async{
-                                                                          if(commentContoller.text.isNotEmpty){
-                                                                            myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
-                                                                            await Navigator.of(context).pushAndRemoveUntil(
-                                                                              MaterialPageRoute<void>(
-                                                                                  builder: (context) => ShopLayout()),
-                                                                              (r) => false);
-                                                                          myProvider(context: context).selectedIndex = 0;
-                                                                          }
-                                                                        },
-                                                                        icon: Icon(Icons.send,
-                                                                          color: defaultColor,)),
-                                                                hintText: "Write a comment..."),
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    suffixIcon: commentContoller
+                                                                            .text
+                                                                            .isEmpty
+                                                                        ? null
+                                                                        : IconButton(
+                                                                            onPressed:
+                                                                                () async {
+                                                                              if (commentContoller.text.isNotEmpty) {
+                                                                                myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
+                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => ShopLayout()), (r) => false);
+                                                                                myProvider(context: context).selectedIndex = 0;
+                                                                              }
+                                                                            },
+                                                                            icon:
+                                                                                Icon(
+                                                                              Icons.send,
+                                                                              color: defaultColor,
+                                                                            )),
+                                                                    hintText:
+                                                                        "Write a comment..."),
                                                           ),
                                                         ),
                                                       ),
-                                                   
-                                                  ],
-                                                )),
+                                                    ],
+                                                  )),
                                   );
                                 },
-                              )
-                              .whenComplete(() => commentContoller.clear());
+                              ).whenComplete(() => commentContoller.clear());
                             },
                             child: Text(
                               "${posts[index].forumComments!.length} Replies",
@@ -542,7 +621,7 @@ class _ForumsState extends State<Forums> {
     );
   }
 
-bool isCurrentUser({commentUser}){
-  return  AppSharedPref.getUserId()==commentUser;
-}
+  bool isCurrentUser({commentUser}) {
+    return AppSharedPref.getUserId() == commentUser;
+  }
 }

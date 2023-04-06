@@ -1,6 +1,9 @@
 // @dart=2.7
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'controller/provider/chat_provider.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/view/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,9 @@ import 'controller/local/database/database_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await AppSharedPref.init();
   await DatabaseHelper.helper.getDbInstance();
   runApp(const MyApp());
@@ -23,11 +29,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return 
+    MultiProvider(providers: [
+      ChangeNotifierProvider(
       create: (context) => MyProvider(),
-      child: MaterialApp(
+    ),
+      ChangeNotifierProvider(
+      create: (context) => ChatProvider(),
+    ),
+    ],
+    child:MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),

@@ -14,115 +14,119 @@ class SignupLogin extends StatelessWidget {
       length: 2,
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Image.asset(
-                  "assets/images/top_corner.png",
-                  fit: BoxFit.fill,
-                  width: screenSize.width * 0.2,
+          child: SingleChildScrollView(
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.max,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Image.asset(
+                    "assets/images/top_corner.png",
+                    fit: BoxFit.fill,
+                    width: screenSize.width * 0.2,
+                    height:
+                        (screenSize.height - MediaQuery.of(context).padding.top) *
+                            0.15,
+                  ),
+                ),
+                laVieLogo(screenSize: screenSize),
+                SizedBox(
                   height:
                       (screenSize.height - MediaQuery.of(context).padding.top) *
-                          0.15,
+                          0.05,
                 ),
-              ),
-              laVieLogo(screenSize: screenSize),
-              SizedBox(
-                height:
-                    (screenSize.height - MediaQuery.of(context).padding.top) *
-                        0.05,
-              ),
-              const TabBar(
-                  indicatorWeight: 3,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelColor: Colors.green,
-                  unselectedLabelColor: Colors.grey,
-                  tabs: [
-                    Tab(
-                      child: Text(
-                        "Sign up",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17),
+                const TabBar(
+                    indicatorWeight: 3,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor: Colors.green,
+                    unselectedLabelColor: Colors.grey,
+                    tabs: [
+                      Tab(
+                        child: Text(
+                          "Sign up",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
                       ),
+                      Tab(
+                          child: Text("Login",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 17))),
+                    ]),
+                SizedBox(
+                  height:
+                      (screenSize.height - MediaQuery.of(context).padding.top) *
+                          0.05,
+                ),
+                SizedBox(
+                  height: screenSize.height * 0.4,
+                  child: TabBarView(
+                    children: [
+                      SignupScreen(),
+                      LoginScreen(),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(children: const [
+                    Expanded(
+                      child: Divider(
+                      thickness: 2,
+                    )),
+                    Text(
+                      " or continue with ",
+                      style: TextStyle(color: Colors.black54),
                     ),
-                    Tab(
-                        child: Text("Login",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 17))),
+                    Expanded(
+                        child: Divider(
+                      thickness: 2,
+                    )),
                   ]),
-              SizedBox(
-                height:
-                    (screenSize.height - MediaQuery.of(context).padding.top) *
-                        0.05,
-              ),
-              Expanded(
-                // height: screenSize.height * 0.4,
-                child: TabBarView(
+                ),
+                SizedBox(
+                  height:
+                      (screenSize.height - MediaQuery.of(context).padding.top) *
+                          0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SignupScreen(),
-                    LoginScreen(),
+                    const CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/GoogleIcon.png'),
+                      backgroundColor: Colors.white,
+                      radius: 15,
+                    ),
+                    SizedBox(
+                      width: screenSize.width * 0.05,
+                    ),
+                    const CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/fb_icon.png'),
+                      backgroundColor: Colors.white,
+                      radius: 15,
+                    ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(children: const [
-                  Expanded(
-                      child: Divider(
-                    thickness: 2,
-                  )),
-                  Text(
-                    " or continue with ",
-                    style: TextStyle(color: Colors.black54),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Image.asset(
+                    "assets/images/left_corner.png",
+                    // width: screenSize.width * 0.3,
+                    fit: BoxFit.fill,
+                    height:
+                        (screenSize.height - MediaQuery.of(context).padding.top) *
+                            0.1,
                   ),
-                  Expanded(
-                      child: Divider(
-                    thickness: 2,
-                  )),
-                ]),
-              ),
-              SizedBox(
-                height:
-                    (screenSize.height - MediaQuery.of(context).padding.top) *
-                        0.02,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/GoogleIcon.png'),
-                    backgroundColor: Colors.white,
-                    radius: 15,
-                  ),
-                  SizedBox(
-                    width: screenSize.width * 0.05,
-                  ),
-                  const CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/fb_icon.png'),
-                    backgroundColor: Colors.white,
-                    radius: 15,
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Image.asset(
-                  "assets/images/left_corner.png",
-                  // width: screenSize.width * 0.3,
-                  fit: BoxFit.fill,
-                  height:
-                      (screenSize.height - MediaQuery.of(context).padding.top) *
-                          0.1,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 }

@@ -9,9 +9,6 @@ import 'package:container_tab_indicator/container_tab_indicator.dart';
 import '../../models/products_model/products.dart';
 import '../components.dart';
 import '../../controller/provider/my_provider.dart';
-import '../../models/plants_model/plants.dart';
-import '../../models/seeds_model/seeds.dart';
-import '../../models/tools_model/tool.dart';
 import '../quiz_screen/quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,12 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     myProvider(context: context).getCart();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
     checkToken(context);
+  });
   }
-
-  // int noProducts = 1;
-  // String productName = "";
-  // var productPrice = 70;
 
   TextEditingController searchController = TextEditingController();
 
