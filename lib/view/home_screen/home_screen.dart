@@ -9,9 +9,6 @@ import 'package:container_tab_indicator/container_tab_indicator.dart';
 import '../../models/products_model/products.dart';
 import '../components.dart';
 import '../../controller/provider/my_provider.dart';
-import '../../models/plants_model/plants.dart';
-import '../../models/seeds_model/seeds.dart';
-import '../../models/tools_model/tool.dart';
 import '../quiz_screen/quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,20 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print(
-        "All product length from provider ${Provider.of<MyProvider>(context, listen: false).allproducts.length}");
-    print(
-        "All allPlants length from provider ${Provider.of<MyProvider>(context, listen: false).allPlants.length}");
-    print(
-        "All allSeeds length from provider ${Provider.of<MyProvider>(context, listen: false).allSeeds.length}");
-    print(
-        "All allTools length from provider ${Provider.of<MyProvider>(context, listen: false).allTools.length}");
+    myProvider(context: context).getCart();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
     checkToken(context);
+  });
   }
-
-  int noProducts = 1;
-  String productName = "";
-  var productPrice = 70;
 
   TextEditingController searchController = TextEditingController();
 
@@ -56,12 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 myProvider(context: context).isExamAvailable
                     ? IconButton(
                         onPressed: () {
-                          // DateTime now = DateTime.now();
-                          // DateTime date = DateTime(now.year, now.month, now.day,
-                          //     now.hour, (now.minute) + 8);
-                          // print("now: ${now.minute}");
-                          // print("date: ${date}");
-                          // print("date min: ${date.minute}");
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
@@ -255,8 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           myProvider(context: context).decrementCartItem(
-                              productMap: productCount,
-                              productInstance: category[index]);
+                              productInstance: category[index], context: context);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -278,17 +259,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
-                      Text(prodCount(
-                              productCount: productCount,
-                              productInstance: category[index])
-                          .toString()),
+                      Text(
+                        // prodCount(
+                        //       // productCount: productCount,
+                        //       context: context,
+                        //       productInstance: category[index])
+                        //   .toString()
+                        myProvider(context: context).getCount(product: category[index],context: context).toString()
+                          ),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
                       InkWell(
                         onTap: () {
                           myProvider(context: context).incrementCartItem(
-                              productMap: productCount,
+                              context: context,
                               productInstance: category[index]);
                         },
                         child: Container(
@@ -335,31 +320,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         String productId;
                         String productType;
-                        if (category[index] is Plants) {
-                          productId = category[index].plantId;
-                          productType = "Plants";
-                        } else if (category[index] is Tool) {
-                          productId = category[index].toolId;
-                          productType = "Tool";
-                        } else if (category[index] is Products) {
-                          productId = category[index].productId;
-                          productType = "Products";
-                        } else {
-                          productId = category[index].seedId;
-                          productType = "Seeds";
-                        }
-                        // Cart itemToCart = Cart(
-                        //     productId: productId,
-                        //     noProductsInCart: noProducts,
-                        //     userId: userId!);
-                        // myProvider(context: context).myCart.add(itemToCart);
-                        // for (var item in myProvider(context: context).myCart) {
-                        //   print("Item: ${item.noProductsInCart}");
-                        // }
+                      productId = getInstanceId(productInstance: category[index]);
+                      productType = getInstanceType(productInstance:category[index]).toString();
 
                         var noItems = prodCount(
-                            productCount: productCount,
-                            // productIdType: productIdType,
+                            context: context,
                             productInstance: category[index]);
 
                         Cart toCart = Cart(
@@ -367,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             productId: productId,
                             noProductsInCart: noItems,
                             productType: productType);
-                        myProvider(context: context).addToCart(myCart: toCart);
+                        myProvider(context: context).addToCart(myCart: toCart,context: context);
                       },
                       child: const Text("Add To Cart"),
                       style: roundedButtonStyle(
@@ -382,27 +347,5 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }),
     );
-  }
-
-  prodCount(
-      {required List productCount,
-      // String? productIdType,
-      required dynamic productInstance}) {
-    String prodId;
-    if (productInstance is Plants) {
-      prodId = productInstance.plantId!;
-    } else if (productInstance is Tool) {
-      prodId = productInstance.toolId!;
-    } else if (productInstance is Products) {
-      prodId = productInstance.productId!;
-    } else {
-      prodId = productInstance.seedId;
-    }
-    for (Map item in productCount) {
-      if (item.containsKey(prodId)) {
-        print("value is: ${item.values}");
-        return item.values.first;
-      }
-    }
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/provider/my_provider.dart';
+import 'package:flutter_hackathon/models/cart_model/cart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/plants_model/plants.dart';
 import '../../models/tools_model/tool.dart';
@@ -6,12 +10,25 @@ import '../../utils/constants.dart';
 import '../blog_screens/single_blog_screen.dart';
 import '../components.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+
+    @override
+  void initState() {
+    myProvider(context: context).getCart();
+    // myProvider(context: context).calculateCartTotalPrice(context: context);
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    List allBlogs = myProvider(context: context).allproducts;
+    myProvider(context: context).calculateCartTotalPrice(context: context);
 
     Widget emptyCart = Center(
       child: Column(
@@ -28,7 +45,6 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             height: screenHeigth(context: context) * 0.04,
           ),
-          // const Text("Your Cart is Empty",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
         ],
       ),
     );
@@ -44,46 +60,27 @@ class CartScreen extends StatelessWidget {
           backgroundColor: const Color.fromARGB(6, 255, 255, 255),
           elevation: 0,
         ),
-        body: SafeArea(
-          child: myProvider(context: context).userCart.isEmpty
+        body:
+              Consumer<MyProvider>(builder: (context, myProvider, child) {
+                 List myCart = myProvider.userCart;
+                return SafeArea(
+              child: myCart.isEmpty
               ? emptyCart
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: ListView.builder(
-                        // itemCount: allBlogs.length,
-                        itemCount: myProvider(context: context).userCart.length,
+                        
+                        itemCount: myCart.length,
                         itemBuilder: ((context, index) {
+                        dynamic cartElement = productInCart(cartProduct: myCart[index],context: context) ;
+
                           return Padding(
                             padding: const EdgeInsets.all(18.0),
                             child: Container(
                               decoration: roundedContainerWithShadowBox(),
                               child: InkWell(
-                                onTap: (() {
-                                  String blogId;
-                                  String productType;
-                                  if (allBlogs[index] is Plants) {
-                                    blogId = allBlogs[index].plantId;
-                                    productType = "Plants";
-                                  } else if (allBlogs[index] is Tool) {
-                                    blogId = allBlogs[index].toolId;
-                                    productType = "Tool";
-                                  } else {
-                                    blogId = allBlogs[index].seedId;
-                                    productType = "Seeds";
-                                  }
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute<void>(
-                                      builder: (BuildContext context) =>
-                                          SingleBlogScreen(
-                                        blogId: blogId,
-                                        productType: productType,
-                                      ),
-                                    ),
-                                  );
-                                }),
                                 child: Row(
                                   children: [
                                     Padding(
@@ -94,12 +91,12 @@ class CartScreen extends StatelessWidget {
                                           horizontal:
                                               screenWidth(context: context) /
                                                   (428 / 11)),
-                                      child: allBlogs[index].imageUrl == ""
+                                      child: cartElement.imageUrl == ""
                                           ? Image.asset(
                                               "assets/images/plant_blog.png")
                                           : roundedImage(
                                               image: Image.network(
-                                                "$baseURL${allBlogs[index].imageUrl}",
+                                                "$baseURL${cartElement.imageUrl}",
                                                 errorBuilder: (context, error,
                                                     stackTrace) {
                                                   return textForImageError();
@@ -118,7 +115,7 @@ class CartScreen extends StatelessWidget {
                                             CrossAxisAlignment.stretch,
                                         children: [
                                           Text(
-                                            "${allBlogs[index].name}",
+                                            "${cartElement.name}",
                                             style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold),
@@ -129,7 +126,7 @@ class CartScreen extends StatelessWidget {
                                                     (926 / 14),
                                           ),
                                           Text(
-                                            "800 EGP",
+                                            cartElement.price.toString(),
                                             style: TextStyle(
                                                 color: defaultColor,
                                                 fontWeight: FontWeight.w500),
@@ -162,11 +159,22 @@ class CartScreen extends StatelessWidget {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400,
-                                                              fontSize: 18,
+                                                              fontSize: 20,
                                                               color:
                                                                   defaultColor),
                                                         ),
-                                                        onTap: () {},
+                                                        onTap: () {
+                                                          myProvider.decrementCartItem(
+                                                            context: context,
+                                                            productInstance: cartElement,cartId: myCart[index].id);
+                                                            myCart[index].noProductsInCart=prodCount(
+                                                            context: context,
+                                                            productInstance: cartElement);
+                                                            myProvider.updateCart(myCart: myCart[index],context: context );
+
+
+                                                            
+                                                        },
                                                       ),
                                                       SizedBox(
                                                         width: screenWidth(
@@ -175,11 +183,10 @@ class CartScreen extends StatelessWidget {
                                                             0.03,
                                                       ),
                                                       Text(
-                                                        "2",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                    // prodCount(
+                                                    //   context: context,
+                                                    //   productInstance: cartElement).toString()
+                                                    myCart[index].noProductsInCart.toString()
                                                       ),
                                                       SizedBox(
                                                         width: screenWidth(
@@ -198,7 +205,17 @@ class CartScreen extends StatelessWidget {
                                                               color:
                                                                   defaultColor),
                                                         ),
-                                                        onTap: () {},
+                                                        onTap: () {
+                                                          myProvider.incrementCartItem(
+                                                            context: context,
+                                                            productInstance: cartElement);
+
+                                                            myCart[index].noProductsInCart = prodCount(
+                                                            context: context,
+                                                            productInstance: cartElement);
+                                                            myProvider.updateCart(myCart: myCart[index],context: context );
+
+                                                        },
                                                       ),
                                                     ],
                                                   ),
@@ -209,7 +226,9 @@ class CartScreen extends StatelessWidget {
                                                   Icons.delete,
                                                   color: defaultColor,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  myProvider.elementToRemove(elementToRemove: myCart[index],context: context);
+                                                },
                                               ),
                                             ],
                                           ),
@@ -238,8 +257,7 @@ class CartScreen extends StatelessWidget {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            // "${myProvider(context: context).totalCartPrice} EGP",
-                            "800 EGP",
+                            "${myProvider.cartTotalPrice} EGP",
                             style: TextStyle(
                                 color: defaultColor,
                                 fontSize: 18,
@@ -251,12 +269,14 @@ class CartScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Fluttertoast.showToast(msg: "Order have been send",toastLength: Toast.LENGTH_LONG);
+                          },
                           child: const Text("CheckOut"),
                           style: ButtonStyle(
                             fixedSize: MaterialStateProperty.all(Size.infinite),
                             padding:
-                                MaterialStateProperty.all(EdgeInsets.all(15)),
+                                MaterialStateProperty.all(const EdgeInsets.all(15)),
                             backgroundColor:
                                 MaterialStateProperty.all(defaultColor),
                             shape: MaterialStateProperty.all<
@@ -269,6 +289,10 @@ class CartScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-        ));
+        );
+        
+              },)
+        );
+  
   }
 }

@@ -19,14 +19,14 @@ class DatabaseHelper {
   Future<String> getDbPath() async {
     String dbPath = await getDatabasesPath();
     // String noteDb = dbPath+"/"+'$DB_NAME';
-    String noteDb = join(dbPath, dbName);
-    return noteDb;
+    String cartDb = join(dbPath, dbName);
+    return cartDb;
   }
 
   void _onCreate(Database db) {
     print('create');
     String sql =
-        'create table $tableName ($colId integer primary key autoincrement, $colNoProductsInCart integer, $colProductId text,$productType productType $colUserId text)';
+        'create table $tableName ($colId integer primary key autoincrement, $colNoProductsInCart integer, $colProductId text, $productType text, $colUserId text)';
     print(sql);
     db.execute(sql);
   }
@@ -39,9 +39,24 @@ class DatabaseHelper {
         version: dbVersion, onCreate: (db, version) => _onCreate(db));
   }
 
+  Future<List<Cart>> getuserCart() async {
+    Database db = await getDbInstance();
+    List<Map<dynamic, dynamic>> query =
+        await db.query(tableName, orderBy: '$colId desc');
+    return query.map((e) => Cart.fromJson(e)).toList();
+  }
+
   Future<int> insertDb(Cart cart) async {
     Database db = await getDbInstance();
+    print("cart To Json: ${cart.toJson()}");
     return db.insert(tableName, cart.toJson());
+  }
+
+
+  Future<int> updateDb(Cart cart) async{
+    Database db = await getDbInstance();
+    return db.update(tableName, cart.toJson(),where:'$colId=?',whereArgs: [cart.id]);
+
   }
 
   Future<int> deleteFromDb(int id) async {

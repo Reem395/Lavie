@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/user_model/user.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
 import '../qr_screen/qr_screen.dart';
+import '../signup_login_screens/signup_login_screen.dart';
 
 class Profile extends StatelessWidget {
   Profile({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     User? currentUser = myProvider(context: context, listen: true).currentUser;
     int points = myProvider(context: context).currentUser!.userPoints ?? 0;
+    // int points = myProvider(context: context).currentUser!.userPoints ?? 0;
 
     return Scaffold(
       // backgroundColor: Colors.grey,
@@ -332,17 +335,74 @@ class Profile extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) => QrScreen(),
-            ),
-          );
-        },
-        child: const Icon(Icons.qr_code_scanner_outlined),
-        backgroundColor: defaultColor,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton.small(
+            heroTag: "ScanBtn",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => QrScreen(),
+                ),
+              );
+            },
+            child: const Icon(Icons.qr_code_scanner_outlined),
+            backgroundColor: defaultColor,
+          ),
+          FloatingActionButton.small(
+            heroTag: "LogOuBtn",
+            onPressed: () {
+              print("object");
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute<void>(
+              //     builder: (BuildContext context) => QrScreen(),
+              //   ),
+              // );
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      contentTextStyle: const TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.black),
+                      actionsAlignment: MainAxisAlignment.center,
+                      content: const Text(
+                        'Are you sure you want to sign out?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            AppSharedPref.clearUserToken();
+                            Navigator.pushAndRemoveUntil<void>(
+                              context,
+                              MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const SignupLogin()),
+                              (route) => false,
+                            );
+                          },
+                          child: const Text('Sign Out',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    );
+                  });
+            },
+            child: const Icon(Icons.logout),
+            backgroundColor: defaultColor,
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
     );

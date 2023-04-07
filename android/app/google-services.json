@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "987774662066",
+    "project_id": "lavie-chat",
+    "storage_bucket": "lavie-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987774662066:android:a691f5d025eae1d0ff20ab",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987774662066-71ociue2asibl1pggqfj3l7nkm2h4s4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVj8X71T58phg6C3b_XjSNCOqygSDTqrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987774662066-71ociue2asibl1pggqfj3l7nkm2h4s4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
