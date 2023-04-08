@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -6,9 +7,11 @@ class ChatBubble extends StatelessWidget {
     Key? key,
      required this.message,
      required this.sentBy,
+     this.userName,
   }) : super(key: key);
   final String message;
   final String sentBy;
+  final String? userName;
   @override
   Widget build(BuildContext context) {
              return Align(
@@ -26,7 +29,14 @@ class ChatBubble extends StatelessWidget {
                  )),
              child: Padding(
                padding: const EdgeInsets.all(8.0),
-               child: Text(message,style: TextStyle(color: sentBy==sender?Colors.white:Colors.black),),
+               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                  sentBy==reciever?Text(userName!,style:const TextStyle(fontSize: 16.5,fontWeight: FontWeight.bold,color: Color.fromARGB(255, 70, 43, 33)),):SizedBox(),   
+                   SizedBox(height: screenHeigth(context: context)*0.005,),
+                   Text(message,style: TextStyle(fontSize: 15.5, color: sentBy==sender?Colors.white:Colors.black),),
+                 ],
+               ),
              ),
            ),
          );

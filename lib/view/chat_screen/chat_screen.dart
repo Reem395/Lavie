@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/message_model/message.dart';
 import 'package:flutter_hackathon/view/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,6 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           sentBy: messagesdocs[index]['userId'] == userId
                               ? sender
                               : reciever,
+                              userName: messagesdocs[index]['userName'],
                         );
                       }),
                 ),
@@ -91,7 +93,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             chatprovider(context: context).addMessage(Message(
                                 message: _msgController.text,
                                 time: DateTime.now(),
-                                userId: userId!));
+                                userId: userId!,
+                                userName: AppSharedPref.getUserName()!));
                             _msgController.clear();
                             _scrollController.animateTo(
                               0.0,

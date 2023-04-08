@@ -264,8 +264,9 @@ class _ForumsState extends State<Forums> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${posts[index].user!.firstName} ${posts[index].user!.lastName}",
+                                          "${posts[index].user!.firstName} ${posts[index].user!.lastName}",maxLines: 1,
                                           style: const TextStyle(
+                                            overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
@@ -309,6 +310,7 @@ class _ForumsState extends State<Forums> {
                               ),
                               Expanded(
                                 child:textForImageError(),
+                                // child:
                                 //  (posts[index].imageUrl == null ||
                                 //         posts[index].imageUrl == "")
                                 //     ? Image.asset(

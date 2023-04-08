@@ -260,7 +260,7 @@ class Profile extends StatelessWidget {
                                       key: _formKey,
                                       child: TextFormField(
                                         controller: emailController,
-                                        decoration: InputDecoration(
+                                        decoration:  InputDecoration(
                                             labelText: AppSharedPref.getUserMail()),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
