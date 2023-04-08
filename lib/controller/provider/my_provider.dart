@@ -504,6 +504,7 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       currentUser = User.fromJson(response.data['data']);
+      AppSharedPref.setUserName("${currentUser!.firstName} ${currentUser!.lastName}");
       userAddress = currentUser?.address;
       print("userAddress: ${userAddress}");
       // }
@@ -533,6 +534,7 @@ class MyProvider with ChangeNotifier {
           });
       print("user edited : ${User.fromJson(response.data['data'])}");
       await getCurrentUser();
+
     } on DioError catch (e) {
       print("Error from get current user: ${e.response!.data['message']}");
     }
@@ -572,6 +574,7 @@ class MyProvider with ChangeNotifier {
         getMyForums();
         getBlogs();
         getCurrentUser();
+        AppSharedPref.setUserName("${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
         notifyListeners();
 
         print("User token is not null: $userToken");
@@ -611,7 +614,8 @@ class MyProvider with ChangeNotifier {
         getMyForums();
         getBlogs();
         await getCurrentUser();
-
+        AppSharedPref.setUserName("${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
+        selectedIndex=2;
         notifyListeners();
 
         print("User token is not null: $userToken");

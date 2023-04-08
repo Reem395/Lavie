@@ -262,8 +262,8 @@ class Profile extends StatelessWidget {
                                       key: _formKey,
                                       child: TextFormField(
                                         controller: emailController,
-                                        decoration: const InputDecoration(
-                                            labelText: "Email"),
+                                        decoration:  InputDecoration(
+                                            labelText: AppSharedPref.getUserMail()),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return "Email is Required";

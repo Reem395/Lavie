@@ -19,6 +19,10 @@ class AppSharedPref {
       await sharedPreferences.setString("userId", userId);
   static String? getUserId() => sharedPreferences.getString("userId");
 
+  static Future setUserName(userName) async =>
+      await sharedPreferences.setString("userName", userName);
+  static String? getUserName() => sharedPreferences.getString("userName");
+
   static Future setNextExamDate({required DateTime nextExamDate}) async =>
       await sharedPreferences.setString(
           "NextExamDate", nextExamDate.toString());

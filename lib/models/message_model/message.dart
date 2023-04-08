@@ -1,11 +1,13 @@
 class Message {
   String message;
   String userId;
+  String userName;
   dynamic time;
   Message({
     required this.message,
     required this.time,
-    required this.userId
+    required this.userId,
+    required this.userName
   });
   // factory Message.fromJson(Map<String,dynamic>json)=>Message(
   //   message: json['message'],
@@ -14,12 +16,14 @@ class Message {
  factory Message.fromJson(json)=>Message(
     message: json['message'],
     time: json['time'],
-    userId: json['userId']);
+    userId: json['userId'],
+    userName: json['userName']);
   Map<String,dynamic> toJson(){
     return {
       'message':message,
       'time':time,
-      'userId':userId
+      'userId':userId,
+      'userName':userName
     };
   }
 }
