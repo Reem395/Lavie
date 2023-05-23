@@ -11,10 +11,22 @@
             "deviceId": "emulator-5554"
         },
         {
-            "name": "android_emulator",
+            "name": "android_emulator_pixel30",
             "request": "launch",
             "type": "dart",
             "deviceId": "emulator-5556"
+        },
+        {
+            "name": "Pixel 3",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "192.168.105.102:5555"
+        },
+        {
+            "name": "Google Pixel",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "192.168.105.101:5555"
         }
     ],
     "compounds": [
@@ -22,7 +34,14 @@
             "name": "All Devices",
             "configurations": [
                 "flutter_emulator",
-                "android_emulator"
+                "android_emulator_pixel30"
+            ]
+        },
+        {
+            "name": "GenyMotion Devices",
+            "configurations": [
+                "Google Pixel",
+                "Pixel 3"
             ]
         },
     ]

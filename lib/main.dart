@@ -1,4 +1,5 @@
-// @dart=2.7
+// @dart=2.12
+// dart=2.7
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +17,7 @@ import 'controller/local/database/database_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp(
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await AppSharedPref.init();
@@ -25,20 +26,20 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return 
-    MultiProvider(providers: [
-      ChangeNotifierProvider(
-      create: (context) => MyProvider(),
-    ),
-      ChangeNotifierProvider(
-      create: (context) => ChatProvider(),
-    ),
-    ],
-    child:MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => MyProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChatProvider(),
+        ),
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.green,

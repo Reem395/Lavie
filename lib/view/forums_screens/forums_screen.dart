@@ -51,14 +51,15 @@ class _ForumsState extends State<Forums> {
   //     icon: Icon(Icons.send,color: defaultColor,),
   //   );
   // }
-    @override
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    checkToken(context);
-  });
+      checkToken(context);
+    });
   }
-  List<Widget> imgs=[];
+
+  List<Widget> imgs = [];
   @override
   Widget build(BuildContext context) {
     print("user id: ${AppSharedPref.getUserId()}");
@@ -251,7 +252,11 @@ class _ForumsState extends State<Forums> {
                                           //     ))
                                           // :
                                           Image.asset(
-                                        postType=="my"? 'assets/images/A5.png':index%2==0?forumUserImage:'assets/images/A2.png',
+                                        postType == "my"
+                                            ? 'assets/images/A5.png'
+                                            : index % 2 == 0
+                                                ? forumUserImage
+                                                : 'assets/images/A2.png',
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -264,9 +269,10 @@ class _ForumsState extends State<Forums> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${posts[index].user!.firstName} ${posts[index].user!.lastName}",maxLines: 1,
+                                          "${posts[index].user!.firstName} ${posts[index].user!.lastName}",
+                                          maxLines: 1,
                                           style: const TextStyle(
-                                            overflow: TextOverflow.ellipsis,
+                                              overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
@@ -309,7 +315,7 @@ class _ForumsState extends State<Forums> {
                                 height: screenHeigth(context: context) * 0.02,
                               ),
                               Expanded(
-                                child:textForImageError(),
+                                child: textForImageError(),
                                 // child:
                                 //  (posts[index].imageUrl == null ||
                                 //         posts[index].imageUrl == "")
@@ -327,11 +333,10 @@ class _ForumsState extends State<Forums> {
                                 //               "image error: ${error.toString()}");
                                 //           return textForImageError();
                                 //         },
-                                       
+
                                 //         width: double.infinity,
                                 //         fit: BoxFit.fitWidth,
                                 //       ),
-                              
                               ),
                             ],
                           ),
@@ -432,15 +437,25 @@ class _ForumsState extends State<Forums> {
                                                                       ?
                                                                       //reem
                                                                       Image
-                                                                          .network(
-                                                                          myProvider(context: context)
-                                                                              .currentUser!
-                                                                              .imageUrl!,
+                                                                          .asset(
+                                                                          "assets/images/A5.png",
+                                                                          fit: BoxFit
+                                                                              .cover,
                                                                           width:
-                                                                              61,
+                                                                              51,
                                                                           height:
-                                                                              61,
+                                                                              51,
                                                                         )
+                                                                      // Image
+                                                                      //     .network(
+                                                                      //     myProvider(context: context)
+                                                                      //         .currentUser!
+                                                                      //         .imageUrl!,
+                                                                      //     width:
+                                                                      //         61,
+                                                                      //     height:
+                                                                      //         61,
+                                                                      //   )
                                                                       : Image.asset(idx % 2 ==
                                                                               0
                                                                           ? "assets/images/A3.png"
