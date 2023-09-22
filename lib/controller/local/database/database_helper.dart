@@ -1,3 +1,4 @@
+import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -32,7 +33,7 @@ class DatabaseHelper {
   }
 
   Future<Database> getDbInstance() async {
-    int oldV = dbVersion - 1;
+    // int oldV = dbVersion - 1;
     String path = await getDbPath();
     // print(DB_VERSION);
     return openDatabase(path,
@@ -41,8 +42,10 @@ class DatabaseHelper {
 
   Future<List<Cart>> getuserCart() async {
     Database db = await getDbInstance();
-    List<Map<dynamic, dynamic>> query =
-        await db.query(tableName, orderBy: '$colId desc');
+    List<Map<dynamic, dynamic>> query = await db.query(tableName,
+        where: '$colUserId =?',
+        whereArgs: [AppSharedPref.getUserId()],
+        orderBy: '$colId desc');
     return query.map((e) => Cart.fromJson(e)).toList();
   }
 
@@ -52,11 +55,10 @@ class DatabaseHelper {
     return db.insert(tableName, cart.toJson());
   }
 
-
-  Future<int> updateDb(Cart cart) async{
+  Future<int> updateDb(Cart cart) async {
     Database db = await getDbInstance();
-    return db.update(tableName, cart.toJson(),where:'$colId=?',whereArgs: [cart.id]);
-
+    return db.update(tableName, cart.toJson(),
+        where: '$colId=?', whereArgs: [cart.id]);
   }
 
   Future<int> deleteFromDb(int id) async {

@@ -5,14 +5,14 @@ import 'package:flutter_hackathon/view/components.dart';
 import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/forum_model/Forum.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../utils/constants.dart';
 
+import 'models/forum_model/forum.dart';
 import 'view/forums_screens/add_forum.dart';
 
 class Forums extends StatefulWidget {
-  Forums({Key? key}) : super(key: key);
+  const Forums({Key? key}) : super(key: key);
 
   @override
   State<Forums> createState() => _ForumsState();
@@ -423,7 +423,7 @@ class _ForumsState extends State<Forums> {
                                                                                   height: screenHeigth(context: context) * 0.015,
                                                                                 ),
                                                                                 Text(
-                                                                                  "${DateFormat('yyyy-MM-dd ').format(createdDate)}",
+                                                                                  DateFormat('yyyy-MM-dd ').format(createdDate),
                                                                                   style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.grey),
                                                                                 ),
                                                                               ],
@@ -643,7 +643,7 @@ class _ForumsState extends State<Forums> {
                         });
                         // }
                         await myProvider(context: context)
-                            .likePost("${posts[index].forumId!}");
+                            .likePost(posts[index].forumId!);
 
                         // liked=isLiked(posts[index]);
                         print(" liked : $liked");
@@ -689,7 +689,7 @@ class _ForumsState extends State<Forums> {
                             height: screenHeigth(context: context) * 0.85,
                             color: lightGrey,
                             child: Center(
-                                child: posts[index].forumComments!.length != 0
+                                child: posts[index].forumComments!.isNotEmpty
                                     ? ListView.builder(
                                         itemCount:
                                             posts[index].forumComments!.length,
@@ -755,7 +755,7 @@ class _ForumsState extends State<Forums> {
                                                         0.015,
                                                   ),
                                                   Text(
-                                                    "${DateFormat('yyyy-MM-dd ').format(createdDate)}",
+                                                    DateFormat('yyyy-MM-dd ').format(createdDate),
                                                     style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,

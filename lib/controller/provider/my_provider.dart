@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_hackathon/models/blogs_model/blogs_model.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_hackathon/models/tools_model/tools_model.dart';
 import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../models/forum_model/Forum.dart';
+import '../../models/forum_model/forum.dart';
 import '../../models/forum_model/forum_comment.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../models/forum_model/forum_model.dart';
@@ -27,10 +28,12 @@ import '../services/app_shared_pref.dart';
 
 class MyProvider with ChangeNotifier {
   int questionNo = 1;
-  double totalCartPrice = 180;
+  // double totalCartPrice = 180;
   DateTime? currentExamDate;
   DateTime? nextExamDate;
   bool isExamAvailable = false;
+  bool loginIndicator = false;
+
   int selectedIndex = 2;
   User? currentUser;
   dynamic userAddress;
@@ -253,7 +256,7 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       ForumModel res = ForumModel.fromJson(response.data);
-       allPosts = [...?res.data];
+      allPosts = [...?res.data];
       // print("allPosts len: ${allPosts.length}");
       // await fetchImage(allPosts);
       // print("postImg len: ${allPostsImgs.length}");
@@ -287,7 +290,7 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       ForumLike res = ForumLike.fromJson(response.data);
-      print('res: ${res}');
+      print('res: $res');
       print('Liked successfully: ${res.forumId}');
       notifyListeners();
     } on DioError catch (e) {
@@ -304,7 +307,7 @@ class MyProvider with ChangeNotifier {
           })),
           data: {"comment": comment});
       ForumComment res = ForumComment.fromJson(response.data);
-      print('res: ${res}');
+      print('res: $res');
       print('commented successfully: ${res.forumId}');
       notifyListeners();
     } on DioError catch (e) {
@@ -368,10 +371,14 @@ class MyProvider with ChangeNotifier {
     String prodId = getInstanceId(productInstance: productInstance);
     List productCountMap =
         getProductMap(productInstance: productInstance, context: context);
+    print("clicked!!!");
 
     for (Map item in productCountMap) {
       if (item.containsKey(prodId)) {
         item[prodId] = (item.values.first) + 1;
+        print("item.values.first ${item.values.first}");
+        print("from if ${item[prodId]}");
+
         // getCount(product:productInstance,context: context);
         calculateCartTotalPrice(context: context);
         notifyListeners();
@@ -393,7 +400,8 @@ class MyProvider with ChangeNotifier {
           item[prodId] = (item.values.first) - 1;
           if (item.values.first == 0) {
             if (cartId != null) {
-              deleteFromCart(cartId);
+              print("cart ID != null $cartId");
+              deleteFromCart(cartId: cartId, context: context);
             }
           }
         } else if (item.values.first < 1) {}
@@ -415,22 +423,35 @@ class MyProvider with ChangeNotifier {
 
   getCart() {
     DatabaseHelper.helper.getuserCart().then((value) {
-      print("from get : ${value.length}");
+      print("from getCart cart length : ${value.length}");
       userCart = value;
-      // for (var item in userCart) {
-      //   var count = item.noProductsInCart;
-
-      // }
       notifyListeners();
       return userCart;
     });
   }
 
-  void deleteFromCart(int cartId) {
+  void deleteFromCart(
+      {required int cartId,
+      dynamic productInstance,
+      required BuildContext context}) {
     DatabaseHelper.helper.deleteFromDb(cartId).then((value) => value > 0
         ? print('element deleted from cart')
         : print('something went wrong'));
     getCart();
+
+    if (productInstance != null) {
+      String prodId = getInstanceId(productInstance: productInstance);
+      List productCountMap =
+          getProductMap(productInstance: productInstance, context: context);
+
+      for (Map item in productCountMap) {
+        if (item.containsKey(prodId)) {
+          item[prodId] = 0;
+
+          // notifyListeners();
+        }
+      }
+    }
   }
 
   void updateCart({required Cart myCart, required BuildContext context}) {
@@ -448,11 +469,14 @@ class MyProvider with ChangeNotifier {
           toastLength: Toast.LENGTH_SHORT);
     } else {
       if (userCart.isNotEmpty) {
+        //if element doesn't exist in cart
         if (!(userCart
             .any((element) => element.productId == myCart.productId))) {
           userCart.add(myCart);
-          DatabaseHelper.helper.insertDb(myCart).then((value) =>
-              value > 0 ? print('cart Saved') : print('something went wrong'));
+          DatabaseHelper.helper.insertDb(myCart).then((value) => value > 0
+              ? Fluttertoast.showToast(
+                  msg: "Product Added", toastLength: Toast.LENGTH_SHORT)
+              : print('something went wrong from addtoCart'));
           getCart();
         }
       } else {
@@ -460,36 +484,44 @@ class MyProvider with ChangeNotifier {
         DatabaseHelper.helper.insertDb(myCart).then((value) =>
             value > 0 ? print('cart Saved') : print('something went wrong'));
         getCart();
+        Fluttertoast.showToast(
+            msg: "Product Added", toastLength: Toast.LENGTH_SHORT);
       }
-      for (var element in userCart) {
-        print("usercart: ${element.productId}");
-      }
+      // for (var element in userCart) {
+      //   print("usercart: ${element.productId}");
+      // }
     }
     calculateCartTotalPrice(context: context);
     notifyListeners();
   }
 
-  elementToRemove({required elementToRemove, required BuildContext context}) {
-    int cartId = elementToRemove.id;
+  elementToRemove(
+      {required elementToRemove,
+      required BuildContext context,
+      dynamic productInstance}) {
+    // int cartId = elementToRemove.id;
     userCart.remove(elementToRemove);
     calculateCartTotalPrice(context: context);
-    deleteFromCart(elementToRemove.id);
+    deleteFromCart(
+        cartId: elementToRemove.id,
+        productInstance: productInstance,
+        context: context);
     notifyListeners();
   }
 
   calculateCartTotalPrice({required BuildContext context}) {
     cartTotalPrice = 0.0;
-    print("from calcu userCart ${userCart.length}");
+    // print("from calcu userCart ${userCart.length}");
     getCart();
     for (var item in userCart) {
       var foundedProduct = productInCart(cartProduct: item, context: context);
-      print("from calcu foundedProduct ${foundedProduct}");
+      // print("from calcu foundedProduct $foundedProduct");
 
       var price = foundedProduct.price;
-      print("from calcu price ${price}");
+      // print("from calcu price $price");
 
       var count = item.noProductsInCart;
-      print("from calcu userCart ${userCart.length}");
+      // print("from calcu userCart ${userCart.length}");
 
       cartTotalPrice += price * count;
     }
@@ -504,13 +536,15 @@ class MyProvider with ChangeNotifier {
             'Authorization': 'Bearer ${AppSharedPref.getToken()}'
           })));
       currentUser = User.fromJson(response.data['data']);
-      AppSharedPref.setUserName("${currentUser!.firstName} ${currentUser!.lastName}");
+      AppSharedPref.setUserName(
+          "${currentUser!.firstName} ${currentUser!.lastName}");
       userAddress = currentUser?.address;
-      print("userAddress: ${userAddress}");
+      print("userAddress: $userAddress");
       // }
       notifyListeners();
     } on DioError catch (e) {
-      print("Error from get current user: ${e.response!.data['message']}");
+      // print("Error from get current user: ${e.response!.data['message']}");
+      print("Error from get current user:");
     }
     return null;
   }
@@ -534,7 +568,6 @@ class MyProvider with ChangeNotifier {
           });
       print("user edited : ${User.fromJson(response.data['data'])}");
       await getCurrentUser();
-
     } on DioError catch (e) {
       print("Error from get current user: ${e.response!.data['message']}");
     }
@@ -574,7 +607,8 @@ class MyProvider with ChangeNotifier {
         getMyForums();
         getBlogs();
         getCurrentUser();
-        AppSharedPref.setUserName("${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
+        AppSharedPref.setUserName(
+            "${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
         notifyListeners();
 
         print("User token is not null: $userToken");
@@ -590,8 +624,23 @@ class MyProvider with ChangeNotifier {
     }
   }
 
+  stopIndicator() {
+    print("Stop");
+    loginIndicator = false;
+    notifyListeners();
+  }
+
+  startIndicator() {
+    print("Start");
+
+    loginIndicator = true;
+    notifyListeners();
+  }
+
   Future signIn({required email, required password, required context}) async {
     try {
+      startIndicator();
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       Response response = await Dio().post("$baseURL/api/v1/auth/signin",
           data: {"email": email, "password": password});
 
@@ -614,21 +663,29 @@ class MyProvider with ChangeNotifier {
         getMyForums();
         getBlogs();
         await getCurrentUser();
-        AppSharedPref.setUserName("${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
-        selectedIndex=2;
+        AppSharedPref.setUserName(
+            "${retrievedUser.data!.user!.firstName} ${retrievedUser.data!.user!.lastName}");
+        selectedIndex = 2;
+        await _firebaseMessaging.subscribeToTopic('all_users');
+        print('Subscribed to topic: all_users');
         notifyListeners();
-
+        print("userAddress from sign in :$userAddress");
         print("User token is not null: $userToken");
         Fluttertoast.showToast(
             msg: "Login Successfully", toastLength: Toast.LENGTH_SHORT);
+        // loginIndicator = false;
+        stopIndicator();
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => userAddress == null
                     ? const ClaimFreeSeed()
-                    : ShopLayout()));
+                    : const ShopLayout()));
       }
     } on DioError catch (e) {
+      stopIndicator();
+
+      notifyListeners();
       print('Error Login user: $e');
       Fluttertoast.showToast(
           msg: "${e.response!.data['message']}",

@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
   String message;
   String userId;
   String userName;
-  dynamic time;
+  String deviceToken;
+  dynamic  time;
   Message({
     required this.message,
     required this.time,
     required this.userId,
-    required this.userName
+    required this.userName,
+    required this.deviceToken,
   });
   // factory Message.fromJson(Map<String,dynamic>json)=>Message(
   //   message: json['message'],
@@ -17,13 +21,15 @@ class Message {
     message: json['message'],
     time: json['time'],
     userId: json['userId'],
+    deviceToken: json['deviceToken'],
     userName: json['userName']);
   Map<String,dynamic> toJson(){
     return {
       'message':message,
       'time':time,
       'userId':userId,
-      'userName':userName
+      'userName':userName,
+      'deviceToken':deviceToken
     };
   }
 }

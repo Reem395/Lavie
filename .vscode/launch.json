@@ -23,10 +23,27 @@
             "deviceId": "192.168.105.102:5555"
         },
         {
+            "name": "iPhone11",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "8AD22D43-8BC7-49AF-9D28-FFB37EE05222"
+        },
+        {
             "name": "Google Pixel",
             "request": "launch",
             "type": "dart",
             "deviceId": "192.168.105.101:5555"
+        },        {
+            "name": "JKM",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "DEFNW18B27006610"
+        },
+        {
+            "name": "RMX1807",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "ac03084"
         }
     ],
     "compounds": [
@@ -34,7 +51,7 @@
             "name": "All Devices",
             "configurations": [
                 "flutter_emulator",
-                "android_emulator_pixel30"
+                "JKM"
             ]
         },
         {

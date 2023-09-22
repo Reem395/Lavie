@@ -1,11 +1,10 @@
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
-import 'package:flutter_hackathon/models/forum_model/forum_comment.dart';
 import 'package:like_button/like_button.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/forum_model/Forum.dart';
+import '../../models/forum_model/forum.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../utils/constants.dart';
 
@@ -15,7 +14,7 @@ import '../shop_layout/shop_layout.dart';
 import 'add_forum.dart';
 
 class Forums extends StatefulWidget {
-  Forums({Key? key}) : super(key: key);
+  const Forums({Key? key}) : super(key: key);
 
   @override
   State<Forums> createState() => _ForumsState();
@@ -541,7 +540,7 @@ class _ForumsState extends State<Forums> {
                                                                                 () async {
                                                                               if (commentContoller.text.isNotEmpty) {
                                                                                 myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
-                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => ShopLayout()), (r) => false);
+                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => const ShopLayout()), (r) => false);
                                                                                 myProvider(context: context).selectedIndex = 0;
                                                                               }
                                                                             },
@@ -597,7 +596,7 @@ class _ForumsState extends State<Forums> {
                                                                                 () async {
                                                                               if (commentContoller.text.isNotEmpty) {
                                                                                 myProvider(context: context).commentOnPost(posts[index].forumId!, commentContoller.text);
-                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => ShopLayout()), (r) => false);
+                                                                                await Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute<void>(builder: (context) => const ShopLayout()), (r) => false);
                                                                                 myProvider(context: context).selectedIndex = 0;
                                                                               }
                                                                             },

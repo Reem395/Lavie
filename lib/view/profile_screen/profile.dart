@@ -9,9 +9,9 @@ import '../signup_login_screens/signup_login_screen.dart';
 class Profile extends StatelessWidget {
   Profile({Key? key}) : super(key: key);
 
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -262,8 +262,9 @@ class Profile extends StatelessWidget {
                                       key: _formKey,
                                       child: TextFormField(
                                         controller: emailController,
-                                        decoration:  InputDecoration(
-                                            labelText: AppSharedPref.getUserMail()),
+                                        decoration: InputDecoration(
+                                            labelText:
+                                                AppSharedPref.getUserMail()),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return "Email is Required";
@@ -344,7 +345,7 @@ class Profile extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (BuildContext context) => QrScreen(),
+                  builder: (BuildContext context) => const QrScreen(),
                 ),
               );
             },

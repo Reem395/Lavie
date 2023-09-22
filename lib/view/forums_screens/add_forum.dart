@@ -23,8 +23,8 @@ class _AddForumState extends State<AddForum> {
   TextEditingController postImageURL = TextEditingController();
 
   final ImagePicker _imagePicker = ImagePicker();
-  dynamic _pickImageError;
-  List<XFile>? _imageFileList;
+  // dynamic _pickImageError;
+  // List<XFile>? _imageFileList;
   String? img64;
   XFile? pickedFile;
 
@@ -60,7 +60,7 @@ class _AddForumState extends State<AddForum> {
   }
 
   Future<void> _onImageButtonPressed(ImageSource source,
-      {BuildContext? context, bool isMultiImage = false}) async {
+      {BuildContext? context}) async {
     try {
       pickedFile = await _imagePicker.pickImage(source: source);
       final bytes = File(pickedFile!.path).readAsBytesSync();
@@ -152,8 +152,8 @@ class _AddForumState extends State<AddForum> {
                 TextField(
                   controller: postDescription,
                   maxLines: 7,
-                  decoration:
-                      textFieldBorderStyle(contetPadding: EdgeInsets.all(10)),
+                  decoration: textFieldBorderStyle(
+                      contetPadding: const EdgeInsets.all(10)),
                 ),
                 SizedBox(
                   height: screenHeigth(context: context) * 0.03,
@@ -164,7 +164,7 @@ class _AddForumState extends State<AddForum> {
                       onPressed: () async {
                         print("image: ${postImageURL.text.length}");
                         if (!(postTitle.text == "" ||
-                            postDescription.text == ""||
+                            postDescription.text == "" ||
                             img64 == null)) {
                           myProvider(context: context).addForum(
                               title: postTitle.text,
@@ -172,7 +172,7 @@ class _AddForumState extends State<AddForum> {
                               image: img64!);
                           await Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute<void>(
-                                  builder: (context) => ShopLayout()),
+                                  builder: (context) => const ShopLayout()),
                               (r) => false);
                           myProvider(context: context).selectedIndex = 0;
                         } else {

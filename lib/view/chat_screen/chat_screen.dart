@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/remote/API/notifivation_API.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/message_model/message.dart';
 import 'package:flutter_hackathon/view/components.dart';
@@ -8,14 +9,15 @@ import '../../utils/constants.dart';
 import 'widgets/chat_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen( {Key? key}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 TextEditingController _msgController = TextEditingController();
-ScrollController _scrollController =  ScrollController();
+ScrollController _scrollController = ScrollController();
+
 class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,14 @@ class _ChatScreenState extends State<ChatScreen> {
             ;
           } else {
             final messagesdocs = snapshot.data!.docs;
+            // NotifivationAPI.sendNotification(
+            //     body: messagesdocs.first['message']);
+            print(
+                "messagesdocs.first['message'] :${messagesdocs.first['message']}");
+            
+            
+            // NotifivationAPI.sendNotification(
+            //                     body: messagesdocs.first['message'], token: messagesdocs.first['deviceToken']);
             return Column(
               children: [
                 Expanded(
@@ -72,13 +82,13 @@ class _ChatScreenState extends State<ChatScreen> {
                           sentBy: messagesdocs[index]['userId'] == userId
                               ? sender
                               : reciever,
-                              userName: messagesdocs[index]['userName'],
+                          userName: messagesdocs[index]['userName'],
                         );
                       }),
                 ),
-
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                   child: TextField(
                     controller: _msgController,
                     onEditingComplete: () {},
@@ -92,9 +102,12 @@ class _ChatScreenState extends State<ChatScreen> {
                               _msgController.text != "") {
                             chatprovider(context: context).addMessage(Message(
                                 message: _msgController.text,
-                                time: DateTime.now(),
+                                time: FieldValue.serverTimestamp(),
                                 userId: userId!,
-                                userName: AppSharedPref.getUserName()!));
+                                userName: AppSharedPref.getUserName()!,
+                                deviceToken: NotifivationAPI.deviceToken!));
+                            NotifivationAPI.sendNotification(
+                                body: _msgController.text);
                             _msgController.clear();
                             _scrollController.animateTo(
                               0.0,

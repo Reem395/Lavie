@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/controller/provider/my_provider.dart';
-import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/plants_model/plants.dart';
-import '../../models/tools_model/tool.dart';
 import '../../utils/constants.dart';
-import '../blog_screens/single_blog_screen.dart';
 import '../components.dart';
 
 class CartScreen extends StatefulWidget {
@@ -257,7 +253,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       myProvider
                                                           .elementToRemove(
                                                               elementToRemove:
-                                                                  myCart[index],
+                                                                  myCart[index],productInstance: cartElement,
                                                               context: context);
                                                     },
                                                   ),

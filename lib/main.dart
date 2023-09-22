@@ -1,14 +1,14 @@
 // @dart=2.12
 // dart=2.7
-import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_hackathon/controller/remote/API/notifivation_API.dart';
+import 'package:flutter_hackathon/utils/constants.dart';
+import 'package:flutter_hackathon/view/chat_screen/chat_screen.dart';
 import 'controller/provider/chat_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/view/signup_login_screens/signup_login_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'controller/provider/my_provider.dart';
 import 'controller/services/app_shared_pref.dart';
@@ -20,6 +20,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await NotifivationAPI().initNotifications();
   await AppSharedPref.init();
   await DatabaseHelper.helper.getDbInstance();
   runApp(const MyApp());
@@ -44,7 +45,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),
+        navigatorKey: navigatorKey,
         home: const SpalshScreen(),
+        // routes:{
+          // ChatScreen.route:(context)=>ChatScreen()
+        // }
       ),
     );
   }

@@ -51,9 +51,9 @@ InputDecoration textFieldBorderStyle(
   return InputDecoration(
     suffixIcon: suffixIcon,
     hintText: hintText ?? "",
-    contentPadding: contetPadding ?? EdgeInsets.all(3),
+    contentPadding: contetPadding ?? const EdgeInsets.all(3),
     border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(color: borderColor ?? Colors.grey)),
   );
 }

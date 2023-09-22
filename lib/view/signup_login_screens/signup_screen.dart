@@ -5,7 +5,7 @@ import '../components.dart';
 import '../../utils/constants.dart';
 
 class SignupScreen extends StatefulWidget {
-  SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -33,7 +33,9 @@ class _SignupScreenState extends State<SignupScreen> {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               "Fisrt Name",
@@ -101,8 +103,8 @@ class _SignupScreenState extends State<SignupScreen> {
             TextField(
               controller: passwordController,
               obscureText: hidePassword,
-              decoration:
-                  textFieldBorderStyle(contetPadding: const EdgeInsets.all(10),
+              decoration: textFieldBorderStyle(
+                  contetPadding: const EdgeInsets.all(10),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -110,8 +112,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
                     },
                     icon: hidePassword
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
                   )),
             ),
             SizedBox(
@@ -139,42 +141,59 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
                     },
                     icon: hideConfirmPassword
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
                   )),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
             ),
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  if (firstNameController.text == "" ||
-                      lastNameController.text == "" ||
-                      emailController.text == "" ||
-                      passwordController.text == "" ||
-                      confirmPasswordController.text == "") {
-                    Fluttertoast.showToast(
-                        msg: "Please enter all fields",
-                        toastLength: Toast.LENGTH_SHORT);
-                  } else {
-                    myProvider(context: context).signUp(
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        email: emailController.text,
-                        password: passwordController.text,
-                        context: context);
-                  }
-                } catch (e) {
-                  print("error: $e");
-                }
-              },
-              child: const Text("Sign up"),
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(defaultColor),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsetsDirectional.all(15))),
+             myProvider(context: context).loginIndicator
+                ? const Center(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ):
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      try {
+                        if (firstNameController.text == "" ||
+                            lastNameController.text == "" ||
+                            emailController.text == "" ||
+                            passwordController.text == "" ||
+                            confirmPasswordController.text == "") {
+                          Fluttertoast.showToast(
+                              msg: "Please enter all fields",
+                              toastLength: Toast.LENGTH_SHORT);
+                        } else {
+                          myProvider(context: context).signUp(
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              context: context);
+                              setState(() {
+                                  myProvider(context: context).loginIndicator =
+                                      true;
+                                });
+                        }
+                      } catch (e) {
+                        print("error: $e");
+                      }
+                    },
+                    child: const Text("Sign up"),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(defaultColor),
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsetsDirectional.all(15))),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *

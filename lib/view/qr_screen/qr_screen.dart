@@ -1,13 +1,11 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/utils/constants.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrScreen extends StatefulWidget {
-  QrScreen({Key? key}) : super(key: key);
+  const QrScreen({Key? key}) : super(key: key);
 
   @override
   State<QrScreen> createState() => _QrScreenState();
@@ -17,7 +15,7 @@ class _QrScreenState extends State<QrScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   Barcode? result;
-  var subscription;
+  dynamic subscription;
   QRViewController? controller;
 
   @override
@@ -48,7 +46,7 @@ class _QrScreenState extends State<QrScreen> {
               child: (result != null)
                   ? Text(
                       'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : Text('Scan a code'),
+                  : const Text('Scan a code'),
             ),
           )
         ],

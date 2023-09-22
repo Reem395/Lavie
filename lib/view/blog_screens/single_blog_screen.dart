@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/models/products_model/products.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
 class SingleBlogScreen extends StatelessWidget {

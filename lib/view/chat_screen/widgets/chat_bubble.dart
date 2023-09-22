@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -32,7 +31,7 @@ class ChatBubble extends StatelessWidget {
                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
-                  sentBy==reciever?Text(userName!,style:const TextStyle(fontSize: 16.5,fontWeight: FontWeight.bold,color: Color.fromARGB(255, 70, 43, 33)),):SizedBox(),   
+                  sentBy==reciever?Text(userName!,style:const TextStyle(fontSize: 16.5,fontWeight: FontWeight.bold,color: Color.fromARGB(255, 70, 43, 33)),):const SizedBox(),   
                    SizedBox(height: screenHeigth(context: context)*0.005,),
                    Text(message,style: TextStyle(fontSize: 15.5, color: sentBy==sender?Colors.white:Colors.black),),
                  ],

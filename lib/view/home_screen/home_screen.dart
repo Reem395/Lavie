@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
@@ -12,21 +13,20 @@ import '../../controller/provider/my_provider.dart';
 import '../quiz_screen/quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
     myProvider(context: context).getCart();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    checkToken(context);
-  });
+      checkToken(context);
+    });
   }
 
   TextEditingController searchController = TextEditingController();
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
               actions: [
                 myProvider(context: context).isExamAvailable
                     ? IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const QuizScreen(),
                             ),
                           );
+                         
                         },
                         icon: CircleAvatar(
                             backgroundColor: defaultColor,
@@ -166,14 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Expanded(
                       child: TabBarView(children: [
-                        selectedPage(myProvider.allproducts,
-                            myProvider.cartProdCount),
-                        selectedPage(myProvider.allPlants,
-                            myProvider.cartPlantCount),
-                        selectedPage(myProvider.allSeeds,
-                            myProvider.cartSeedsCount),
-                        selectedPage(myProvider.allTools,
-                            myProvider.cartToolsCount),
+                        selectedPage(myProvider.allproducts),
+                        selectedPage(myProvider.allPlants),
+                        selectedPage(myProvider.allSeeds),
+                        selectedPage(myProvider.allTools),
                       ]),
                     ),
                   ]),
@@ -184,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget selectedPage(List category, List productCount) {
+  Widget selectedPage(List category) {
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 80,
@@ -237,7 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           myProvider(context: context).decrementCartItem(
-                              productInstance: category[index], context: context);
+                              productInstance: category[index],
+                              context: context);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -259,14 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
-                      Text(
-                        // prodCount(
-                        //       // productCount: productCount,
-                        //       context: context,
-                        //       productInstance: category[index])
-                        //   .toString()
-                        myProvider(context: context).getCount(product: category[index],context: context).toString()
-                          ),
+                      Text(myProvider(context: context)
+                          .getCount(product: category[index], context: context)
+                          .toString()),
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
@@ -320,19 +313,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         String productId;
                         String productType;
-                      productId = getInstanceId(productInstance: category[index]);
-                      productType = getInstanceType(productInstance:category[index]).toString();
+                        productId =
+                            getInstanceId(productInstance: category[index]);
+                        productType =
+                            getInstanceType(productInstance: category[index])
+                                .toString();
 
                         var noItems = prodCount(
-                            context: context,
-                            productInstance: category[index]);
+                            context: context, productInstance: category[index]);
 
                         Cart toCart = Cart(
                             userId: userId!,
                             productId: productId,
                             noProductsInCart: noItems,
                             productType: productType);
-                        myProvider(context: context).addToCart(myCart: toCart,context: context);
+                        myProvider(context: context)
+                            .addToCart(myCart: toCart, context: context);
                       },
                       child: const Text("Add To Cart"),
                       style: roundedButtonStyle(

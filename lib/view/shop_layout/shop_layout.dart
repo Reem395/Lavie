@@ -1,25 +1,18 @@
 // @dart=2.12
 // dart=2.9
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
-import 'package:flutter_hackathon/models/blogs_model/blogs.dart';
 import 'package:flutter_hackathon/view/home_screen/home_screen.dart';
 import 'package:flutter_hackathon/view/notification_screen/notification_screen.dart';
 import 'package:flutter_hackathon/view/profile_screen/profile.dart';
-import 'package:flutter_hackathon/view/qr_screen/qr_screen.dart';
-import 'package:flutter_hackathon/view/quiz_screen/quiz_screen.dart';
-import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
-import 'package:provider/provider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import '../blog_screens/blog_screen.dart';
 import '../forums_screens/forums_screen.dart';
-import '../signup_login_screens/signup_login_screen.dart';
 
 class ShopLayout extends StatefulWidget {
-  ShopLayout({Key? key}) : super(key: key);
+  const ShopLayout({Key? key}) : super(key: key);
 
   @override
   State<ShopLayout> createState() => _ShopLayoutState();
@@ -27,10 +20,10 @@ class ShopLayout extends StatefulWidget {
 
 class _ShopLayoutState extends State<ShopLayout> {
   List<Widget> navPages = [
-    Forums(),
+    const Forums(),
     const BlogScreen(),
-    HomeScreen(),
-    NotificationScreen(),
+    const HomeScreen(),
+    const NotificationScreen(),
     Profile(),
   ];
 

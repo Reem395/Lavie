@@ -1,4 +1,4 @@
-import 'Forum.dart';
+import 'forum.dart';
 
 class ForumModel {
   String? type;

@@ -222,7 +222,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ShopLayout()),
+                                  builder: (context) => const ShopLayout()),
                               (Route<dynamic> route) => false,
                             );
                             myProvider.questionNo = 1;

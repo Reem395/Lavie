@@ -85,7 +85,7 @@ class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ShopLayout()));
+                                    builder: (context) => const ShopLayout()));
                           }
                         } catch (e) {
                           print("Error claiming seeds  $e");
@@ -104,7 +104,7 @@ class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
                       onPressed: () { Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ShopLayout()));},
+                                    builder: (context) => const ShopLayout()));},
                       child: const Text("Save For Later"),
                       style: roundedButtonStyle(
                           buttonColor: const Color.fromARGB(255, 231, 226, 226),

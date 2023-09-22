@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
 import 'package:provider/provider.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../controller/provider/my_provider.dart';
-import '../../controller/services/app_shared_pref.dart';
 import '../../utils/constants.dart';
 import '../components.dart';
 import '../shop_layout/shop_layout.dart';
@@ -47,7 +45,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
       Future.delayed(const Duration(milliseconds: 1)).then((_) async {
         await myprovider.getCurrentUser();
       nexWidget =
-          myprovider.userAddress == null ? const ClaimFreeSeed() : ShopLayout();
+          myprovider.userAddress == null ? const ClaimFreeSeed() : const ShopLayout();
     Timer(
         const Duration(seconds: 3),
         () => Navigator.pushReplacement(

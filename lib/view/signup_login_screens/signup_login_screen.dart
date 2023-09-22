@@ -63,16 +63,16 @@ class SignupLogin extends StatelessWidget {
                 ),
                 SizedBox(
                   height: screenSize.height * 0.4,
-                  child: TabBarView(
+                  child: const TabBarView(
                     children: [
                       SignupScreen(),
                       LoginScreen(),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(children: const [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(children: [
                     Expanded(
                       child: Divider(
                       thickness: 2,

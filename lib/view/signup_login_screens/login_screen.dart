@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
+import '../../controller/provider/my_provider.dart';
 import '../components.dart';
 import '../../utils/constants.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -26,7 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               "Email",
@@ -68,38 +72,58 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                     icon: hidePassword
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
                   )),
             ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
             ),
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  if (emailController.text == "" ||
-                      passwordController.text == "") {
-                    Fluttertoast.showToast(
-                        msg: "Please enter all fields",
-                        toastLength: Toast.LENGTH_SHORT);
-                  } else {
-                    myProvider(context: context).signIn(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        context: context);
-                  }
-                } catch (e) {
-                  print("error: $e");
-                }
-              },
-              child: const Text("Login"),
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(defaultColor),
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsetsDirectional.all(15))),
-            ),
+           Provider.of<MyProvider>(context, listen: true).loginIndicator
+            // myProvider(context: context).loginIndicator
+                ? const Center(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            try {
+                              if (emailController.text == "" ||
+                                  passwordController.text == "") {
+                                Fluttertoast.showToast(
+                                    msg: "Please enter all fields",
+                                    toastLength: Toast.LENGTH_SHORT);
+                              } else {
+                                myProvider(context: context).signIn(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    context: context);
+                                // setState(() {
+                                //   myProvider(context: context).loginIndicator =
+                                //       true;
+                                // });
+                                myProvider(context: context).startIndicator();
+                              }
+                            } catch (e) {
+                              print("error: $e");
+                            }
+                          },
+                          child: const Text("Login"),
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(defaultColor),
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsetsDirectional.all(15))),
+                        ),
+                      ),
+                    ],
+                  ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
