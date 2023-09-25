@@ -618,9 +618,17 @@ class MyProvider with ChangeNotifier {
             MaterialPageRoute(builder: (context) => const ClaimFreeSeed()));
       }
     } on DioError catch (e) {
+      if(e.response!.statusCode! >= 500){
+        Fluttertoast.showToast(
+          msg: "Sorry Try again Later",
+          toastLength: Toast.LENGTH_SHORT);
+      }
+      else{
       Fluttertoast.showToast(
           msg: "${e.response!.data['message']}",
           toastLength: Toast.LENGTH_SHORT);
+
+      }
     }
   }
 
@@ -684,12 +692,19 @@ class MyProvider with ChangeNotifier {
       }
     } on DioError catch (e) {
       stopIndicator();
-
-      notifyListeners();
+      if(e.response!.statusCode! >= 500){
+        Fluttertoast.showToast(
+          msg: "Sorry Try again Later",
+          toastLength: Toast.LENGTH_SHORT);
+      }
+      else{
       print('Error Login user: $e');
       Fluttertoast.showToast(
           msg: "${e.response!.data['message']}",
           toastLength: Toast.LENGTH_SHORT);
+
+      }
+      notifyListeners();
     }
   }
 
