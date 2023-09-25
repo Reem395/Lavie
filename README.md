@@ -20,5 +20,6 @@ La Vie is powered by a stack of modern technologies to provide the best user exp
 Dio: For making network requests and handling API interactions.
 Provider: For state management and data sharing across the app.
 Sqflite: For local data storage, making it possible to save user preferences and cart items.
+SharedPreferences: For efficiently storing and retrieving user preferences and settings.
 Firestore: For real-time data synchronization and chat functionality.
 Push Notifications: Stay updated with notifications and never miss any incoming message.
