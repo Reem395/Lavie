@@ -8,7 +8,7 @@ import 'package:container_tab_indicator/container_tab_indicator.dart';
 
 import '../../models/products_model/products.dart';
 import '../../utils/product_utils.dart';
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 import '../../utils/token_utils.dart';
 import '../components.dart';
 import '../../controller/provider/my_provider.dart';

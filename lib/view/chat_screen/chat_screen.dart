@@ -1,15 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/controller/remote/API/notifivation_api.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/message_model/message.dart';
+import 'package:flutter_hackathon/utils/screen_size_utils.dart';
 import 'package:flutter_hackathon/view/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../controller/services/image_picker.dart';
 import '../../utils/constants.dart';
 import 'widgets/chat_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen( {Key? key}) : super(key: key);
+  const ChatScreen({Key? key}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -64,8 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
             //     body: messagesdocs.first['message']);
             print(
                 "messagesdocs.first['message'] :${messagesdocs.first['message']}");
-            
-            
+
             // NotifivationAPI.sendNotification(
             //                     body: messagesdocs.first['message'], token: messagesdocs.first['deviceToken']);
             return Column(
@@ -116,6 +120,50 @@ class _ChatScreenState extends State<ChatScreen> {
                           }
                         },
                       ),
+                      prefixIcon: IconButton(
+                          onPressed: () async {
+                            Uint8List? img = await AttachImage.pickImage(
+                                ImageSource.gallery);
+                            print("UNI $img");
+                            //Show Alert
+                            if (img != null) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      contentTextStyle: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black),
+                                      actionsAlignment:
+                                          MainAxisAlignment.center,
+                                      content: Image.memory(img,
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            print("img sent");
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Send',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
+                          },
+                          icon: const Icon(Icons.image)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: defaultColor, width: 2),
                           borderRadius:
