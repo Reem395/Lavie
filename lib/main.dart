@@ -4,7 +4,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_hackathon/controller/remote/API/notifivation_API.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
-import 'package:flutter_hackathon/view/chat_screen/chat_screen.dart';
 import 'controller/provider/chat_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';

@@ -708,5 +708,4 @@ class MyProvider with ChangeNotifier {
     }
   }
 
-  checkImage() {}
 }

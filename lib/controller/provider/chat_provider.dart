@@ -14,4 +14,5 @@ class ChatProvider with ChangeNotifier {
       print("Failed to add message: $error");
     });
   }
+  
 }

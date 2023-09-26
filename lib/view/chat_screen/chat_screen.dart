@@ -51,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text("Sorry Something went wrong!"));
+            return const Center(child: Text("Sorry Something went wrong!"));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
