@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/models/cart_model/cart.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
@@ -8,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:container_tab_indicator/container_tab_indicator.dart';
 
 import '../../models/products_model/products.dart';
+import '../../utils/product_utils.dart';
+import '../../utils/screen_utils.dart';
+import '../../utils/token_utils.dart';
 import '../components.dart';
 import '../../controller/provider/my_provider.dart';
 import '../quiz_screen/quiz_screen.dart';

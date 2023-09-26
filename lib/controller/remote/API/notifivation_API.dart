@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -29,7 +28,7 @@ class NotifivationAPI {
   }
 
   void handleMessage(RemoteMessage? msg) {
-    print("from handle msg: ${msg}");
+    print("from handle msg: $msg");
     if (msg == null) return;
 
     print("navigatorKey.currentContext!: ${navigatorKey.currentContext!}");

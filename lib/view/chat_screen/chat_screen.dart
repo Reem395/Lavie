@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/controller/remote/API/notifivation_API.dart';
+import 'package:flutter_hackathon/controller/remote/API/notifivation_api.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/message_model/message.dart';
 import 'package:flutter_hackathon/view/components.dart';
@@ -58,7 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: CircularProgressIndicator(
               color: defaultColor,
             ));
-            ;
           } else {
             final messagesdocs = snapshot.data!.docs;
             // NotifivationAPI.sendNotification(

@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'dart:convert';
 
+import '../../utils/screen_utils.dart';
 import '../components.dart';
 import '../shop_layout/shop_layout.dart';
 
