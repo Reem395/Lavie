@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
+import '../../utils/screen_utils.dart';
+
 class SingleBlogScreen extends StatelessWidget {
   const SingleBlogScreen(
       {Key? key, required this.blogId, required this.productType})

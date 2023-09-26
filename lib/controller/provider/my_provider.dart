@@ -21,6 +21,8 @@ import '../../models/tools_model/tool.dart';
 import '../../models/user_model/user.dart';
 import '../../models/user_model/user_model.dart';
 import '../../utils/constants.dart';
+import '../../utils/product_utils.dart';
+import '../../utils/token_utils.dart';
 import '../../view/components.dart';
 import '../../view/shop_layout/shop_layout.dart';
 import '../local/database/database_helper.dart';
@@ -542,7 +544,7 @@ class MyProvider with ChangeNotifier {
       print("userAddress: $userAddress");
       // }
       notifyListeners();
-    } on DioError catch (e) {
+    } on DioError {
       // print("Error from get current user: ${e.response!.data['message']}");
       print("Error from get current user:");
     }

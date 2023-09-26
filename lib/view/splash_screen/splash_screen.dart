@@ -5,7 +5,7 @@ import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart
 import 'package:provider/provider.dart';
 
 import '../../controller/provider/my_provider.dart';
-import '../../utils/constants.dart';
+import '../../utils/token_utils.dart';
 import '../components.dart';
 import '../shop_layout/shop_layout.dart';
 import '../signup_login_screens/signup_login_screen.dart';
