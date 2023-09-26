@@ -4,7 +4,7 @@ import 'package:flutter_hackathon/view/blog_screens/single_blog_screen.dart';
 
 import '../../models/tools_model/tool.dart';
 import '../../utils/constants.dart';
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 import '../components.dart';
 
 class BlogScreen extends StatelessWidget {

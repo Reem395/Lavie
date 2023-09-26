@@ -8,7 +8,7 @@ import '../../models/forum_model/forum.dart';
 import '../../models/forum_model/forum_like.dart';
 import '../../utils/constants.dart';
 
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 import '../../utils/token_utils.dart';
 import '../chat_screen/chat_screen.dart';
 import '../components.dart';

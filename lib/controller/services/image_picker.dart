@@ -1,20 +1,29 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 
-Future pickImage(ImageSource source) async {
-  try {
-    final ImagePicker _imagePicker = ImagePicker();
-    XFile? pickedFile = await _imagePicker.pickImage(source: source);
-    // final bytes = File(pickedFile!.path).readAsBytesSync();
-    // String? img64 = "data:image/jpeg;base64," + base64Encode(bytes);
-    if (pickedFile != null) {
-      final bytes = File(pickedFile.path).readAsBytesSync();
-      return bytes;
-    } else {
-      print("No image is selected");
+class AttachImage {
+  static Future pickImage(ImageSource source) async {
+    try {
+      final ImagePicker _imagePicker = ImagePicker();
+      XFile? pickedImage = await _imagePicker.pickImage(source: source);
+      // final bytes = File(pickedImage!.path).readAsBytesSync();
+      // String? img64 = "data:image/jpeg;base64," + base64Encode(bytes);
+      if (pickedImage != null) {
+        print("selected img: ${pickedImage.toString()}");
+        final bytes = await pickedImage.readAsBytes();
+        return bytes;
+      } else {
+        print("No image is selected");
+      }
+    } catch (e) {
+      print("Image error: $e");
     }
-  } catch (e) {
-    print("Image error: $e");
+  }
+
+  static seletImage() async {
+    Uint16List img = await pickImage(ImageSource.gallery);
   }
 }
+//MemoryImage

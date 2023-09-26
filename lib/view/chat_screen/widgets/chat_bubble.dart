@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 
-import '../../../utils/screen_utils.dart';
+import '../../../utils/screen_size_utils.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble({

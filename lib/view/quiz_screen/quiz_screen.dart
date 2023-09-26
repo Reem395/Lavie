@@ -4,7 +4,7 @@ import 'package:flutter_hackathon/view/shop_layout/shop_layout.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/provider/my_provider.dart';
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);

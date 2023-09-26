@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);

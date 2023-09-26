@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/product_utils.dart';
-import '../../utils/screen_utils.dart';
+import '../../utils/screen_size_utils.dart';
 import '../components.dart';
 
 class CartScreen extends StatefulWidget {
