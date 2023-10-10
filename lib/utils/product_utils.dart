@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../controller/services/app_shared_pref.dart';
 import '../models/cart_model/cart.dart';
 import '../models/plants_model/plants.dart';
 import '../models/products_model/products.dart';
@@ -92,5 +94,21 @@ prodCount({required dynamic productInstance, required BuildContext context}) {
       print("value is: ${item.values}");
       return item.values.first;
     }
+  }
+}
+
+Future<bool> checkImage({required String image}) async {
+  try {
+    var response = await Dio().get(image);
+    if (response.statusCode == 200) {
+      print("valid image");
+      return true;
+    } else {
+      print("Invalid image");
+      return false;
+    }
+  } catch (e) {
+      print("Invalid image");
+    return false;
   }
 }

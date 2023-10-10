@@ -296,7 +296,7 @@ class MyProvider with ChangeNotifier {
       print('Liked successfully: ${res.forumId}');
       notifyListeners();
     } on DioError catch (e) {
-      print("Error from get forums like: ${e.response!.data['message']}");
+      print("Error from get forums like: ${e.response?.data['message']}");
     }
   }
 
@@ -620,31 +620,27 @@ class MyProvider with ChangeNotifier {
             MaterialPageRoute(builder: (context) => const ClaimFreeSeed()));
       }
     } on DioError catch (e) {
-      if(e.response!.statusCode! >= 500){
+      if (e.response!.statusCode! >= 500) {
         Fluttertoast.showToast(
-          msg: "Sorry Try again Later",
-          toastLength: Toast.LENGTH_SHORT);
-      }
-      else{
-      Fluttertoast.showToast(
-          msg: "${e.response!.data['message']}",
-          toastLength: Toast.LENGTH_SHORT);
-
+            msg: "Sorry Try again Later", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        Fluttertoast.showToast(
+            msg: "${e.response!.data['message']}",
+            toastLength: Toast.LENGTH_SHORT);
       }
     }
   }
 
   stopIndicator() {
     print("Stop");
-    loginIndicator = false;
-    notifyListeners();
+      loginIndicator = false;
+      notifyListeners();
   }
 
   startIndicator() {
     print("Start");
-
-    loginIndicator = true;
-    notifyListeners();
+      loginIndicator = true;
+      notifyListeners();
   }
 
   Future signIn({required email, required password, required context}) async {
@@ -694,20 +690,16 @@ class MyProvider with ChangeNotifier {
       }
     } on DioError catch (e) {
       stopIndicator();
-      if(e.response!.statusCode! >= 500){
+      if (e.response!.statusCode! >= 500) {
         Fluttertoast.showToast(
-          msg: "Sorry Try again Later",
-          toastLength: Toast.LENGTH_SHORT);
-      }
-      else{
-      print('Error Login user: $e');
-      Fluttertoast.showToast(
-          msg: "${e.response!.data['message']}",
-          toastLength: Toast.LENGTH_SHORT);
-
+            msg: "Sorry Try again Later", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        print('Error Login user: $e');
+        Fluttertoast.showToast(
+            msg: "${e.response!.data['message']}",
+            toastLength: Toast.LENGTH_SHORT);
       }
       notifyListeners();
     }
   }
-
 }
