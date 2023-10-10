@@ -6,6 +6,7 @@ import 'package:flutter_hackathon/view/chat_screen/chat_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../utils/constants.dart';
+import '../../services/app_shared_pref.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage? message) async {}
@@ -101,44 +102,45 @@ class NotifivationAPI {
     });
   }
 
-  var t = {
-    "senderId": null,
-    "category": null,
-    "collapseKey": "com.example.flutter_application_1",
-    "contentAvailable": false,
-    "data": {},
-    "from": "/topics/all_users",
-    "messageId": "0:1691522328024846%f71274eef71274ee",
-    "messageType": null,
-    "mutableContent": false,
-    "notification": {
-      "title": "Hello",
-      "titleLocArgs": [],
-      "titleLocKey": null,
-      "body": "8",
-      "bodyLocArgs": [],
-      "bodyLocKey": null,
-      "android": {
-        "channelId": null,
-        "clickAction": null,
-        "color": null,
-        "count": null,
-        "imageUrl": null,
-        "link": null,
-        "priority": 0,
-        "smallIcon": null,
-        "sound": null,
-        "ticker": null,
-        "tag": "topic_key_5299880970841548702",
-        "visibility": 0
-      },
-      "apple": null,
-      "web": null
-    },
-    "sentTime": 1691522327696,
-    "threadId": null,
-    "ttl": 2419200
-  };
+  // var t = {
+  //   "senderId": null,
+  //   "category": null,
+  //   "collapseKey": "com.example.flutter_application_1",
+  //   "contentAvailable": false,
+  //   "data": {},
+  //   "from": "/topics/all_users",
+  //   "messageId": "0:1691522328024846%f71274eef71274ee",
+  //   "messageType": null,
+  //   "mutableContent": false,
+  //   "notification": {
+  //     "title": "Hello",
+  //     "titleLocArgs": [],
+  //     "titleLocKey": null,
+  //     "body": "8",
+  //     "bodyLocArgs": [],
+  //     "bodyLocKey": null,
+  //     "android": {
+  //       "channelId": null,
+  //       "clickAction": null,
+  //       "color": null,
+  //       "count": null,
+  //       "imageUrl": null,
+  //       "link": null,
+  //       "priority": 0,
+  //       "smallIcon": null,
+  //       "sound": null,
+  //       "ticker": null,
+  //       "tag": "topic_key_5299880970841548702",
+  //       "visibility": 0
+  //     },
+  //     "apple": null,
+  //     "web": null
+  //   },
+  //   "sentTime": 1691522327696,
+  //   "threadId": null,
+  //   "ttl": 2419200
+  // };
+  
   bool isOnChatScreen(BuildContext context) {
     // Use the Navigator to check if there is a route that can be popped
     return Navigator.of(context).canPop();
@@ -157,7 +159,7 @@ class NotifivationAPI {
 
     final data = {
       "to": "/topics/all_users",
-      "notification": {"title": "Hello", "body": body}
+      "notification": {"title":userName, "body": body}
     };
     try {
       final response = await dio.post(
