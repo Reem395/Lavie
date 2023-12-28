@@ -5,7 +5,6 @@ import 'package:flutter_hackathon/controller/provider/chat_provider.dart';
 import 'package:flutter_hackathon/controller/remote/API/notifivation_api.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/models/message_model/message.dart';
-import 'package:flutter_hackathon/utils/screen_size_utils.dart';
 import 'package:flutter_hackathon/view/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,7 +62,8 @@ class _ChatScreenState extends State<ChatScreen> {
               if (snapshot.hasError) {
                 return const Center(child: Text("Sorry Something went wrong!"));
               }
-              if (snapshot.connectionState == ConnectionState.waiting && isInitialLoading) {
+              if (snapshot.connectionState == ConnectionState.waiting &&
+                  isInitialLoading) {
                 return Center(
                     child: CircularProgressIndicator(
                   color: defaultColor,
@@ -74,9 +74,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       false; // Set it to false after initial loading.
                 }
 
-                final messagesdocs = snapshot.data!.docs;
+                var messagesdocs ;
+                if (snapshot.data !=null) {
+                  messagesdocs = snapshot.data!.docs;
+                }
                 print("messagesdocs:${messagesdocs}");
-                if (messagesdocs.isNotEmpty) {
+                if (messagesdocs != null && messagesdocs.isNotEmpty) {
                   print(
                       "messagesdocs.first['message'] :${messagesdocs.first['message']}");
                 }
@@ -84,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 return Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
+                      child:messagesdocs != null? ListView.builder(
                           reverse: true,
                           controller: _scrollController,
                           itemCount: messagesdocs.length,
@@ -96,7 +99,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   : reciever,
                               userName: messagesdocs[index]['userName'],
                             );
-                          }),
+                          }): const Center(child: Text("No messages available")),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(

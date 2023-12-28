@@ -9,7 +9,8 @@ class AppSharedPref {
       await sharedPreferences.setString("accessToken", userToken);
   static String? getToken() => sharedPreferences.getString("accessToken");
 
-  static Future clearUserToken ()async => await sharedPreferences.remove('accessToken');
+  static Future clearUserToken() async =>
+      await sharedPreferences.remove('accessToken');
 
   static Future setUserMail(userMail) async =>
       await sharedPreferences.setString("userMail", userMail);
@@ -28,7 +29,6 @@ class AppSharedPref {
           "NextExamDate", nextExamDate.toString());
   static String? getNextExamDate() =>
       sharedPreferences.getString("NextExamDate");
-
 
   static dynamic getDataFromSharedPreference({required String key}) {
     return sharedPreferences.get(key);

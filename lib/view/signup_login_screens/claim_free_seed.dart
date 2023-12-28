@@ -76,7 +76,8 @@ class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
                     child: ElevatedButton(
                       onPressed: () {
                         try {
-                          if (addressController.text == ""||addressController.text.isEmpty) {
+                          if (addressController.text == "" ||
+                              addressController.text.isEmpty) {
                             Fluttertoast.showToast(
                                 msg: "Please enter your address",
                                 toastLength: Toast.LENGTH_SHORT);
@@ -102,10 +103,12 @@ class _ClaimFreeSeedState extends State<ClaimFreeSeed> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () { Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ShopLayout()));},
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ShopLayout()));
+                      },
                       child: const Text("Save For Later"),
                       style: roundedButtonStyle(
                           buttonColor: const Color.fromARGB(255, 231, 226, 226),

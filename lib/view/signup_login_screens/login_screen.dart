@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/provider/user_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../controller/provider/my_provider.dart';
 import '../components.dart';
 import '../../utils/constants.dart';
 
@@ -80,8 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
             ),
-           Provider.of<MyProvider>(context, listen: true).loginIndicator
-            // myProvider(context: context).loginIndicator
+            Provider.of<UserProvider>(context, listen: true).loginIndicator
                 ? const Center(
                     child: Align(
                       alignment: Alignment.center,
@@ -100,15 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     msg: "Please enter all fields",
                                     toastLength: Toast.LENGTH_SHORT);
                               } else {
-                                myProvider(context: context).signIn(
+                                userProvider(context: context).signIn(
                                     email: emailController.text,
                                     password: passwordController.text,
                                     context: context);
                                 // setState(() {
-                                //   myProvider(context: context).loginIndicator =
+                                //   userProvider(context: context).loginIndicator =
                                 //       true;
                                 // });
-                                myProvider(context: context).startIndicator();
+                                userProvider(context: context).startIndicator();
                               }
                             } catch (e) {
                               print("error: $e");

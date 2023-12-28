@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../controller/services/app_shared_pref.dart';
 import '../models/cart_model/cart.dart';
 import '../models/plants_model/plants.dart';
 import '../models/products_model/products.dart';
@@ -68,26 +67,26 @@ productInCart({required Cart cartProduct, required BuildContext context}) {
   return foundedProduct;
 }
 
-List getProductMap(
+List getProductListMap(
     {required dynamic productInstance, required BuildContext context}) {
-  List productCountMap;
+  List productCountList;
   if (getInstanceType(productInstance: productInstance) == ProductType.plants) {
-    productCountMap = myProvider(context: context).cartPlantCount;
+    productCountList = cartProvider(context: context).cartPlantCount;
   } else if (getInstanceType(productInstance: productInstance) ==
       ProductType.tools) {
-    productCountMap = myProvider(context: context).cartToolsCount;
+    productCountList = cartProvider(context: context).cartToolsCount;
   } else if (getInstanceType(productInstance: productInstance) ==
       ProductType.products) {
-    productCountMap = myProvider(context: context).cartProdCount;
+    productCountList = cartProvider(context: context).cartProdCount;
   } else {
-    productCountMap = myProvider(context: context).cartSeedsCount;
+    productCountList = cartProvider(context: context).cartSeedsCount;
   }
-  return productCountMap;
+  return productCountList;
 }
 
 prodCount({required dynamic productInstance, required BuildContext context}) {
   List productCountMap =
-      getProductMap(productInstance: productInstance, context: context);
+      getProductListMap(productInstance: productInstance, context: context);
 
   for (Map item in productCountMap) {
     if (item.containsKey(getInstanceId(productInstance: productInstance))) {
@@ -108,7 +107,7 @@ Future<bool> checkImage({required String image}) async {
       return false;
     }
   } catch (e) {
-      print("Invalid image");
+    print("Invalid image");
     return false;
   }
 }

@@ -69,7 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '987774662066',
     projectId: 'lavie-chat',
     storageBucket: 'lavie-chat.appspot.com',
-    iosClientId: '987774662066-mj0alujng5pjjc1upq12tfeednvd45ie.apps.googleusercontent.com',
+    iosClientId:
+        '987774662066-mj0alujng5pjjc1upq12tfeednvd45ie.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterHackathon',
   );
 }

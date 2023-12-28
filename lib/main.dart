@@ -2,14 +2,18 @@
 // dart=2.7
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_hackathon/controller/provider/cart_provider.dart';
+import 'package:flutter_hackathon/controller/provider/exam_provider.dart';
+import 'package:flutter_hackathon/controller/provider/forums_provider.dart';
 import 'package:flutter_hackathon/controller/remote/API/notifivation_api.dart';
 import 'package:flutter_hackathon/utils/constants.dart';
 import 'controller/provider/chat_provider.dart';
+import 'controller/provider/user_provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'controller/provider/my_provider.dart';
+import 'controller/provider/global_provider.dart';
 import 'controller/services/app_shared_pref.dart';
 import 'view/splash_screen/splash_screen.dart';
 import 'controller/local/database/database_helper.dart';
@@ -33,7 +37,20 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => MyProvider(),
+          create: (context) => CartProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ForumProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GlobalProvider(context.read<CartProvider>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(
+              context.read<GlobalProvider>(), context.read<ForumProvider>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ExamProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => ChatProvider(),
@@ -46,9 +63,6 @@ class MyApp extends StatelessWidget {
         ),
         navigatorKey: navigatorKey,
         home: const SpalshScreen(),
-        // routes:{
-          // ChatScreen.route:(context)=>ChatScreen()
-        // }
       ),
     );
   }

@@ -2,18 +2,12 @@ import 'package:container_tab_indicator/container_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hackathon/controller/services/app_shared_pref.dart';
 import 'package:flutter_hackathon/utils/product_utils.dart';
-import 'package:like_button/like_button.dart';
-import 'package:intl/intl.dart';
 
-import '../../models/forum_model/forum.dart';
-import '../../models/forum_model/forum_like.dart';
 import '../../utils/constants.dart';
 
 import '../../utils/screen_size_utils.dart';
 import '../../utils/token_utils.dart';
-import '../chat_screen/chat_screen.dart';
 import '../components.dart';
-import '../shop_layout/shop_layout.dart';
 import 'add_forum.dart';
 import 'widget/like_button_widget.dart';
 
@@ -27,7 +21,7 @@ class Forums extends StatefulWidget {
 class _ForumsState extends State<Forums> {
   TextEditingController searchController = TextEditingController();
   TextEditingController commentContoller = TextEditingController();
-  // String comment="";
+
   String forumDate = "a month ago";
   String forumBody =
       "It is a long established fact that a reader will be distracted";
@@ -43,14 +37,12 @@ class _ForumsState extends State<Forums> {
     });
   }
 
-  List<Widget> imgs = [];
   @override
   Widget build(BuildContext context) {
     print("user id: ${AppSharedPref.getUserId()}");
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text(
           "Discussion Forums",
@@ -65,6 +57,7 @@ class _ForumsState extends State<Forums> {
           padding: const EdgeInsets.all(12.0),
           child: DefaultTabController(
               length: 2,
+              initialIndex: forumProvider(context: context).forumInitialIndex,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,7 +107,7 @@ class _ForumsState extends State<Forums> {
                         postType: "all",
                         forumDate: forumDate,
                       ),
-                      myProvider(context: context).myPosts.isNotEmpty
+                      forumProvider(context: context).myPosts.isNotEmpty
                           ? forums(
                               context: context,
                               postType: "my",
@@ -148,15 +141,6 @@ class _ForumsState extends State<Forums> {
     );
   }
 
-  bool isLiked(Forum currentForum) {
-    return currentForum.forumLikes!
-            .firstWhere(
-                (element) => element.userId == AppSharedPref.getUserId(),
-                orElse: (() => ForumLike()))
-            .userId ==
-        AppSharedPref.getUserId();
-  }
-
   Widget forums({
     required context,
     required String postType,
@@ -164,15 +148,14 @@ class _ForumsState extends State<Forums> {
   }) {
     return FutureBuilder(
       future: postType == "all"
-          ? myProvider(context: context).getAllForums()
-          : myProvider(context: context).getMyForums(),
+          ? forumProvider(context: context).getAllForums()
+          : forumProvider(context: context).getMyForums(),
       builder: ((context, snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: Text("${snapshot.error} occurred"),
           );
         }
-        // if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             isInitialLoading) {
           return Center(
@@ -183,17 +166,14 @@ class _ForumsState extends State<Forums> {
           if (isInitialLoading) {
             isInitialLoading = false; // Set it to false after initial loading.
           }
-          // else if (!snapshot.hasError) {
           List posts = postType == "all"
-              ? myProvider(context: context).allPosts
-              : myProvider(context: context).myPosts;
-          // List posts = myProvider(context: context).allPosts;
-
+              ? forumProvider(context: context).allPosts
+              : forumProvider(context: context).myPosts;
           return GridView.count(
               crossAxisCount: 1,
               mainAxisSpacing: 10,
               children: List.generate(posts.length, (index) {
-                List<ForumLike>? postLikes = posts[index].forumLikes;
+                // List<ForumLike>? postLikes = posts[index].forumLikes;
                 return Column(
                   children: [
                     Expanded(
@@ -346,10 +326,10 @@ class _ForumsState extends State<Forums> {
                     SizedBox(
                       height: screenHeigth(context: context) * 0.02,
                     ),
-            LikeButtonWidget(
-                          likeCount: postLikes!.length,
-                           post: posts[index],
-                        ),
+                    LikeButtonWidget(
+                      // likeCount: postLikes!.length,
+                      post: posts[index],
+                    ),
                   ],
                 );
               }));
@@ -360,5 +340,11 @@ class _ForumsState extends State<Forums> {
 
   bool isCurrentUser({commentUser}) {
     return AppSharedPref.getUserId() == commentUser;
+  }
+  @override
+  void dispose() {
+    searchController.dispose();
+    commentContoller.dispose();
+    super.dispose();
   }
 }

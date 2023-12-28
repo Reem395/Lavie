@@ -14,7 +14,6 @@ class ChatProvider with ChangeNotifier {
       FirebaseFirestore.instance.collection('messages');
 
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool sendImgIndicator = false;
 
   Future<void> addMessage(Message msg) {

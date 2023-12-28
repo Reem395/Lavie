@@ -37,12 +37,10 @@ class _ForumsState extends State<Forums> {
   void initState() {
     super.initState();
     print("Hiiiiiii");
-    getAllPosts = myProvider(context: context).getAllForums();
-    myProvider(context: context).getMyForums();
-    allPosts = myProvider(context: context).allPosts;
-    myPosts = myProvider(context: context).myPosts;
-    // myProvider(context: context).getAllForums();
-    // myProvider(context: context).getMyForums();
+    getAllPosts = forumProvider(context: context).getAllForums();
+    forumProvider(context: context).getMyForums();
+    allPosts = forumProvider(context: context).allPosts;
+    myPosts = forumProvider(context: context).myPosts;
   }
 
   @override
@@ -112,7 +110,7 @@ class _ForumsState extends State<Forums> {
                   Expanded(
                     child: TabBarView(children: [
                       FutureBuilder(
-                        future: myProvider(context: context).getAllForums(),
+                        future: forumProvider(context: context).getAllForums(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
@@ -125,7 +123,7 @@ class _ForumsState extends State<Forums> {
                               print("hasData");
 
                               List posts =
-                                  myProvider(context: context).allPosts;
+                                  forumProvider(context: context).allPosts;
                               return GridView.count(
                                   crossAxisCount: 1,
                                   mainAxisSpacing: 10,
@@ -296,7 +294,7 @@ class _ForumsState extends State<Forums> {
                                                     print("after liked");
                                                   });
                                                   // }
-                                                  await myProvider(
+                                                  await forumProvider(
                                                           context: context)
                                                       .likePost(
                                                           "${posts[index].forumId!}");
@@ -347,7 +345,7 @@ class _ForumsState extends State<Forums> {
                                                   shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .only(
+                                                              .only(
                                                               topLeft: Radius
                                                                   .circular(20),
                                                               topRight: Radius
@@ -377,7 +375,7 @@ class _ForumsState extends State<Forums> {
                                                                           .forumComments!
                                                                           .length,
                                                                       padding: const EdgeInsets
-                                                                              .only(
+                                                                          .only(
                                                                           top:
                                                                               10),
                                                                       itemBuilder:
@@ -387,8 +385,9 @@ class _ForumsState extends State<Forums> {
                                                                             createdDate =
                                                                             DateTime.parse(posts[index].forumComments![idx].createdAt!);
                                                                         return Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              8.0),
                                                                           child:
                                                                               ListTile(
                                                                             leading: Image.asset(idx % 2 == 0
@@ -643,7 +642,7 @@ class _ForumsState extends State<Forums> {
                           print("after liked");
                         });
                         // }
-                        await myProvider(context: context)
+                        await forumProvider(context: context)
                             .likePost(posts[index].forumId!);
 
                         // liked=isLiked(posts[index]);
@@ -756,7 +755,8 @@ class _ForumsState extends State<Forums> {
                                                         0.015,
                                                   ),
                                                   Text(
-                                                    DateFormat('yyyy-MM-dd ').format(createdDate),
+                                                    DateFormat('yyyy-MM-dd ')
+                                                        .format(createdDate),
                                                     style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,
