@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hackathon/controller/provider/user_provider.dart';
 import 'package:flutter_hackathon/view/signup_login_screens/claim_free_seed.dart';
 import 'package:provider/provider.dart';
 
-import '../../controller/provider/my_provider.dart';
+import '../../controller/provider/forums_provider.dart';
+import '../../controller/provider/global_provider.dart';
 import '../../utils/token_utils.dart';
 import '../components.dart';
 import '../shop_layout/shop_layout.dart';
@@ -23,35 +25,35 @@ class _SpalshScreenState extends State<SpalshScreen> {
     super.initState();
 
     print("userToken from splash: $userToken");
-    var myprovider = Provider.of<MyProvider>(context, listen: false);
-    print("All product length ${myprovider.allproducts.length}");
+    var globalprovider = Provider.of<GlobalProvider>(context, listen: false);
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var forumProvider = Provider.of<ForumProvider>(context, listen: false);
+    // var globalprovider = Provider.of<globalProvider>(context, listen: false);
+    print("All product length ${globalprovider.allproducts.length}");
     Widget nexWidget;
     if (userToken == null || isTokenExpired()) {
       nexWidget = const SignupLogin();
       Timer(
-        const Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => nexWidget)));
+          const Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => nexWidget)));
     } else {
-      myprovider.getAllTools();
-      myprovider.getAllPlants();
-      myprovider.getAllSeeds();
-      myprovider.getAllProducts();
-      // myprovider.getAllForums();
-      myprovider.getMyForums();
-      myprovider.getBlogs();
-      // myprovider.getCurrentUser();
-      //    print("userAddressFrom Splash: ${myprovider.userAddress}");
+      globalprovider.getAllTools();
+      globalprovider.getAllPlants();
+      globalprovider.getAllSeeds();
+      globalprovider.getAllProducts();
+      forumProvider.getMyForums();
+      globalprovider.getBlogs();
       Future.delayed(const Duration(milliseconds: 1)).then((_) async {
-        await myprovider.getCurrentUser();
-      nexWidget =
-          myprovider.userAddress == null ? const ClaimFreeSeed() : const ShopLayout();
-    Timer(
-        const Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => nexWidget)));
+        await userProvider.getCurrentUser();
+        nexWidget = userProvider.userAddress == null
+            ? const ClaimFreeSeed()
+            : const ShopLayout();
+        Timer(
+            const Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => nexWidget)));
       });
-
     }
   }
 

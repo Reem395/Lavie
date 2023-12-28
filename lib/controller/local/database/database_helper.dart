@@ -19,7 +19,6 @@ class DatabaseHelper {
 
   Future<String> getDbPath() async {
     String dbPath = await getDatabasesPath();
-    // String noteDb = dbPath+"/"+'$DB_NAME';
     String cartDb = join(dbPath, dbName);
     return cartDb;
   }
@@ -33,7 +32,6 @@ class DatabaseHelper {
   }
 
   Future<Database> getDbInstance() async {
-    // int oldV = dbVersion - 1;
     String path = await getDbPath();
     // print(DB_VERSION);
     return openDatabase(path,

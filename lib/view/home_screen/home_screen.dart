@@ -11,7 +11,7 @@ import '../../utils/product_utils.dart';
 import '../../utils/screen_size_utils.dart';
 import '../../utils/token_utils.dart';
 import '../components.dart';
-import '../../controller/provider/my_provider.dart';
+import '../../controller/provider/global_provider.dart';
 import '../quiz_screen/quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    myProvider(context: context).getCart();
+    cartProvider(context: context).getCart();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkToken(context);
     });
@@ -35,15 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    myProvider(context: context).examAvailable();
+    examProvider(context: context).examAvailable();
 
     return Scaffold(
-      appBar: myProvider(context: context).isExamAvailable
+      appBar: examProvider(context: context).isExamAvailable
           ? AppBar(
               backgroundColor: const Color.fromARGB(6, 255, 255, 255),
               elevation: 0,
               actions: [
-                myProvider(context: context).isExamAvailable
+                examProvider(context: context).isExamAvailable
                     ? IconButton(
                         onPressed: () async {
                           Navigator.push(
@@ -53,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const QuizScreen(),
                             ),
                           );
-                         
                         },
                         icon: CircleAvatar(
                             backgroundColor: defaultColor,
@@ -65,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             )
           : null,
-      body: Consumer<MyProvider>(
+      body: Consumer<GlobalProvider>(
         builder: (context, myProvider, child) {
           return DefaultTabController(
             length: 4,
@@ -235,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          myProvider(context: context).decrementCartItem(
+                          cartProvider(context: context).decrementCartItem(
                               productInstance: category[index],
                               context: context);
                         },
@@ -259,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: screenWidth(context: context) * 0.02,
                       ),
-                      Text(myProvider(context: context)
+                      Text(cartProvider(context: context, listen: true)
                           .getCount(product: category[index], context: context)
                           .toString()),
                       SizedBox(
@@ -267,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       InkWell(
                         onTap: () {
-                          myProvider(context: context).incrementCartItem(
+                          cartProvider(context: context).incrementCartItem(
                               context: context,
                               productInstance: category[index]);
                         },
@@ -329,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             productId: productId,
                             noProductsInCart: noItems,
                             productType: productType);
-                        myProvider(context: context)
+                        cartProvider(context: context)
                             .addToCart(myCart: toCart, context: context);
                       },
                       child: const Text("Add To Cart"),

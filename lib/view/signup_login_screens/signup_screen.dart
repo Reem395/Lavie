@@ -35,7 +35,6 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               "Fisrt Name",
@@ -149,52 +148,53 @@ class _SignupScreenState extends State<SignupScreen> {
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,
             ),
-             myProvider(context: context).loginIndicator
+            userProvider(context: context).loginIndicator
                 ? const Center(
                     child: Align(
                       alignment: Alignment.center,
                       child: CircularProgressIndicator(),
                     ),
-                  ):
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      try {
-                        if (firstNameController.text == "" ||
-                            lastNameController.text == "" ||
-                            emailController.text == "" ||
-                            passwordController.text == "" ||
-                            confirmPasswordController.text == "") {
-                          Fluttertoast.showToast(
-                              msg: "Please enter all fields",
-                              toastLength: Toast.LENGTH_SHORT);
-                        } else {
-                          myProvider(context: context).signUp(
-                              firstName: firstNameController.text,
-                              lastName: lastNameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              context: context);
-                              setState(() {
-                                  myProvider(context: context).loginIndicator =
-                                      true;
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            try {
+                              if (firstNameController.text == "" ||
+                                  lastNameController.text == "" ||
+                                  emailController.text == "" ||
+                                  passwordController.text == "" ||
+                                  confirmPasswordController.text == "") {
+                                Fluttertoast.showToast(
+                                    msg: "Please enter all fields",
+                                    toastLength: Toast.LENGTH_SHORT);
+                              } else {
+                                userProvider(context: context).signUp(
+                                    firstName: firstNameController.text,
+                                    lastName: lastNameController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    context: context);
+                                setState(() {
+                                  userProvider(context: context)
+                                      .loginIndicator = true;
                                 });
-                        }
-                      } catch (e) {
-                        print("error: $e");
-                      }
-                    },
-                    child: const Text("Sign up"),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(defaultColor),
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsetsDirectional.all(15))),
+                              }
+                            } catch (e) {
+                              print("error: $e");
+                            }
+                          },
+                          child: const Text("Sign up"),
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(defaultColor),
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsetsDirectional.all(15))),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
             SizedBox(
               height: (screenSize.height - MediaQuery.of(context).padding.top) *
                   0.04,

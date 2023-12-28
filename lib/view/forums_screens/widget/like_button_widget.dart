@@ -9,14 +9,11 @@ import '../../../models/forum_model/forum_like.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/screen_size_utils.dart';
 import '../../components.dart';
-import '../../shop_layout/shop_layout.dart';
 
 class LikeButtonWidget extends StatefulWidget {
-  final int likeCount;
-  final Forum post;
+  Forum post;
 
   LikeButtonWidget({
-    required this.likeCount,
     required this.post,
   });
 
@@ -36,10 +33,10 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<ForumLike>? postLikes = widget.post.forumLikes;
     return Row(
       children: [
         LikeButton(
+          likeCount: widget.post.forumLikes?.length,
           isLiked: isPostLiked(widget.post),
           likeBuilder: (isLiked) {
             return Icon(
@@ -47,15 +44,14 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
               color: isLiked ? defaultColor : Colors.grey,
             );
           },
-          likeCount: postLikes?.length,
           countBuilder: (count, isLiked, text) {
+            print("countBuilder: $count");
+            print("widet.post title: ${widget.post.title}");
+            print("widet.post: ${widget.post.forumLikes?.length}");
             var color = Colors.grey;
-            Widget result;
-            result = Text(
-              text,
-              style: TextStyle(color: color),
+            return Text(
+          text,style: TextStyle(color: color),
             );
-            return result;
           },
           onTap: onLikeButtonTapped,
         ),
@@ -94,7 +90,6 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
                                                     commentUser:
                                                         comments![idx].userId)
                                                 ?
-                                                //reem
                                                 Image.asset(
                                                     "assets/images/A5.png",
                                                     fit: BoxFit.cover,
@@ -126,7 +121,7 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
                                                                       comments![
                                                                               idx]
                                                                           .userId)
-                                                              ? "${myProvider(context: context).currentUser!.firstName} ${myProvider(context: context).currentUser!.lastName}"
+                                                              ? "${userProvider(context: context).currentUser!.firstName} ${userProvider(context: context).currentUser!.lastName}"
                                                               : idx % 2 == 0
                                                                   ? "Lina Walid"
                                                                   : "Edward Sam ",
@@ -192,25 +187,29 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
                                                   onPressed: () async {
                                                     if (commentContoller
                                                         .text.isNotEmpty) {
-                                                      myProvider(
-                                                              context: context)
-                                                          .commentOnPost(
-                                                              widget.post
-                                                                  .forumId!,
-                                                              commentContoller
-                                                                  .text);
-                                                      await Navigator.of(
-                                                              context)
-                                                          .pushAndRemoveUntil(
-                                                              MaterialPageRoute<
-                                                                      void>(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const ShopLayout()),
-                                                              (r) => false);
-                                                      myProvider(
-                                                              context: context)
-                                                          .selectedIndex = 0;
+                                                      comments?.add(
+                                                          await forumProvider(
+                                                                  context:
+                                                                      context)
+                                                              .commentOnPost(
+                                                                  widget.post
+                                                                      .forumId!,
+                                                                  commentContoller
+                                                                      .text));
+                                                      setState(() {
+                                                        print(
+                                                            "comments List: ${comments?.length}");
+                                                      });
+                                                      Navigator.pop(context);
+                                                      // await Navigator.of(
+                                                      //         context)
+                                                      //     .pushAndRemoveUntil(
+                                                      //         MaterialPageRoute<
+                                                      //                 void>(
+                                                      //             builder:
+                                                      //                 (context) =>
+                                                      //                     const ShopLayout()),
+                                                      //         (r) => false);
                                                     }
                                                   },
                                                   icon: Icon(
@@ -253,34 +252,21 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
                                                   onPressed: () async {
                                                     if (commentContoller
                                                         .text.isNotEmpty) {
-                                                      // setState(() {
-                                                        // comments?.add(ForumComment(
-                                                        //     forumCommentId:
-                                                        //         widget.post
-                                                        //             .forumId!,
-                                                        //     comment:
-                                                        //         commentContoller
-                                                        //             .text));
-                                                      // });
-                                                      // await myProvider(
-                                                      //         context: context)
-                                                      //     .commentOnPost(
-                                                      //         widget.post
-                                                      //             .forumId!,
-                                                      //         commentContoller
-                                                      //             .text);
-                                                      // await Navigator.of(
-                                                      //         context)
-                                                      //     .pushAndRemoveUntil(
-                                                      //         MaterialPageRoute<
-                                                      //                 void>(
-                                                      //             builder:
-                                                      //                 (context) =>
-                                                      //                     const ShopLayout()),
-                                                      //         (r) => false);
-                                                      // myProvider(
-                                                      //         context: context)
-                                                      //     .selectedIndex = 0;
+                                                      comments?.add(
+                                                          await forumProvider(
+                                                                  context:
+                                                                      context)
+                                                              .commentOnPost(
+                                                                  widget.post
+                                                                      .forumId!,
+                                                                  commentContoller
+                                                                      .text));
+                                                      setState(() {
+                                                        print(
+                                                            "comments List: ${comments?.length}");
+                                                      });
+
+                                                      Navigator.pop(context);
                                                     }
                                                   },
                                                   icon: Icon(
@@ -305,68 +291,28 @@ class _LikeButtonWidgetState extends State<LikeButtonWidget> {
         ),
       ],
     );
-
-    //   return LikeButton(
-    //     size: 30,
-    //     isLiked: currentUserLike,
-    //     circleColor: CircleColor(
-    //         start: defaultColor, end: const Color.fromARGB(255, 16, 46, 17)),
-    //     bubblesColor: BubblesColor(
-    //       dotPrimaryColor: defaultColor,
-    //       dotSecondaryColor: const Color.fromARGB(255, 16, 46, 17),
-    //     ),
-    //     likeBuilder: (bool isLiked) {
-    //       print("currentUserLike from likeBuilder :$isLiked");
-    //       return Icon(
-    //         Icons.home,
-    //         color: isLiked ? Colors.deepPurpleAccent : Colors.grey,
-    //         size: 30,
-    //       );
-    //       // isLiked = currentUserLike;
-
-    //       // return Icon(
-    //       //   Icons.home,
-    //       //   color: isLiked ? defaultColor : Colors.grey,
-    //       //   size: 30,
-    //       // );
-    //     },
-    //     likeCount: postLikes?.length,
-    //     countBuilder: (count, bool isLiked, String text) {
-    //       // isLiked = currentUserLike;
-    //       var color = isLiked ? Colors.deepPurpleAccent : Colors.grey;
-    //       Widget result;
-    //       if (count == 0) {
-    //         result = Text(
-    //           "love",
-    //           style: TextStyle(color: color),
-    //         );
-    //       } else
-    //         result = Text(
-    //           text,
-    //           style: TextStyle(color: color),
-    //         );
-    //       return result;
-    //     },
-    //     onTap: onLikeButtonTapped,
-    //   );
   }
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
-    setState(() {});
-    await myProvider(context: context).likePost("${widget.post.forumId!}");
+    widget.post = await forumProvider(context: context)
+        .likePost("${widget.post.forumId!}");
     return !isLiked;
   }
 
   bool isPostLiked(Forum currentForum) {
-    return currentForum.forumLikes!
+    bool ispostLiked;
+    ispostLiked = currentForum.forumLikes!
             .firstWhere(
                 (element) => element.userId == AppSharedPref.getUserId(),
                 orElse: (() => ForumLike()))
             .userId ==
         AppSharedPref.getUserId();
+    setState(() {});
+    return ispostLiked;
   }
 
   bool isCurrentUser({commentUser}) {
     return AppSharedPref.getUserId() == commentUser;
   }
+
 }

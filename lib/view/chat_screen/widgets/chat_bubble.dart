@@ -53,14 +53,17 @@ class ChatBubble extends StatelessWidget {
               ),
               message.startsWith('https://firebasestorage.googleapis')
                   ? Padding(
-                    padding:EdgeInsets.only(top: sentBy == reciever? screenHeigth(context: context)*0.01:0),
-                    child: InkWell(
+                      padding: EdgeInsets.only(
+                          top: sentBy == reciever
+                              ? screenHeigth(context: context) * 0.01
+                              : 0),
+                      child: InkWell(
                         onTap: (() {
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
                               builder: (BuildContext context) =>
-                                   FullImageScreen(
+                                  FullImageScreen(
                                 image: message,
                               ),
                             ),
@@ -74,7 +77,8 @@ class ChatBubble extends StatelessWidget {
                             child: Text(
                               "No Image Found",
                               style: TextStyle(
-                                  fontSize: 17,fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
                                   color: sentBy == sender
                                       ? Colors.white
                                       : Colors.black),
@@ -82,7 +86,7 @@ class ChatBubble extends StatelessWidget {
                           ),
                         ),
                       ),
-                  )
+                    )
                   : Text(
                       message,
                       style: TextStyle(

@@ -4,13 +4,13 @@ class Cart {
   late String productId;
   late String productType;
   late int noProductsInCart;
-  Cart(
-      {this.id,
-      required this.noProductsInCart,
-      required this.productId,
-      required this.productType,
-      required this.userId,
-      });
+  Cart({
+    this.id,
+    required this.noProductsInCart,
+    required this.productId,
+    required this.productType,
+    required this.userId,
+  });
 
   Cart.fromJson(Map<dynamic, dynamic> map) {
     id = map['id'];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hackathon/controller/provider/my_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../controller/provider/cart_provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/product_utils.dart';
 import '../../utils/screen_size_utils.dart';
@@ -18,7 +18,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
-    myProvider(context: context).getCart();
+    cartProvider(context: context).getCart();
     // myProvider(context: context).calculateCartTotalPrice(context: context);
 
     super.initState();
@@ -26,7 +26,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    myProvider(context: context).calculateCartTotalPrice(context: context);
+    cartProvider(context: context).calculateCartTotalPrice(context: context);
 
     Widget emptyCart = Center(
       child: Column(
@@ -58,7 +58,7 @@ class _CartScreenState extends State<CartScreen> {
           backgroundColor: const Color.fromARGB(6, 255, 255, 255),
           elevation: 0,
         ),
-        body: Consumer<MyProvider>(
+        body: Consumer<CartProvider>(
           builder: (context, myProvider, child) {
             List myCart = myProvider.userCart;
             return SafeArea(
@@ -255,7 +255,9 @@ class _CartScreenState extends State<CartScreen> {
                                                       myProvider
                                                           .elementToRemove(
                                                               elementToRemove:
-                                                                  myCart[index],productInstance: cartElement,
+                                                                  myCart[index],
+                                                              productInstance:
+                                                                  cartElement,
                                                               context: context);
                                                     },
                                                   ),

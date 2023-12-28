@@ -60,7 +60,7 @@ InputDecoration textFieldBorderStyle(
 
 Widget textForImageError() {
   return const Center(
-    child:  Text("Image Not Found",
+    child: Text("Image Not Found",
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
   );
 }

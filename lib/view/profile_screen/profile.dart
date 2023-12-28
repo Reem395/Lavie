@@ -17,12 +17,11 @@ class Profile extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    User? currentUser = myProvider(context: context, listen: true).currentUser;
-    int points = myProvider(context: context).currentUser!.userPoints ?? 0;
-    // int points = myProvider(context: context).currentUser!.userPoints ?? 0;
+    User? currentUser =
+        userProvider(context: context, listen: true).currentUser;
+    int points = userProvider(context: context).currentUser!.userPoints ?? 0;
 
     return Scaffold(
-      // backgroundColor: Colors.grey,
       extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -180,7 +179,7 @@ class Profile extends StatelessWidget {
                                     onPressed: () async {
                                       try {
                                         if (_formKey.currentState!.validate()) {
-                                          await myProvider(context: context)
+                                          await userProvider(context: context)
                                               .editCurrentUser(
                                                   firstName:
                                                       firstNameController.text,
@@ -282,7 +281,7 @@ class Profile extends StatelessWidget {
                                     onPressed: () async {
                                       try {
                                         if (_formKey.currentState!.validate()) {
-                                          await myProvider(context: context)
+                                          await userProvider(context: context)
                                               .editCurrentUser(
                                                   email: emailController.text);
                                           ScaffoldMessenger.of(context)
@@ -339,7 +338,7 @@ class Profile extends StatelessWidget {
         ),
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(top: screenHeigth(context: context)*0.2) ,
+        margin: EdgeInsets.only(top: screenHeigth(context: context) * 0.2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -389,6 +388,7 @@ class Profile extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               AppSharedPref.clearUserToken();
+                              myProvider(context: context).selectedIndex = 2;
                               Navigator.pushAndRemoveUntil<void>(
                                 context,
                                 MaterialPageRoute<void>(
@@ -407,7 +407,7 @@ class Profile extends StatelessWidget {
               child: const Icon(Icons.logout),
               backgroundColor: defaultColor,
             ),
-             FloatingActionButton.small(
+            FloatingActionButton.small(
               heroTag: "chatBtn",
               onPressed: () {
                 Navigator.push(
@@ -416,8 +416,10 @@ class Profile extends StatelessWidget {
                     builder: (BuildContext context) => const ChatScreen(),
                   ),
                 );
-              },child: const Icon(Icons.chat),
-              backgroundColor: defaultColor,),
+              },
+              child: const Icon(Icons.chat),
+              backgroundColor: defaultColor,
+            ),
           ],
         ),
       ),

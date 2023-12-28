@@ -27,9 +27,9 @@ class SignupLogin extends StatelessWidget {
                     "assets/images/top_corner.png",
                     fit: BoxFit.fill,
                     width: screenSize.width * 0.2,
-                    height:
-                        (screenSize.height - MediaQuery.of(context).padding.top) *
-                            0.15,
+                    height: (screenSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.15,
                   ),
                 ),
                 laVieLogo(screenSize: screenSize),
@@ -74,7 +74,7 @@ class SignupLogin extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Row(children: [
                     Expanded(
-                      child: Divider(
+                        child: Divider(
                       thickness: 2,
                     )),
                     Text(
@@ -96,7 +96,8 @@ class SignupLogin extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/GoogleIcon.png'),
+                      backgroundImage:
+                          AssetImage('assets/images/GoogleIcon.png'),
                       backgroundColor: Colors.white,
                       radius: 15,
                     ),
@@ -116,9 +117,9 @@ class SignupLogin extends StatelessWidget {
                     "assets/images/left_corner.png",
                     // width: screenSize.width * 0.3,
                     fit: BoxFit.fill,
-                    height:
-                        (screenSize.height - MediaQuery.of(context).padding.top) *
-                            0.1,
+                    height: (screenSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.1,
                   ),
                 ),
               ],
@@ -128,5 +129,4 @@ class SignupLogin extends StatelessWidget {
       ),
     );
   }
-
 }

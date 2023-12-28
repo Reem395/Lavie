@@ -3,7 +3,7 @@ import 'package:flutter_hackathon/utils/constants.dart';
 import 'package:flutter_hackathon/view/shop_layout/shop_layout.dart';
 import 'package:provider/provider.dart';
 
-import '../../controller/provider/my_provider.dart';
+import '../../controller/provider/exam_provider.dart';
 import '../../utils/screen_size_utils.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -39,8 +39,8 @@ class _QuizScreenState extends State<QuizScreen> {
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Consumer<MyProvider>(
-          builder: ((context, myProvider, child) {
+        child: Consumer<ExamProvider>(
+          builder: ((context, ExamProvider, child) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,7 +54,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               color: Colors.black,
                               fontWeight: FontWeight.w500)),
                       TextSpan(
-                          text: ' ${myProvider.questionNo}',
+                          text: ' ${ExamProvider.questionNo}',
                           style: TextStyle(
                               fontSize: 35,
                               color: defaultColor,
@@ -178,14 +178,14 @@ class _QuizScreenState extends State<QuizScreen> {
                   height: screenHeigth(context: context) * 0.05,
                 ),
                 Row(
-                  mainAxisAlignment: myProvider.questionNo > 1
+                  mainAxisAlignment: ExamProvider.questionNo > 1
                       ? MainAxisAlignment.spaceBetween
                       : MainAxisAlignment.end,
                   children: [
-                    if (myProvider.questionNo > 1)
+                    if (ExamProvider.questionNo > 1)
                       ElevatedButton(
                         onPressed: () {
-                          myProvider.previousQuestion();
+                          ExamProvider.previousQuestion();
                         },
                         child: const Text(
                           "Back",
@@ -213,25 +213,26 @@ class _QuizScreenState extends State<QuizScreen> {
                     SizedBox(
                       width: screenWidth(context: context) * 0.05,
                     ),
-                    if (myProvider.questionNo == 1)
+                    if (ExamProvider.questionNo == 1)
                       SizedBox(width: screenWidth(context: context) * 0.4488),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          myProvider.nextQuestion();
-                          if (myProvider.questionNo == 11) {
+                          ExamProvider.nextQuestion();
+                          userAnswer = Answers.a1;
+                          if (ExamProvider.questionNo == 11) {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const ShopLayout()),
                               (Route<dynamic> route) => false,
                             );
-                            myProvider.questionNo = 1;
-                            myProvider.currentExamAccessDate();
+                            ExamProvider.questionNo = 1;
+                            ExamProvider.currentExamAccessDate();
                           }
                         },
                         child: Text(
-                            myProvider.questionNo == 10 ? "Finish" : "Next"),
+                            ExamProvider.questionNo == 10 ? "Finish" : "Next"),
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all(
                                 EdgeInsets.symmetric(
@@ -254,7 +255,4 @@ class _QuizScreenState extends State<QuizScreen> {
       )),
     );
   }
-  // Widget displayQuiz(){
-  //   return
-  // }
 }

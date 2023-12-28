@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:image_picker/image_picker.dart';
 
 class AttachImage {
@@ -21,9 +18,4 @@ class AttachImage {
       print("Image error: $e");
     }
   }
-
-  static seletImage() async {
-    Uint16List img = await pickImage(ImageSource.gallery);
-  }
 }
-//MemoryImage

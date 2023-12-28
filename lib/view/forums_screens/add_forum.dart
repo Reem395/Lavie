@@ -24,8 +24,6 @@ class _AddForumState extends State<AddForum> {
   TextEditingController postImageURL = TextEditingController();
 
   final ImagePicker _imagePicker = ImagePicker();
-  // dynamic _pickImageError;
-  // List<XFile>? _imageFileList;
   String? img64;
   XFile? pickedFile;
 
@@ -167,15 +165,20 @@ class _AddForumState extends State<AddForum> {
                         if (!(postTitle.text == "" ||
                             postDescription.text == "" ||
                             img64 == null)) {
-                          myProvider(context: context).addForum(
-                              title: postTitle.text,
-                              description: postDescription.text,
-                              image: img64!);
+                         await forumProvider(context: context)
+                              .addForum(
+                                  title: postTitle.text,
+                                  description: postDescription.text,
+                                  image: img64!);
+                          forumProvider(context: context).forumInitialIndex = 1;
+                          myProvider(context: context).selectedIndex = 0;
+                          setState(() {
+                            
+                          });
                           await Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute<void>(
                                   builder: (context) => const ShopLayout()),
                               (r) => false);
-                          myProvider(context: context).selectedIndex = 0;
                         } else {
                           Fluttertoast.showToast(
                               msg: "Please enter all fields",
